@@ -1,0 +1,174 @@
+WARNING! Unfinished documentation!
+(For further information contact Stefan Prelle <prelle@tzi.de>
+
+
+Java MBus 1.0 beta7
+
+This is a complete rewrite of the Java Message Bus implementation.
+While it provides basic functionality, there are still some features
+that need to be tested or even implemented.
+
+Configuration
+=============
+The Message Bus reads it configuration from a file named
+<tt>.mbus</tt> in the user's home directory or from the system
+properties.
+It supports the following keys/configurations:
+ - HASHKEY      - see draft
+ - ENCRYPTIONKEY- see draft  
+ - SCOPE        - LINKLOCAL or HOSTLOCAL (default: HOSTLOCAL)
+ - PORT         - (default: 47000)
+ - ADDRESS      - (default: 224.255.222.239)
+ - CHECK_DIGEST - enable digestchecking (default: true)
+ - SEND_UNICAST - enable unicast optimization  (default: true)
+ - TIMER_R      - Milliseconds between message retransmissions 
+                  (default: 100)
+ - RETRIES      - number of retries to retransmit a message 
+                  (default: 3)
+ - cryptoProvider - see 'Using the JCE' below
+
+Message Digests and Security
+============================
+The Message Bus uses the Java Cryptography Extension (JCE 1.2) to
+create message digests and encrypt/decrypt messages.
+This version was tested with an implementation from Cryptix
+(www.cryptix.org). 
+If you set CHECK_DIGEST to 'no' and leave the ENCRYPTIONKEY blank,
+there is no need for the JCE-Package anymore.
+
+
+The layered architecture
+========================
+
+The architecture of this package defines two layers that offer
+services. The "Transport Layer" handles all basic mechanisms as
+defined in the Mbus drafts. Above the transport layer another layer
+offers services that filter messages and allow synchronous
+communication with other Mbus entities. This layer is offered by a
+class named "Message Bus"
+                       _____________
+                      |             |
+   _____________      | Application |
+  |             |     |-------------|
+  | Application |     | Message Bus |
+  |-------------|     |-------------|
+  |    Simple   |     |    Simple   |
+  |  Transport  |     |  Transport  |
+  |    Layer    |     |    Layer    |
+  |_____________|     |_____________|
+         |	             |
+  _______|___________________|___________   
+
+
+* Using the SimpleTransportLayer
+
+NEW: There is an example (Example1Main.java) in the example-subdirectory.
+
+The basic functionality is provided by the class
+"SimpleTransportLayer". This class is similar to what was the class
+"mbus" in the old Java Mbus-release. To use the Mbus you simply
+have to write a class that implements org.mbus.MBusListener and
+create an instance of a org.mbus.SimpleTransportLayer with an Address
+object and this class - e.g.:
+
+
+ public class MyClass implements MBusListener {
+
+   private static String[][] address = {{"app","mdb"},
+                                        {"module", "gui"},
+                                        {"media","h323"},
+                                        {"id", "gui1"}};
+
+   Address myAddress = new Address(address);
+   TransportLayer tl = new SimpleTransportLayer(myAddress, this);   
+   ...
+   public void deliveryFailed(int, Message) {...}
+   public void deliverySuccessful(int[]) {...}
+   public void incomingMessage(Message) {...}
+   public void entityDied(Address) {...}
+   public void entityShutdown(Address) {...}
+   public void newEntity(Address) {...}
+ }
+
+To send a message you simply have to create a Message object and call
+tl.send(Message).
+
+* Using the Message Bus-Class
+
+NEW: There is an example (Example2*.java) in the example-subdirectory.
+
+If you want to use the additional functionality of the second
+layer you have to create and start an instance of the
+"Message Bus"-class. The primary advantage of this class is the
+support for synchronous communication which means that is is possible
+to send a request to an Mbus-entity and block until the reply is
+received and returned by the function.
+
+   private static String[][] address = {{"app","myApp
+                                        {"module", "control"},
+                                        {"media","h323"},
+                                        {"id", "foo"}};
+   private static String[] notifications = {"conf.call-control.call",
+                                            "conf.call-control.ringing",
+                                            "conf.call-control.connected",
+                                            "conf.call-control.rejected",
+                                            "conf.call-control.disconnected",
+                                            "conf.call-control.incoming-call"};
+
+   MessageBus mbus = new MessageBus(address);
+   mbus.addCommands(notifications, -1);
+   mbus.start();
+
+   MessageHandler myHandler = new MyMessageHandler(mbus);
+
+There are several possibilities to send messages now:
+1)  void send(Command, Address, boolean)
+    Sends a command to and address - this message may be sent
+    reliable
+2)  Message sendAndWaitForReply(Command, Address, reliable)
+    Send a message (reliable), block until the reply is reveiced and
+    return the message or return after timeout.
+3)  Message[] sendAndWaitForReplies(Command, Address, reliable, collectAll)
+
+
+A new concept: The virtual transport layer
+==========================================
+
+...
+
+
+Using the JCE
+=============
+To tell the Mbus which cryptography provider to use you either have
+to define a key "cryptoProvider=<fullClassName>" in your .mbus-file 
+or hand this key/value-pair as a system property using the 
+ -DcryptoProvider=... -option when starting your Java program.
+
+
+Example .mbus-file
+==================
+The following example of an .mbus-file is known to work with the
+Cryptix JCE implementation.
+
+[MBUS]
+CONFIG_VERSION=1
+HASHKEY=(HMAC-MD5-96,qa2QeSXbxPmWV/Ro)
+ENCRYPTIONKEY=(NOENCR,GsjEuSzZH0Y=)
+SCOPE=HOSTLOCAL
+ADDRESS=224.255.222.239
+PORT=47001
+cryptoProvider=cryptix.jce12.provider.Cryptix
+
+
+
+Known Bugs
+==========
+* There sometimes happen to be decryption errors when using security.
+  This is not looked into yet.
+* If have reports of strange behaviour using security under Solaris
+  Systems. 
+
+
+
+Stefan Prelle <prelle@tzi.de>
+

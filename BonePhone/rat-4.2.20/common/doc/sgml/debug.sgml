@@ -1,0 +1,141 @@
+<refentry id="uclmmbase-debug" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>Debug</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>Debug</refname><refpurpose>
+Functions for outputing diagnostics.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+#include &lt;debug.h&gt;
+
+
+#define     <link linkend="UNUSED-CAPS">UNUSED</link>                          (x)
+#define     <link linkend="debug-msg">debug_msg</link>
+void        <link linkend="debug-dump">debug_dump</link>                      (void *lp,
+                                             <link linkend="long">long</link> len);
+void        <link linkend="debug-set-core-dir">debug_set_core_dir</link>              (const char *argv0);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+These functions relate to outputing diagnostic messages and
+information.
+
+</para>
+
+<para>
+
+Use of these functions requires DEBUG to be defined at compilation
+time.  On Unix systems, the <filename>configure</filename> script has
+a command-line option <option>--enable-debug</option>.  On Win32 a
+debug configuration exists.
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="UNUSED-CAPS">UNUSED()</title>
+<programlisting>#define UNUSED(x)	(x=x)
+</programlisting>
+<para>
+
+Available for use to prevent compiler warnings when a function
+argument is not used.  Sometimes this is unavoidable because function
+has to conform to an interface.
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
+<entry>unused function argument that generates compiler warning.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="debug-msg">debug_msg</title>
+<programlisting>#define debug_msg	_dprintf("[pid/%d +%d %s] ", getpid(), __LINE__, __FILE__), _dprintf
+</programlisting>
+<para>
+
+When DEBUG is defined this will write a formatted message to the
+platform defined error stream.  The format of the message has the same
+semantics as standard C library call <function>printf()</function>.  The error
+message displayed is prepended by the process id, the file and the
+line number, where <link linkend="debug-msg">debug_msg</link>() was called.
+
+On Unix the message is rendered on the standard error stream.  On
+Win32 a debug message is created using the Win32 API function
+<function><link linkend="OutputDebugString">OutputDebugString</link>()</function>.
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="debug-dump">debug_dump ()</title>
+<programlisting>void        debug_dump                      (void *lp,
+                                             <link linkend="long">long</link> len);</programlisting>
+<para>
+Writes a dump of a memory region to stdout.  The dump contains a
+hexadecimal and an ascii representation of the memory region.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>lp</parameter>&nbsp;:</entry>
+<entry> pointer to memory region.
+</entry></row>
+<row><entry align="right"><parameter>len</parameter>&nbsp;:</entry>
+<entry> length of memory region in bytes.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="debug-set-core-dir">debug_set_core_dir ()</title>
+<programlisting>void        debug_set_core_dir              (const char *argv0);</programlisting>
+<para>
+Creates a directory with the application name and makes it the
+current working directory.  
+</para>
+<para>
+This function exists because some unix variants use the name 'core'
+for core dump files.  When an application uses multiple processes,
+this can be problematic if the failure of one process leads to the
+failure of another because the dependent process 'core' file will
+overwrite the core of the failing process.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>argv0</parameter>&nbsp;:</entry>
+<entry> the application path (usually argv[0] in <link linkend="main">main</link>()).
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

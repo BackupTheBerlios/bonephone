@@ -1,0 +1,12 @@
+This is a very simple example. The stack sends messages to itself and
+responds to itself.
+
+1. build the default target:
+	make
+
+2. From the first window start the ListenerImpl:
+ 	sh runtest.sh
+
+
+If you dont like the ports I have assigned, please edit configfile.
+

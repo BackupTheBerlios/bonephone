@@ -1,0 +1,61 @@
+package org.mbus;
+
+import java.util.*;
+import java.security.*;
+// import javax.crypto.*;  // Needed for JCE
+
+/**
+ * Authenticator.java
+ *
+ *
+ * <br>Created: Thu Sep 23 14:30:05 1999
+ *
+ * @author Stefan Prelle
+ * @version $id: Authenticator.java 1.0 Thu Sep 23 14:30:05 1999 prelle Exp $
+ */
+
+public class Authenticator  {
+
+    private Mac     mac;
+	private Key		key;
+    private boolean checkDigest;
+    
+    //---------------------------------------------------------------
+    public Authenticator(MBusConfiguration config) throws MBusException {
+		mac=Mac.getInstance("HmacMD5");
+
+		checkDigest = false;
+	    return;
+    }
+
+    //---------------------------------------------------------------
+    /**
+     * Create a message-digest for the data that is not Base64-encoded
+     *
+     * @param data String to create a digest for
+     * @return Digest
+     */
+    public String getDigest(String data) {
+	// If there is no Message Digest-support return something silly :) 
+	    byte[] enc = Base64Codec.decode(("NoDigestAvailabl").getBytes());
+	    return new String(enc);
+	}
+
+    //---------------------------------------------------------------
+    /**
+     * Create a message-digest for the data that is Base64-encoded
+     *
+     * @param data String to create a digest for
+     * @return Digest
+     */
+    public String getBase64Digest(String data) {
+		// If there is no Message Digest-support return something silly :) 
+	    return "NoDigestAvailabl";
+    }
+
+    //---------------------------------------------------------------
+    public boolean checkDigest(String digest, String toCheck) {
+	    return true;
+    }
+    
+} // Authenticator

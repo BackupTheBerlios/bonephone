@@ -1,0 +1,500 @@
+Vanakkam! Namaste! Hello! Howdy Doodie! Konichiwaa! Bon Jour! Guten Tag!
+
+This is the public domain nist-sip message parser and stack package. It
+includes parsers and header definitions for SIP, SDP and URIs, a simple
+stack and an implementation of the JAIN-SIP interfaces.  
+
+Please point your browser at docs/api/index.html to find out more.
+
+The distribution is pre-built. However, if you make modifications, you may 
+wish to re-build it. The following tools are used to build this distribution:
+
+1. JDK 1.3.1 (www.javasoft.com)
+
+2. Antlr 2.7.1 (www.antrlr.org) 
+
+3. If you are working under windows, you need cygwin 
+	(http://sourceware.cygnus.com)
+	(the makefiles are all gnu make files).
+     ( If you have the energy, and want to contribute,
+       consider migrating the build to ant. )
+
+4. If you want to build the torture tests, you need the 
+	the xerces xml parser (http://www.apache.org).
+
+5. If you want to build the signaling load generator, you need
+      the JAVA version of jython. This is already included
+      herein but if you want the latest and greatest,
+      http://www.jython.org
+
+A version of the required jar files (for xerces, antlr and jython) are
+included in the subdirectories lib/xerces and lib/antlr and lib/jython
+respectively; however, these are not necessarily the latest versions. If
+you want a freshness guarantee, please download these from the web sites
+above.
+
+Adjust the settings in build-config to suit your system. Run 'make
+all' from this location to build the whole thing  (including JAVADOC
+documentation). You will lots of scary warnings when generating javadoc.
+Don't worry, be happy. I hope our documentation will improve with time.
+
+This is beta code and is evolving (and hopefully getting better). Bugs
+are a natural outcome of this situation.  The humans involved in this
+development effort (a set of small cardinality) are sometimes greatly
+outnumbered by the bugs; however, we will attempt to promptly fix all
+the bugs that we know of and put out fixes. Therefore, please bring any
+bugs that you encounter to our attention and feel free to kill a few
+of your own.  In the absence of a public CVS server, we will make the
+latest code available at the following public FTP location.
+
+
+ftp://is2.antd.nist.gov/pub/nist-sip/nist-sip.tar.gz
+
+
+
+This directory will contain all our public releases. (Old releases will
+be kept around for the benifit of  software paleontologists but you
+are strongly encouraged to use the latest and greatest.) Each release
+is stamped with a revision and a release date. New revision numbers are
+assigned when there are any class changes (that may break applications)
+and snapshots are stamped with the date on which the snapshot was made.
+The URI above will always have the latest distribution.
+
+Address questions, comments and feature requests to the jolly hackers at
+
+nist-sip-dev@antd.nist.gov
+
+We hope you find this a useful piece of work!
+
+*******************************************************************
+* 				WARNING				  * 
+* This is EXPERIMENTAL code!					  *
+*								  *
+*******************************************************************
+
+----------------------------------------------------------------------------
+CONTRIBUTORS
+============
+
+M. Ranganathan (mranga@nist.gov) 
+Chief Implementation Officer (CIO), poet, philosopher, 
+Architecture, Design and Implementation lead.  
+
+
+Marc Bednarek (bednarek@antd.nist.gov) (Emeritus)
+Proxy and firewall support for proxy: joint implementation and debugging.
+
+Olivier Deruelle (deruelle@antd.nist.gov)
+Documentation, JAIN-SIP: joint implementation and testing.
+
+Christophe Chazeau (chazeau@antd.nist.gov)
+Documentation, JAIN-SIP: joint implementation. 
+
+Doug Montgomery (dougm@nist.gov) (Chief Financial Officer).
+Providing resources to keep the project going. 
+(In real life: Manager, Internetworking Technologies Group).
+
+And the fearless users who have sent us bug reports and helped in debugging
+the distribution. Thanks to the following:
+
+Stefan Foekel of GMD Fokus for reporting bugs in the JAIN stack. 
+
+Seven Lass of WCom for reporting parser and stack bugs.
+
+Chris Mills of Nortel Networks for reporting bugs in the JAIN
+stack, NIST-SIP implementation and helping to clarify the JAIN-SIP spec. 
+
+Håkan Jonsson and Marcus Sigling of Bluelabs, SE for reporting bugs 
+in the NIST-SIP stack and proxy.  
+
+Maria Yndefors and Mikael Danielsson of e-horizon Streaming Technologies
+AB for reporting bugs in the JAIN SIP implementation.
+
+Jakob Schlyter of Carlstedt Research & Technology for reporting
+bugs in the JAIN SIP implementation.
+
+Ganesh Jayadevan of Lucent reported a bug with the clone method of
+SIPMessage
+
+Thanks to the JAIN-SIP and SIP implementors mailing list members for
+help with numerous queries especially to Chris Harris the JAIN SIP lead for
+help in figuring out the spec.
+
+Please report bugs. Your feedback is vital! I will try hard to keep up
+with your bug reports.
+
+If I missed your name in error (or would rather I not mention your
+contribution), please let me know:
+
+
+mailto:mranga@nist.gov
+
+OR
+
+mailto:nist-sip-dev@antd.nist.gov 
+
+with bug reports, contributions and suggestions for improvement.
+
+----------------------------------------------------------------------------
+TO CONTRIBUTE
+=============
+
+If you want to contribute, we welcome that and will fully acknowledge your
+contribution  when we distribute code that contains your contributions
+(unless you would rather not be identified of course). In doing so,
+we will not divulge any details about your project. However, please be
+aware that unless prior agreements have been made, by default anything
+we develop at NIST is in the public domain and is therefore not subject
+to copyright protection (see scary warning below).
+
+
+
+---------------------------------------------------------------------------
+UNCOPYRIGHT
+===========
+This software was developed at the National Institute of Standards and
+Technology by employees of the Federal Government in the course of their
+official duties. Pursuant to title 17 Section 105 of the United States
+Code this software is not subject to copyright protection and is in the
+public domain. This software is an experimental system. NIST assumes
+no responsibility whatsoever for its use by other parties, and makes
+no guarantees, expressed or implied, about its quality, reliability,
+or any other characteristic. We would appreciate acknowledgment if the
+software is used.
+
+This software can be redistributed and/or modified freely. We request that
+any derivative works bear some notice that they are derived from it,
+and any modified versions bear some notice that they have been modified.
+
+-------------------------------------------------------------------------
+RELATED
+=======
+
+G.K. Shashidhara  (mailto:gkshashidhara@yahoo.com) has undertaken porting
+NIST-SIP to c++ (current status of this effort is not known -- address 
+queries to him).
+
+
+============================================================================
+Major Revision Summary
+======================
+
+Version 0.9
+-----------
+
+
+January 01 01 
+-------------
+Initial public release
+
+Revision A  01-10-01
+--------------------
+1. Added better support for dealing with malformed and invalid headers.
+2. Added a new exception class gov.nist.sip.msgparser.SIPInvalidHeaderException 
+3. Added several more torture tests.
+4. Added support to the SIPMessage class to compute a transaction ID.
+5. Fixed a problems in the parser which would report an incorrect error line
+   when the error token occured at the end of the line.
+
+Revision B  01-16-01
+---------------------
+1. Moved Address over to the net package
+2. Fixed a bug which would bomb the parser if the tag parameter is present
+   in the From and To headers.
+3. Changed the way in which parameters are tracked in the From and To headers.
+
+Revision C 01-24-01
+--------------------
+1. Minor reshuffling of class sipheader class hierarchy for uniformity.
+2. Added a couple of new methods to StringMsgParser (for addresses 
+	and hostnames).
+3. Migrated torture tests to the xerces xml parser (available from apache.org)
+
+Revision D 02-08-01
+-------------------
+This is a somewhat major revamp. The following changes have been made.
+
+1. More re-arrangement of sipheader classes for uniform naming conventions:
+
+	remove AcceptLanguageBody
+	remove AddrParms
+	remove ContactBody
+	remove Language 
+	remove WarningValue
+	remove ContentPreference
+	remove OptionTag
+	remove LanguageTag
+	remove Encoding
+	add    Warning
+	add    InReplyTo  
+	add    WWWAuthenticate
+	add    ProxyAuthenticate
+	add    AcceptEncoding
+	add    Contact
+	add    ServerList
+	add    Unsupported
+	add    ProxyRequire
+	add    RecordRoute
+	add    ContentLanguage
+	add    Also
+	add    Require
+	add    ErrorInfo
+
+These changes increase the overall number of classes (some of which are 
+almost identical to others) but add the following uniformity:
+
+Each SIP Header now maps directly to a single sipheader class and
+each SIP Header for which there are multiple headers possible maps
+to a SIPHeaderList of the same name (i.e. Require is a SIP Header and
+RequireList is a list of Require headers).
+
+Added encode method in each SIP Header  to encode the header into 
+canonical form.
+
+
+Revision E 03-18-01
+-------------------
+
+More bug fixes and a few more creature features.
+
+1. Equality checking predicates for various headers.
+
+2. Made the syntax rules more lax for user agent and Server headers.
+   Product tokens can now be pretty free form except that they cannot have
+   commas in them.
+	remove  UserAgentList
+	add	ProductToken
+
+3. Debugged the pipelined (TCP) parser. The interface to this parser has
+   changed. You need to call processInput to begin processing input from 
+   the pipe.
+
+4. Tested interoperabilty against a couple of other commercial implementations.
+
+Revision F 3-30-01
+------------------
+
+1. added support for cloning sip headers.
+2. added the Supported header.
+3. Fixed a bug in the default error handler code.
+4. Added a few methods to various classes (en route to building a 
+	jain-compliant implementation).
+
+
+Revision G 4-23-01
+------------------
+
+1. Added more access functions and edit functions in support of JAIN-SIP
+2. Debugged Authorization header
+3. Added support for parsing telephone numbers (according to RFC2806)
+4. Naming changes of get and set methods for various headers 
+	(en-route to JAIN-SIP).
+5. Got rid of UserAgentProduct, UserAgentComment  
+   and collapsed these into a single UserAgent class
+   (it is easier to have a 1-1 mapping with JAIN-SIP classes).
+6. Renamed the DateHeader class to SIPDateHeader class to avoid a 
+	naming conflict with JAIN-SIP.
+
+Revision H 5-11-01
+------------------
+1. More JAIN-SIP support.
+2. Improved javadoc (thanks to Olivier Deruelle).
+3. Removed SubjectList (should not be a list - rather it should be a
+	singleton).
+4. the method gov.nist.sip.msgparser.getXXXHeaders() (where XXX is
+	one of the List types) will return null (not an empty list)
+        when no headers of XXX type exist in the SIP message.
+5. The replace(...) method that does a find and replace of portions of a 
+    SIP/SDP object was debugged (thanks to bug report from user).
+6. Minor fixes in the encode method for a couple of classes.
+
+==========================================================================
+
+Version 1.0
+
+New!  Improved!!  Extra Clean!!!  Even Lower Price!!!!  Now with JAIN-SIP !!!!!
+
+Initial Release 6-15-01
+------------------------
+Following are the changes for Version 1.0:
+
+1. Fixed parser and lexical analyzer warnings. The build is clean.
+
+2. Added the following packages:
+    gov.nist.sip.stack
+    gov.nist.sip.stack.security
+    gov.nist.jain.protocol.ip.sip         (JAIN-SIP)
+    gov.nist.jain.protocol.ip.sip.header  (JAIN-SIP)
+    gov.nist.jain.protocol.ip.sip.message (JAIN-SIP)
+
+3. Added an example proxy implementation.
+
+4. Added jain-sip example implementation.
+
+5. Cleaned up make files.
+
+6. Significant Performance enhancements in the Parser.
+
+7. Cleaned up the grammar.
+
+
+Revision A 06-21-01
+-------------------
+
+1. Fixed bug in the pipelined parser.
+2. Added zone field and repeat field to the sdp parser 
+(and corresponding support classes).
+
+Revision C 08-07-01 (OK. Revision B was an OOPS)
+------------------------------------------------
+
+1. Fixed a major implementation error in JAIN-SIP:
+	Provider does not block until a message is recieved. Added
+	logging facility with remote access to the stack. Added
+	customizable routing algorithm to the stack. Thanks to jainsip
+	mailing list and help from  from NIST-SIP users.
+	Thanks to Stefan Foekel of GMD Fokus.
+
+2. Performance enhancements 
+	provided an API to disable input tracking
+	gov.nist.sip.msgparser.MsgParser.disableInputTracking()
+
+	This disables tracking of the input while parsing and consequently
+	saves significant processing overhead.
+
+	Enable sdp parsing only when explicitly enabled in the proxy.
+	(You can enable this by parseSDP in the configfile).
+
+3. Fixed  SIPMessageFormatter problems (and consequently fixed 
+	a few more jain problems).
+
+4. Fixed a bug in parsing telephone number strings in sdp fields.
+
+5. Fixed timeout and transaction handling algorithm in JAIN-SIP implementation.
+	(Thanks to Chris Mills of Nortel).
+
+6. Fixed a bug in generating a cancel request. 
+
+7. Added a new parameter to configfile to allow for tuning of the 
+   scan interval ( transactionTimeout in configfile for the JAIN stack).
+
+8. Fixed a bug in the Message Matching (now this feature works).
+
+9. Fixed a problem with JAIN request URI setting (thanks to Stefan 
+  Foekel of GMD fokus for pointing this out).
+	
+
+Revision D 08-11-01
+-------------------
+
+1. Fixed a bug in the pipelined message parser having to do with reading
+   message cotents (thanks to Håkan Jonsson of Bluelabs SE for pointing this
+   out). Pipelined parser now supports content encoding types for reading
+   the message content.  The input reader uses the encoding type specified
+   in this header to read the content. This support is NOT AVAILABLE IN
+   the String Parser. (i.e. the StringParser assumes a uniform encoding of
+   the message).
+
+2. Fixed a bug in the generation of messages which would put two
+   content-length headers in a message generated from a response.
+
+3. Fixed a bug in the sdp parser having to do with media field parsing
+   (the generated structure was previously not being attached to the SDP
+   announce structure.
+
+
+Revision E 08-29-01
+-------------------
+
+1. Fixed another bug in the PipelinedMsgParser. Now both StringMsgParser
+   and PipelinedMsgParser can accept binary body types.
+ 
+2. Removed a lot of unnecessary synchronization between the parser thread
+   and the pipeline input reader for PipelinedMsgParser. The pipelined
+   parser runs faster.
+
+3. Fixed a bug in encoding the date for the expires parameter of contact
+   headers. (Bug reported by Stfan Foekel of GMD Fokus).
+
+
+4. Put in synchronization for mapping the NIST header to JAIN header as
+   these access static data structures (i.e. the mapping table).
+
+
+
+Revision F 09-19-01
+-------------------
+
+Many fixes in the JAIN implementation to pass the TCK. Note that
+there are some timing and locking bugs in the TCK itself. I had to fix
+these before this version passed. Thus the impelmentation is still not
+officially compliant; however, it passes the modified TCK which I believe
+to be correct.
+
+
+
+Version 1.1 09-30-01
+--------------------
+
+1. Fixes to the JAIN implementation.
+
+2. Many fixes to the proxy server. The proxy server now works correctly.
+   However, cleanup of structures (garbage collection) is still not correct.
+
+3. Correct handling of binary message content in the sip stack.
+
+4. Logging support in the JAIN stack. The messages that pass through the
+   stack can be logged and visualized.
+
+The following new tools have been added to the distribution
+  Includes a trace viewer that allows messages to to be logged and 
+  viewed off line (in order to enable this feature, you need to 
+  include the accessLogViaRMI line in configfile).
+  See ( tools/traceviewerapp )
+
+  Includes a load generator tool (See examples/responder) that can do
+   template matching on SIP messages and responds according to the match.
+
+
+
+Revision B 10-12-01
+-------------------
+
+1. Fixes a locking bug in the JAIN stack 
+  (reported by Maria Yndefors of E-Horizon).
+
+2. Uses the topmost via header to route replies 
+	(reported by Chris Mills of Nortel Networks).
+
+3. Allows local tel: url's (reported by Jakob Schlyter).
+
+Revision C 10-16-01
+-------------------
+
+1. Fixes another locking and synchronization bug in the JAIN stack.
+
+Revision D 10-23-01
+-------------------
+1. Added exponential backoff to timeouts in the jain stack (bug
+   pointed out by Chris Mills of Nortel Networks).
+
+2. Fixed and revised a bunch of stuff in the responder (you can now register
+   fragments of Jython code that fire on events). The agent portion of
+   the responder is now separated from the FSM specification.
+
+3. Fixed a bug in the SIPMessageFormatter for correct formatting of BYE messages
+   extracted from INVITE messages 
+   (bug pointed out by  Maria Yndefors of e-horizon).
+
+
+Revision E 11-08-01
+-------------------
+1. Fixed a bug in the SIPMessageFormatter for correct formatting of BYE messages
+   extracted from INVITE messages.
+
+2. Fixed a bug in the SIPRequest.clone() method 
+   (reported by Ganesh Jayadevan of Lucent).
+
+3. The request URI of the ACK message is now derived from the Contact header
+   of the corresponding invite or the OK to the INVITE
+   (Bug reported by Maria Yndefors of E-horizon).

@@ -1,0 +1,170 @@
+<refentry id="uclmmbase-asarray" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>asarray</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>asarray</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+struct      <link linkend="asarray">asarray</link>;
+<link linkend="int32-t">int32_t</link>     <link linkend="asarray-create">asarray_create</link>                  (<link linkend="asarray">asarray</link> **ppa);
+void        <link linkend="asarray-destroy">asarray_destroy</link>                 (<link linkend="asarray">asarray</link> **ppa);
+<link linkend="int32-t">int32_t</link>     <link linkend="asarray-add">asarray_add</link>                     (<link linkend="asarray">asarray</link> *pa,
+                                             const char *key,
+                                             const char *value);
+void        <link linkend="asarray-remove">asarray_remove</link>                  (<link linkend="asarray">asarray</link> *pa,
+                                             const char *key);
+<link linkend="int32-t">int32_t</link>     <link linkend="asarray-lookup">asarray_lookup</link>                  (<link linkend="asarray">asarray</link> *pa,
+                                             const char *key,
+                                             char **value);
+const char* <link linkend="asarray-get-key-no">asarray_get_key_no</link>              (<link linkend="asarray">asarray</link> *pa,
+                                             <link linkend="int32-t">int32_t</link> index);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="asarray">struct asarray</title>
+<programlisting>struct asarray;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="asarray-create">asarray_create ()</title>
+<programlisting><link linkend="int32-t">int32_t</link>     asarray_create                  (<link linkend="asarray">asarray</link> **ppa);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>ppa</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="asarray-destroy">asarray_destroy ()</title>
+<programlisting>void        asarray_destroy                 (<link linkend="asarray">asarray</link> **ppa);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>ppa</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="asarray-add">asarray_add ()</title>
+<programlisting><link linkend="int32-t">int32_t</link>     asarray_add                     (<link linkend="asarray">asarray</link> *pa,
+                                             const char *key,
+                                             const char *value);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pa</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>value</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="asarray-remove">asarray_remove ()</title>
+<programlisting>void        asarray_remove                  (<link linkend="asarray">asarray</link> *pa,
+                                             const char *key);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pa</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="asarray-lookup">asarray_lookup ()</title>
+<programlisting><link linkend="int32-t">int32_t</link>     asarray_lookup                  (<link linkend="asarray">asarray</link> *pa,
+                                             const char *key,
+                                             char **value);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pa</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>value</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="asarray-get-key-no">asarray_get_key_no ()</title>
+<programlisting>const char* asarray_get_key_no              (<link linkend="asarray">asarray</link> *pa,
+                                             <link linkend="int32-t">int32_t</link> index);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pa</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>index</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

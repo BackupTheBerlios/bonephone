@@ -1,0 +1,869 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<TITLE>NIST SIP PROXY</TITLE>
+</HEAD>
+<BODY TEXT="#333333" BACKGROUND="http://www.antd.nist.gov/proj/iptel/nist_background2.gif">
+<CENTER><H1><font color="#0000FF">NIST SIP PROXY</font></H1></CENTER>
+ 
+<P><font size="5"><b>Summary</b></font></P>
+
+<P>This package  contains the code for  a simple proxy  using the NIST
+SIP stack  and message parser.  It  is intended as  a demonstration of
+the  capabilities  to  build  a   useful  piece  of  code.  The  proxy
+incorporates  a   mechanism  to  deal  with   firewall  control  under
+Linux..&nbsp; <font color="#0000FF">This
+is EXPERIMENTAL code so don't  use this proxy to  perform 
+remote-controlled brain surgery, no  matter how much you are tempted 
+to do so.&nbsp;</font></P>
+
+<P>Here is a list of features and limitations of this proxy that could be of
+interest:</P>
+
+<ul>
+  <li>Authentication methods can be configured. There is an architected&nbsp;
+    means of&nbsp; writing your own method. When <I>configured to do so</I>,  this  proxy  is  able  to  handle  local
+registration with  either basic  or digest authentication  methods&nbsp;</li>
+  <li>Extension mechanism to deal with unknown headers. This is illustrated in
+    this proxy by an extension parser that can deal with Session-Timer headers.</li>
+  <li>Architecture permits adding location methods. At this time we have not
+    implemented any location methods (such as LDAP search)&nbsp; but maybe  in a later  version
+    we will do so.</li>
+  <li>Has a mechanism that can deal with NAT and firewall traversal. The code
+    provided here&nbsp; currently works only with LINUX firewalls but the
+    general mechanism can be implemented for any type of firewall.&nbsp;</li>
+  <li>Does not handle Multicast (may be added later).</li>
+  <li>Does not handle Forking requests&nbsp; (may be added&nbsp; later).</li>
+  <li>Does not re-transmit requests (may be added later).</li>
+</ul>
+
+<P>&nbsp;</P>
+
+<H3><font size="5">Index</font></H3>
+
+<UL>
+
+<LI><A HREF="#Usage">Usage</A>
+
+<LI><A HREF="#ConfigurationFile">Configuration file</A>
+
+<UL>
+
+<LI><B><A HREF="#BasicFeatures">Basic features</A></B>
+
+<LI><B><A
+HREF="#RegistrationAuthenticationFeatures">Registration/Authentication
+features</A></B>
+
+<LI><B><A HREF="#DebuggingFeatures">Debugging features</A></B>
+
+<LI><B><A HREF="#LoggingFeatures">Logging features</A></B>
+
+<LI><B><A HREF="#RoutingFeatures">Routing features</A></B>
+
+<LI><B><A HREF="#GatewayFeatures">Gateway features</A></B>
+
+<LI><B><A      HREF="#FirewallAndNATFeatures">Firewall     and     NAT
+features</A></B>
+
+<LI><B><A HREF="#OtherFeatures">Other features</A></B>
+
+</UL>
+
+<LI><A HREF="#CommonScenarios">Common Scenarios</A>
+
+<OL>
+
+<LI><B><A HREF="#SimpleUsage">Simple Usage</B></A>
+
+<LI><B><A         HREF="#RegistrationWithoutAuthentication">Registration
+without authentication</B></A>
+
+<LI><B><A    HREF="#RegistrationWithAuthentication">Registration   with
+authentication</B></A>
+
+<LI><B><A HREF="#NATTransversal">NAT Traversal</A></B>
+
+<LI><B><A
+HREF="#Non-colocationWithAGatewayPerformingNAT">Non-colocation  with  a
+gateway performing NAT</A></B>
+
+<LI><B><A HREF="#FirewallTransversal">Firewall Transversal</A></B>
+
+<OL>
+
+<LI><B><A HREF="#PortOpeningMethod">Port Opening Method</A></B>
+
+<LI><B><A HREF="#PortTranslationMethod">Port Translation Method</A></B>
+
+</OL>
+
+<LI><B><A   HREF="#Non-colocationWithAFirewall">Non-colocation  with  a
+firewall</A></B>
+
+</OL>
+
+<LI><A HREF="#ExtensionMechanisms">Extension Mechanisms</A>
+
+</UL>
+
+
+<H3><A NAME="Usage"><b>Usage</b></A></H3>
+
+<P>To start the proxy:
+
+<PRE>java ServerMain -configFile configfile</PRE>
+
+where <I>configfile</I> is the name of your configuration file.
+
+<H3><A NAME="ConfigurationFile">Configuration file</A></H3>
+
+<P>The  proxy  understands   several  configuration  tags.   Some  are
+required, some are optional.  They can always be disabled by putting a
+<I>#</I> sign  at the beginning  of their line.   Here is the  list of
+configuration tags, with explanations.</P>
+
+<UL>
+
+<LI><B><A NAME="BasicFeatures">Basic features</A></B>
+
+<UL>
+<LI><A NAME="enableUDP"><B>enableUDP</B></A> :  takes a port number as
+argument. Use  it to enable SIP  over UDP on the  specified port.  The
+proxy can handle both TCP and UDP at the same time. Default is <b>enableUDP 5060</b>
+
+<LI><A NAME="enableTCP"><B>enableTCP</B></A> :  takes a port number as
+argument. Use it to enable SIP  over TCP the specified port. The proxy
+can handle both TCP and UDP at the same time. By default TCP is disabled.
+
+<LI><A  NAME="stackName"><B>stackName</B></A> :  takes  a hostname  as
+argument.  Use  it to define  the hostname associated with  the stack.
+This is the address that will appear in the Via headers for example.
+
+<LI><A NAME="stackAddress"><B>stackAddress</B></A>  : takes a  list of
+IP addresses as arguments.  In the general case, a proxy has 2 or more
+network  interfaces. In  most cases,  it is  enough to  give  just one
+address to the  SIP proxy in the configuration  file.  However, in the
+case  of a  proxy  sitting on  a  network boundary  and  which is  not
+colocated with a gateway, the  proxy has to know about those different
+addresses,  because  it  will  necessarily  be  reached  by  different
+interfaces (the external ones and  the internal ones).  In the case of
+a proxy colocated  with a gateway, it can always be  reached by one of
+the external addresses without specific problems.
+
+</UL>
+
+<LI><B><A
+NAME="RegistrationAuthenticationFeatures">Registration/Authentication
+features</A></B>
+
+<UL>
+
+<LI><A NAME="disableAuthentication"><B>disableAuthentication</B></A> :
+use it to disable authentication.  The default behaviour for the proxy
+is to ask for authentication.
+
+<LI><A   NAME="registrationTimeout"><B>registrationTimeout</B></A>   :
+takes  a  number (in  seconds)  as argument.   Use  it  to define  the
+registration timeout.  A  thread is in charge of  removing the outimed
+registrations.
+
+<LI><A NAME="maxRegistrationTimeout"><B>maxRegistrationTimeout</B></A>
+: ??
+
+<LI><A  NAME="authenticationMethod"><B>authenticationMethod</B></A>  :
+takes  three arguments.   First,  the type  of authentication  method,
+which can be either <I>Basic</I>  or <I>Digest</I>.  Then, the name of
+the  class which  handles  the authentication  method,  and finally  a
+password file.  Note that  there can be  multiple occurrences  of this
+tag.
+
+<LI><A
+NAME="defaultAuthenticationMethod"><B>defaultAuthenticationMethod</B></A>
+:   takes  one  argument   which  can   be  either   <I>Digest</I>  or
+<I>Basic</I>.   Use it  to  define the  default authentication  method
+method  called when  a client  tries to  register without  sending any
+registration authentication header.
+
+<LI><A
+NAME="allowMultipleRegistration"><B>allowMultipleRegistration</B></A>
+: use  it to  enable support for  multiple registrations for  a single
+user.  Be aware that this option is yet incompatible with firewall/NAT
+transversal (and  again, this might be  fixed in a  later version when
+forking will be implemented).
+
+</UL>
+
+<LI><B><A NAME="DebuggingFeatures">Debugging features</A></B>
+
+<UL>
+
+<LI><A  NAME="serverLog"><B>serverLog</B></A> :  takes  a filename  as
+argument. Use it to catch the traces on a file.  Use it in conjunction
+with <I>traceLevel</I> and <I>enableDebug</I> tags.
+
+<LI><A  NAME="enableDebug"><B>enableDebug</B></A> :  use it  to enable
+the printing of debugging messages.
+
+<LI><A  NAME="traceLevel"><B>traceLevel</B></A> :  takes  a number  as
+argument.&nbsp; This is an integer that can vary between 0 and 32&nbsp; (default
+  0) that controls the amount of log information written out to the serverLog
+  file.
+
+</UL>
+
+<LI><B><A NAME="LoggingFeatures">Logging features</A></B>
+
+<UL>
+
+<LI><A  NAME="accessLogViaRMI"><B>accessLogViaRMI</B></A> : Use  it to
+enable access to logged messages via RMI.
+<B> Make sure your RMI registry class path includes 
+nist-sip/gov/nist/sip/stack so that the logging classes can be 
+located by it </B>
+
+<LI><A  NAME="rmiRegistryPort"><B>rmiRegistryPort</B></A> : use  it to
+define the  port used  by the RMI  registry (default is  1099). Useful
+when multiple  SIP proxies are running  on the same  machine, each one
+can have its own RMI registry.
+
+<LI><A NAME="rmiPort"><B>rmiPort</B></A> : use  it to define the port
+used to  access the messages logs  via RMI.  Useful when  the proxy is
+behind a  firewall. The default behaviour  for RMI is to  use a random
+port, which is not firewall friendly.
+
+<LI><A NAME="traceLifeTime"><B>traceLifeTime</B></A>  : Takes a number
+in seconds as  argument. Use it to define the  lifetime of each single
+trace.
+
+</UL>
+
+<LI><B><A NAME="RoutingFeatures">Routing features</A></B>
+When an invite comes into the proxy, it forwards the invite as follows
+
+<UL> 
+
+<LI>If a forwarding address is REGISTERED with this proxy then forward
+it there else </LI>
+
+<LI> If the SIP URL refers directly to a host and port, then forward
+the request there else </LI>
+
+<LI> Call the default routing algorithm to determine the next hop (if a
+forwarding proxy has been registered with the stack then the default
+routing algorithm just returns a string with this information). The
+proxy interprets this string to be a host:port/transport string and
+forwards the request there else </LI>
+
+<LI> return an error to the sender.
+
+
+<P>
+At this time, we do not support location search (via LDAP). We will probably
+add such features at a later date.
+
+The default location to forward the request is specified by
+<B> defaultRoute host:port/TRANSPORT </B>
+For example:
+<PRE>
+defaultRoute crowbar.ncsl.nist.gov:5060/UDP
+</PRE>
+
+<LI>router routerClassName<LI>
+
+An override for the default Routing algorithm. You can specify the name
+of a class that implements gov.nist.sip.stack.Router. (If nothing is specified,
+gov.nist.sip.stack.DefaultRouter is used.)
+
+</P>
+</LI>
+
+</UL)
+
+
+<LI><B><A NAME="GatewayFeatures">Gateway features</A></B>
+
+<UL>
+
+<LI><A  NAME="gatewayAddress"><B>gatewayAddress</B></A> : takes  an IP
+ address as argument. Most of the time, when the proxy and the gateway
+ are colocated, it  will be the same as the  stack address.  But, when
+ they  are  not, and  if  the  gateway is  doing  things  like NAT  or
+ firewalling, then  the proxy has to  know the address  of the gateway
+ for NAT and firewall transversal.
+
+<LI><A NAME="enableRecordRoute"><B>enableRecordRoute</B></A>  : use it
+when you want the proxy to  add a Record-Route header in every message
+forwarded.  This is to force proxying.
+
+<LI><A  NAME="removeContactHeaders"><B>removeContactHeaders</B></A>  :
+use it when you want the  proxy to remove the Contact headers from all
+forwarded  messages.  This  is  against  the RFC  and  should  not  be
+used.  However,  it  is  useful  in  some  cases  to  force  proxying.
+Normally, the Record-Route header  overrides the Contact header.  But,
+since some clients  do not know about that, the only  way to make them
+work    (for    example,    for    testing   purposes)    through    a
+proxy/gateway/firewall/NAT/whatever is to  remove the Contact headers.
+But, always remember that it is best not to use this tag.
+
+<LI><A NAME="innerNetworkPrefix"><B>innerNetworkPrefix</B></A> : takes
+a list of  network prefixes as argument. Use it when  the proxy has to
+deal with  either a firewall  or NAT or  both of them. This  allow the
+proxy to know when a  message is transversing the firewall/NAT and has
+then to perform  some manipulations on the message  (like changing the
+inner  network address  in the  SDP fields  of a  message) or  to send
+commands to  the firewall  (like opening  a hole in  order to  let the
+media streaming go  through).  For example, if there  are two networks
+behind  the firewall/NAT,  192.168.1.0 and  192.168.2.0, the  tag will
+look like this: <PRE>innerNetworkPrefix: 192.168.1. 192.168.2.</PRE>
+
+</UL>
+
+<LI><B><A      NAME="FirewallAndNATFeatures">Firewall      and     NAT
+features</A></B> (gateway features must be configured first)
+
+<UL>
+
+<LI><A   NAME="firewallTransversal"><B>firewallTransversal</B></A>   :
+takes  two file  names as  arguments. Use  it to  define  the commands
+called for (argument  number 1) opening holes in  the firewall and for
+(argument  number  2)  closing  the  previously opened  holes  in  the
+firewall.  This  tag has  also the effect  of activating  the firewall
+transversal support in the proxy.
+
+<LI><A
+NAME="firewallPortTranslation"><B>firewallPortTranslation</B></A>     :
+takes a port number as argument.   Use it to direct all the media flow
+through a specific  port number in the firewall.   This is useful when
+one wants  to have  all the firewall  rules concerning SIP  media flow
+defined (like shaping, logging, etc ...) in a single set.
+
+<LI><A NAME="natTransversal"><B>natTransversal</B></A>  : use this tag
+to activate the NAT transversal support.
+
+<LI><A NAME="requireTimer"><B>requireTimer</B></A> : use this tag when
+you  want  the  proxy to  add  a  'Require:  timer' to  any  forwarded
+message. This feature is related to the SIP Session Timer draft.  This
+is  useful  for  firewall/NAT  transversal,  as,  for  many  different
+reasons, sessions might  not always be properly ended.   The proxy has
+then to have a  mean to know when to close a  session.  It's up to the
+clients  to send from  time to  time re-INVITE  to keep  their session
+open.   If they  don't, then  the proxy  assumes that  the  session is
+closed. Be aware that, with this tag you might frequently get an error
+response  from clients, as  many of  them still  do not  implement the
+session   timing.    You  may   then   have   to   rely  on   the   <A
+HREF="#defaultSessionTimeOut">following</A> tag.
+
+<LI><A NAME="defaultSessionTimeOut"><B>defaultSessionTimeOut</B></A> :
+Takes a  number in seconds as  argument. Use it to  define the default
+session timeout.  Useful when  sessions are not closed properly, which
+actually  happens quite  often,  and/or none  of  the clients  handles
+session timer.   If you plan to use  the proxy with a  firewall, it is
+recommended to use the session timer. You may decide to get rid of the
+<A HREF="#requireTimer">requireTimer</A>  tag, but you  better use the
+present one with a reasonably low value.
+
+</UL>
+
+<LI><B><A NAME="OtherFeatures">Other features</A></B>
+
+<UL>
+
+<LI><A NAME="parseSDP"><B>parseSDP</B></A>:
+Enables parsing of sdp headers. (You need this if you want to 
+enable firewall/NAT control).
+
+<LI><A NAME="janitorSleepingPeriod"><B>janitorSleepingPeriod</B></A> :
+Takes  a number  in seconds  as argument.  Use it  to define  the time
+between  each  periodical cleaning.  This  concerns  call records  and
+registration records among other things.
+
+<LI><A NAME="locationSearchEnabled"><B>locationSearchEnabled</B></A> :
+use it to  enable message forwarding by location  search.  If enabled,
+when  forwarding a  message, after  having unsuccessfully  checked the
+registration records, the  proxy would then try to  send it to another
+proxy which might know what to  do with it.  Be aware that this option
+is yet incompatible the  firewall/NAT transversal (this might be fixed
+in a later version ...).
+
+</UL>
+
+</UL>
+
+
+<H3><A NAME="CommonScenarios">Common Scenarios</A></H3>
+
+<P>The  proxy  usage  will  now  be  explained via  a  set  of  common
+scenarios. They are of gradual difficulty and it is recommended to try
+them in order.</P>
+
+<OL>
+
+<LI><B><A NAME="SimpleUsage">Simple Usage</B></A>
+
+<P>In  that  case,  we  use  just  the  call  forwarding  feature  (no
+registration) and no gateway performing NAT or firewall stands between
+the caller and  the callee. There are three  parties in this scenario,
+that is Client A calls Client B via the proxy.
+
+<P>The only relevant configuration tags in this case are:</P>
+
+<UL>
+
+<LI><A          HREF="#enableUDP">enableUDP</A>          or         <A
+HREF="#enableTCP">enableTCP</A>, whether you want to use UDP or TCP or
+both of them. If you are going to run the proxy and one of the clients
+or both  of them on  the same machine,  remember to choose  well their
+listening ports to avoid conflicts.
+
+<LI><A HREF="#stackName">stackName</A>  : put the name  of the machine
+running the proxy
+
+<LI><A  HREF="#stackAddress">stackAddress</A>: put the  address(es) of
+the machine running the proxy
+
+</UL>
+
+<P>Here is a configuration file example for this scenario:</P>
+
+<PRE>
+enableUDP 5060
+stackName celtic.antd.nist.gov
+stackAddress 129.6.50.27
+</PRE>
+
+<P>Then configure the calling client to  use the proxy, and dial on it
+the  address  of the  callee  either  in  the form  <I>address</I>  or
+<I>address:port</I> if the callee is  not listening on the default SIP
+port (5060).</P>
+
+<LI><B><A         NAME="RegistrationWithoutAuthentication">Registration
+without authentication</B></A>
+
+<P>This  scenario is similar  to the  <A HREF="#SimpleUsage">first</A>
+one. Only,  here, client B will  first register under  a certain name,
+and then Client A will call it via the proxy using that name.</P>
+
+<P>Use the  same configuration as in  the <A HREF="#SimpleUsage">first
+scenario</A> and add the following tags:</P>
+
+<UL>
+
+<LI><A   HREF="#disableAuthentication">disableAuthentication</A>:   to
+disable authentication
+
+<LI><A  HREF="#registrationTimeout">registrationTimeout</A>: to define
+a time out for the  registrations. Note that, though recommended, this
+is not necessary.
+
+</UL>
+
+<P>Here is a configuration file example for this scenario:</P>
+
+<PRE>
+<font color="#0000FF">enableUDP 5060
+stackName celtic.antd.nist.gov
+stackAddress 129.6.50.27
+disableAuthentication
+registrationTimeout 3600</font>
+</PRE>
+
+<P>Then configure  Client A  and Client B  to use the  proxy, register
+Client B  on the  proxy with a  certain and  dial this name  on Client
+A. The proxy should then forward the call to Client B.</P>
+
+<LI><B><A    NAME="RegistrationWithAuthentication">Registration   with
+authentication</B></A>
+
+<P>This       scenario      is       similar      to       the      <A
+HREF="#RegistrationWithoutAuthentication">second</A> one.  Only, here,
+the proxy will ask for authentication when client B registers.
+
+<P>Use     the     same     configuration     as     in     the     <A
+HREF="#RegistrationWithoutAuthentication">second   scenario</A>,   but
+remove the disableAuthentication tag and add the following tags:</P>
+
+<UL>
+
+<LI><A    HREF="#authenticationMethod">authenticationMethod</A>:    to
+define a authentication method with its handler and its password file.
+
+<LI><A
+HREF="#defaultAuthenticationMethod">defaultAuthenticationMethod</A>:
+to define the authentication method that the proxy will use for
+  WWW-Authentication headers.
+
+</UL>
+
+<P>Here is a configuration file example for this scenario:</P>
+
+<PRE>
+<font color="#0000FF">enableUDP 5060
+stackName celtic.antd.nist.gov
+stackAddress 129.6.50.27
+registrationTimeout 3600
+authenticationMethod Digest gov.nist.sip.stack.security.DigestAuthenticationMethod passwords
+authenticationMethod Basic  gov.nist.sip.stack.security.BasicAuthenticationMethod passwords
+defaultAuthenticationMethod Digest
+</font></PRE>
+
+<P>The NIST  SIP Stack comes with  handlers for both  Basic and Digest
+authentications,        which        are,       respectively        <A
+HREF="../../gov/nist/sip/stack/security/BasicAuthenticationMethod.java">gov.nist.sip.stack.security.BasicAuthenticationMethod</A>
+and                                                                  <A
+HREF="../../gov/nist/sip/stack/security/DigestAuthenticationMethod.java">gov.nist.sip.stack.security.DigestAuthenticationMethod</A>.
+which are supported in the proxy. You may wish to write your own authentication
+method. Note  that  this  is  part of  the  <A
+HREF="#ExtensionMechanisms">extensions mechanisms</A>.</P>
+
+<P>The  password file  consist of  a  list of  name/password with  the
+format name:realm:password (for now, passwords are plain text but 
+that will change). Here is an example:</P>
+
+<PRE>
+bednarek:nist.gov:foobar
+3019758220:nist.gov:foobar
+</PRE>
+
+<P>Then    follow    the    same    procedure    as    in    the    <A
+HREF="#RegistrationWithoutAuthentication">second   scenario</A>.   The
+only difference is that the user  agent for Client B should prompt for
+password (if it is not already in a configuration file somewhere) when
+registering.</P>
+
+<LI><B><A NAME="NATTransversal">NAT Traversal</A></B>
+
+<P>For those who  do not know, NAT (Network  Address Translation) is a
+technology that  allow to have a  whole IP network behind  a single IP
+address, or  at least  a limited set  of IP addresses.  Every outgoing
+packet has  its origin  address changed to  those of the  gateway when
+passing  through it.  The gateway  is then  in charge  of  routing the
+packets properly on the way back. NAT is useful and widespread, but it
+causes  problems  to protocols  which,  from  a  given session,  start
+another sessions. SIP  is one of them, as it  typically starts a media
+session between the caller and the callee.</P>
+
+<P>In such a  case, a proxy can help. In this  scenario, we will study
+the  case  where  the  proxy   and  the  NAT  performing  gateway  are
+colocated.</P>
+
+<P>The  first  task  is  to  configure the  gateway  features  of  the
+proxy. The relevant tags, here, are:</P>
+
+<UL>
+
+<LI><A HREF="#gatewayAddress">gatewayAddress</A>  : to tell  the proxy
+where the gateway  is. Here, it is the same address  as the proxy. Put
+the external address rather than  the internal one, since this address
+must be globally routable.
+
+<LI><A  HREF="#innerNetworkPrefix">innerNetworkPrefix</A>:  to  define
+the inner  network, so  that the  proxy can detect  when a  message is
+transversing the gateway and when it is not.
+
+<LI><A  HREF="#enableRecordRoute">enableRecordRoute</A>:   use  it  to
+force proxying, as some clients may  try to bypass the proxy which, in
+this  case, definitely  need to  catch the  SIP messages  in  order to
+perform some changes on it.
+
+</UL>
+
+<P>Then, the NAT feature itself:</P>
+
+<UL>
+
+<LI><A HREF="#natTransversal">natTransversal</A> : to activate the NAT
+transversal support.
+
+</UL>
+
+<P>Here is a configuration file example for this scenario:</P>
+
+<PRE>
+<font color="#0000FF">enableUDP 5060
+stackName caribou.antd.nist.gov
+stackAddress 129.6.55.81 192.168.3.1 
+gatewayAddress 129.6.55.81
+innerNetworkPrefix 192.168.3. 192.168.2.
+natTransversal
+enableRecordRoute
+</font></PRE>
+
+<P>Then,  if Client  A and  Client  B are  standing apart  from a  NAT
+gateway  running the  SIP  proxy, they  should  be able  to call  each
+other. In the case of Client  A standing outside the inner network and
+Client B  inside, the  correct procedure is  to register Client  B and
+then  to  call  it  under  that  name  from  Client  A  (Refer  to  <A
+HREF="#RegistrationWithoutAuthentication">scenario    2</A>    or   <A
+HREF="#RegistrationWithAuthentication">scenario 3</A> for registration
+configuration). It is also possible  for Client A to dial directly the
+IP address  of Client  B to  call it, but  external peers  are neither
+supposed to use internal addresses nor to know them.</P>
+
+<P><B>NB</B>:  This  has been  successfully  tested  under Linux  with
+either SNAT (Static Network Address Translation) or Masquerading.  Any
+other  test  <A  HREF="mailto:nist-sip-dev@antd.nist.gov">reports</A>,
+whether successful or not, are welcome.</P>
+
+<LI><B><A
+NAME="Non-colocationWithAGatewayPerformingNAT">Non-colocation  with  a
+gateway performing NAT</A></B>
+
+<P>This case  is pretty similar  to <A HREF="#NATTransversal">scenario
+4</A>. Only  here, the proxy will not  sit on the same  machine as the
+gateway. You can take exactly  the same kind of configuration and just
+remember to set up properly the gateway address.</P>
+
+<P>Here is a configuration file example for this scenario:</P>
+
+<PRE><font color="#0000FF">
+enableUDP 5060
+stackName moose.antd.nist.gov
+stackAddress 129.6.55.95 192.168.2.4
+gatewayAddress 129.6.55.81
+innerNetworkPrefix 192.168.3. 192.168.2.
+natTransversal
+enableRecordRoute
+</font></PRE>
+
+  <P><B>NB</B>: This  has been successfully tested with  a Linux gateway
+performing SNAT  (Static Network Adress  Translation) or Masquerading.&nbsp;&nbsp;</P>
+
+  <P><B><A NAME="FirewallTransversal">Firewall Traversal</A></B>
+
+  </P>
+
+  <P> The Proxy only provides means of interaction with a firewall. It
+is  up to  the user  then to  handle these  interactions  properly via
+scripts or  programs. Included are&nbsp; scripts that  run under Linux
+kernel            2.4             &nbsp;            with            <A
+HREF="http://netfilter.samba.org/">Netfilter</A>&nbsp;    which    are
+working examples that may be helpful.</P>
+
+<P>Two different methods can be used when dealing with a firewall:</P>
+
+<OL>
+
+<LI><B><A NAME="PortOpeningMethod">Port Opening Method</A></B>
+
+<P>With this method, ports are opened in the firewall when the session
+begins and  closed when it  ends. The first  task is to  configure the
+gateway features of  the proxy. You can use  the same configuration as
+in <A HREF="#NATTransversal">scenario 4</A>.</P>
+
+  Then,  you  need to  configure  the  firewall  with the  following
+tags:
+
+<UL>
+
+<LI><A HREF="#firewallTransversal">firewallTransversal</A>: this is to
+define   the  scripts  that   will  handle   port  opening   and  port
+closing. When  called, these scripts will  receive a list  of peers in
+<I>address:port</I>  form. The  script  has then  to  send the  proper
+commands  to the firewall  to open  (or close)  holes in  the firewall
+between all of theses peers.
+
+<LI><A  HREF="#defaultSessionTimeOut">defaultSessionTimeOut</A>:  this
+is related to the implementation of the SIP Session timer draft, which
+requires clients  to periodically  send re-INVITE in  order to  keep a
+session  open.  This  is extremely  useful for  firewall-compliant SIP
+proxies.   This  provides  a  mean   of  closing  a  session  and  its
+corresponding holes  in the  firewall when it  is not  properly ended.
+With this tag, you can define  a default time out, in case the clients
+do not  handle session timing or  if, for some reason,  the session is
+not closed properly.
+
+<LI><A HREF="#requireTimer">requireTimer</A>: this  is also related to
+the implementation of the SIP  session timer draft. With this tag, the
+proxy  tells the  clients that  at  least one  of them  has to  handle
+session timing. Some  clients do not understand this  header, and send
+back an error message. Thus, you might decide not to use it at all and
+just rely on the previous one.
+
+</UL>
+
+<P>Here is a configuration file example for this scenario:</P>
+
+<PRE>
+<font color="#0000FF">enableUDP 5060
+stackName caribou.antd.nist.gov
+stackAddress 129.6.55.81 192.168.3.1 
+gatewayAddress 129.6.55.81
+innerNetworkPrefix 192.168.3. 192.168.2.
+firewallTransversal openPort.pl closePort.pl
+defaultSessionTimeOut 120
+requireTimer
+enableRecordRoute
+</font></PRE>
+
+<P>In this example,  we use two Perl scripts to  open and close ports,
+respectively    <A     HREF="openPort.pl">openPort.pl</A>    and    <A
+HREF="closePort.pl">closePort.pl</A>.  They are made  to be  used with
+the  firewall defined  in  <A HREF="firewall.sh">firewall.sh</A>.  All
+these   files  can   be  found   in  the   proxy  directory   and  are
+self-documented. They all make an extensive use of the <I>iptables</I>
+command     which     handle      interactions     with     the     <A
+HREF="http://netfilter.samba.org/">Netfilter</A> Linux 2.4 module, and
+you  may need to  refer to  <I>man iptables</I>  before being  able to
+understand how these examples actually work.</P>
+
+
+<LI><B><A NAME="PortTranslationMethod">Port Translation Method</A></B>
+
+<P>With this method,  not only, ports are opened  in the firewall when
+the session  begins and closed when  it ends, but in  addition all the
+media flow gets directed through  a specific port. This is useful when
+one wants  to put special rules  about SIP media flow  in the firewall
+like shaping or logging in a  single set, once and for all. Otherwise,
+each time  your script  opens a hole  in the  firewall, is has  to add
+these  specific rules  as  well, and  to  remove them  later when  the
+session is closed, which can be quite a hassle.</P>
+
+<P>The first task  is to configure the gateway  features of the proxy.
+You    can     use    the     same    configuration    as     in    <A
+HREF="#NATTransversal">scenario 4</A>.</P>
+
+<P>Then add the  firewall configuration. You can use  the same as with
+the <A HREF="PortOpeningMethod">previous  method</A>, and just add the
+following tag:</P>
+
+<UL>
+
+<LI><A     HREF="#firewallPortTranslation">firewallPortTranslation</A>:
+this is to define the port to which you want all the SIP media flow to
+be redirected.
+
+</UL>
+
+<P>Here is a configuration file example for this scenario:</P>
+
+<PRE>
+<font color="#0000FF">enableUDP 5060
+stackName caribou.antd.nist.gov
+stackAddress 129.6.55.81 192.168.3.1 
+gatewayAddress 129.6.55.81
+innerNetworkPrefix 192.168.3. 192.168.2.
+firewallTransversal DNATBegin.pl DNATEnd.pl
+firewallPortTranslation 50600
+defaultSessionTimeOut 120
+requireTimer
+enableRecordRoute</font>
+</PRE>
+
+<P>In this example,  we use two Perl scripts to  open and close ports,
+respectively    <A    HREF="DNATBegin.pl">DNATBegin.pl</A>   and    <A
+HREF="DNATEnd.pl">DNATEnd.pl</A>.  They  are made to be  used with the
+firewall defined in  <A HREF="firewall.sh">firewall.sh</A>.  All these
+files   can    be   found   in    the   proxy   directory    and   are
+self-documented. They all make an extensive use of the <I>iptables</I>
+command     which     handle      interactions     with     the     <A
+HREF="http://netfilter.samba.org/">Netfilter</A> Linux 2.4 module, and
+you  may need to  refer to  <I>man iptables</I>  before being  able to
+understand how these examples actually work.</P>
+
+<P>In a nutshell, the only  differences between these two perl scripts
+and the two  previous ones, is that they also  add rules that redirect
+packets to their original  destination ports, so that the manipulation
+is transparent for the receivers.</P>
+
+  <P>( <b>NOTE</b>:&nbsp; If you are familiar with <i>Netfilter</i> and examine
+  this code, you might
+find it odd&nbsp; to put shaping rules in the <b> PREROUTING</b> table. However,
+  from our experience, it is&nbsp; the only way we found to make it
+work the way we want.   In <i> Netfilter,</i> a forwarded message goes through
+the <b>  PREROUTING</b>  table,  then   the  FORWARD  table  and  finally  the <b>
+POSTROUTING</b> table. A more intuitive&nbsp; choice would have been to
+put the shaping  rules in the FORWARDING table and  then to change the
+destination ports in the <b>  POSTROUTING</b> table.  But, unfortunately, this
+is not possible since the only table where one can actually change the
+destination port of a message is the <b> PREROUTING</b> one. So, we had to put
+there the shaping  rules followed by the <b> DNAT</b> rules. This is a hack! This has been  successfully tested under Linux 2.4.
+  Please let us know of your experiences with other configurations.)</P>
+ 
+</OL>
+
+  <P>&nbsp;</P>
+
+<LI><B><A   NAME="Non-colocationWithAFirewall">Non-colocation  with  a
+firewall</A></B>
+
+<P>This       case      is       pretty       similar      to       <A
+HREF="#FirewallTransversal">scenario  6</A>, but  it  is trickier  and
+even harder to configure since it requires some kind of remote control
+over the firewall.</P>
+
+<P>However, we  provide two perl scripts  (again) that can  do the job
+for  testing   purposes  with  a  very  simple   ad-hoc  protocol:  <A
+HREF="firewallControlServer.pl">firewallControlServer.pl</A>  for  the
+server                   side                  and                  <A
+HREF="firewallControlClient.pl">firewallControlClient.pl</A>  for  the
+client side.   They are both self-documented. The  server only accepts
+request coming from a list of  trusted clients, reads a full line from
+them  (a line  which  is the  command  to be  executed  to change  the
+firewall configuration),  accepts it if  it begins with  an authorized
+command name  and finally  execute it. On  the other side,  the client
+connects to the server and just sends its command line.</P>
+
+<P>Here is a configuration file example for this scenario:</P>
+
+<PRE>
+<font color="#0000FF">enableUDP 5060
+stackName moose.antd.nist.gov
+stackAddress 129.6.55.95 192.168.2.4 
+gatewayAddress 129.6.55.81
+innerNetworkPrefix 192.168.3. 192.168.2.
+firewallTransversal remoteDNATBegin.bat remoteDNATEnd.bat
+firewallPortTranslation 50600
+defaultSessionTimeOut 120
+requireTimer
+enableRecordRoute
+</font></PRE>
+
+<P>Here, we use two batch files for remote control of the server. They
+are             just             wrapper            for             <A
+HREF="firewallControlClient.pl">firewallControlClient.pl</A>  that can
+be used under Windows, and can be found in the proxy directory.</P>
+
+<P><B>NB</B>:  This  has  been  successfully  tested  with  Linux  2.4
+firewall and  remote control  from either Windows  2000 or  Linux PCs.&nbsp;</P>
+
+</OL>
+
+<H3><A NAME="ExtensionMechanisms">Extension Mechanisms</A></H3>
+
+<P>The NIST-SIP stack and message parser are both extensible.We exploit these
+features in the proxy.&nbsp; The following are the extensible features of the
+Proxy:</P>
+
+<P><B>Extension headers:</B> Extension headers are handled by 
+registering an extension
+parser which implements the ExtensionParser interface. An extension is specified
+in the configuration file by the keyword extensionParser:</P>
+
+<P><font color="#0000FF">extensionParser Session-Expires&nbsp;
+examples.proxy.SessionExpiresParser&nbsp;</font></P>
+
+<P>In future, we will also add the ability to handle extension methods and body
+types other than application/sdp (which is the only body type that we support at
+present).</P>
+
+<P><B>Customized routing of requests:</B> You can override the default routing
+algorithm by providing a customized router. To do this you have to 
+implement the gov.nist.sip.stack.Router interface and register the router
+at load time by using the defaultRouter keyword.
+
+<P>&nbsp;</P>
+
+<P>&nbsp;</P>
+
+<CENTER>
+<P>Authors: 
+<A HREF="mailto:bednarek@nist.gov">Marc Bednarek (Firewall/NAT traversal)</A> 
+and 
+<A HREF="mailto:mranga@nist.gov">M. Ranganathan (Original Author)</A> 
+</CENTER>
+ 
+</BODY>
+</HTML>
+
+

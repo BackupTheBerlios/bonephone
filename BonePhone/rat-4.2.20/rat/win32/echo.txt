@@ -1,0 +1,3 @@
+echo #define RAT_VERSION "%v%" > version.h
+
+

@@ -1,0 +1,194 @@
+<refentry id="uclmmbase-mbus-parser" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>mbus_parser</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>mbus_parser</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+void        <link linkend="mbus-parse-done">mbus_parse_done</link>                 (struct <link linkend="mbus-parser">mbus_parser</link> *m);
+int         <link linkend="mbus-parse-lst">mbus_parse_lst</link>                  (struct <link linkend="mbus-parser">mbus_parser</link> *m,
+                                             char **l);
+int         <link linkend="mbus-parse-str">mbus_parse_str</link>                  (struct <link linkend="mbus-parser">mbus_parser</link> *m,
+                                             char **s);
+int         <link linkend="mbus-parse-sym">mbus_parse_sym</link>                  (struct <link linkend="mbus-parser">mbus_parser</link> *m,
+                                             char **s);
+int         <link linkend="mbus-parse-int">mbus_parse_int</link>                  (struct <link linkend="mbus-parser">mbus_parser</link> *m,
+                                             int *i);
+int         <link linkend="mbus-parse-flt">mbus_parse_flt</link>                  (struct <link linkend="mbus-parser">mbus_parser</link> *m,
+                                             <link linkend="double">double</link> *d);
+char*       <link linkend="mbus-decode-str">mbus_decode_str</link>                 (char *s);
+char*       <link linkend="mbus-encode-str">mbus_encode_str</link>                 (const char *s);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="mbus-parse-done">mbus_parse_done ()</title>
+<programlisting>void        mbus_parse_done                 (struct <link linkend="mbus-parser">mbus_parser</link> *m);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-parse-lst">mbus_parse_lst ()</title>
+<programlisting>int         mbus_parse_lst                  (struct <link linkend="mbus-parser">mbus_parser</link> *m,
+                                             char **l);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>l</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-parse-str">mbus_parse_str ()</title>
+<programlisting>int         mbus_parse_str                  (struct <link linkend="mbus-parser">mbus_parser</link> *m,
+                                             char **s);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>s</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-parse-sym">mbus_parse_sym ()</title>
+<programlisting>int         mbus_parse_sym                  (struct <link linkend="mbus-parser">mbus_parser</link> *m,
+                                             char **s);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>s</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-parse-int">mbus_parse_int ()</title>
+<programlisting>int         mbus_parse_int                  (struct <link linkend="mbus-parser">mbus_parser</link> *m,
+                                             int *i);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>i</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-parse-flt">mbus_parse_flt ()</title>
+<programlisting>int         mbus_parse_flt                  (struct <link linkend="mbus-parser">mbus_parser</link> *m,
+                                             <link linkend="double">double</link> *d);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>d</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-decode-str">mbus_decode_str ()</title>
+<programlisting>char*       mbus_decode_str                 (char *s);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>s</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-encode-str">mbus_encode_str ()</title>
+<programlisting>char*       mbus_encode_str                 (const char *s);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>s</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

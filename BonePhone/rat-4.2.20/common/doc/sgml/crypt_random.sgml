@@ -1,0 +1,70 @@
+<refentry id="uclmmbase-crypt-random" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>crypt_random</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>crypt_random</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+void        <link linkend="lbl-srandom">lbl_srandom</link>                     (<link linkend="uint32-t">uint32_t</link> seed);
+<link linkend="uint32-t">uint32_t</link>    <link linkend="lbl-random">lbl_random</link>                      (void);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="lbl-srandom">lbl_srandom ()</title>
+<programlisting>void        lbl_srandom                     (<link linkend="uint32-t">uint32_t</link> seed);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>seed</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="lbl-random">lbl_random ()</title>
+<programlisting><link linkend="uint32-t">uint32_t</link>    lbl_random                      (void);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

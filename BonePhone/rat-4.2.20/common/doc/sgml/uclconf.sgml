@@ -1,0 +1,102 @@
+<refentry id="uclmmbase-uclconf" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>uclconf</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>uclconf</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="HAVE-SYS-WAIT-H-CAPS">HAVE_SYS_WAIT_H</link>
+#define     <link linkend="STDC-HEADERS-CAPS">STDC_HEADERS</link>
+#define     <link linkend="HAVE-DEV-URANDOM-CAPS">HAVE_DEV_URANDOM</link>
+#define     <link linkend="HAVE-ST-ADDRINFO-CAPS">HAVE_ST_ADDRINFO</link>
+#define     <link linkend="HAVE-GETIPNODEBYNAME-CAPS">HAVE_GETIPNODEBYNAME</link>
+#define     <link linkend="HAVE-VSNPRINTF-CAPS">HAVE_VSNPRINTF</link>
+#define     <link linkend="HAVE-INTTYPES-H-CAPS">HAVE_INTTYPES_H</link>
+#define     <link linkend="WORDS-SMALLENDIAN-CAPS">WORDS_SMALLENDIAN</link>
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="HAVE-SYS-WAIT-H-CAPS">HAVE_SYS_WAIT_H</title>
+<programlisting>#define HAVE_SYS_WAIT_H 1
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="STDC-HEADERS-CAPS">STDC_HEADERS</title>
+<programlisting>#define STDC_HEADERS 1
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="HAVE-DEV-URANDOM-CAPS">HAVE_DEV_URANDOM</title>
+<programlisting>#define HAVE_DEV_URANDOM 1
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="HAVE-ST-ADDRINFO-CAPS">HAVE_ST_ADDRINFO</title>
+<programlisting>#define HAVE_ST_ADDRINFO 1
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="HAVE-GETIPNODEBYNAME-CAPS">HAVE_GETIPNODEBYNAME</title>
+<programlisting>#define HAVE_GETIPNODEBYNAME 1
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="HAVE-VSNPRINTF-CAPS">HAVE_VSNPRINTF</title>
+<programlisting>#define HAVE_VSNPRINTF 1
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="HAVE-INTTYPES-H-CAPS">HAVE_INTTYPES_H</title>
+<programlisting>#define HAVE_INTTYPES_H 1
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="WORDS-SMALLENDIAN-CAPS">WORDS_SMALLENDIAN</title>
+<programlisting>#define     WORDS_SMALLENDIAN</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,54 @@
+
+This implements a pattern-matching based "responder" application that
+is built on the NIST-SIP stack. These can be used to generate a load
+for a SIP proxy or UAS.  ( You may also be able to use it to script a
+whole uas but we have not done this as yet.)
+
+Two examples xml files (uas.xml and uac.xml) are provided here to simulate
+the behavior of a UAS and uac. These are read by an event Engine that
+runs a Finite State Machine by generating the requesite messages and
+matching with responses to trigger events.
+
+To run these examples: 
+
+1. Start the proxy (using the settings that are set in the configfile)
+   The proxy is located in examples/proxy and it reads its configuration
+   from configfile that is located in the same directory.
+
+2. From a shell: make uas (This starts an example UAS that registers with
+	the proxy server.)
+
+3. From another shell : make uac (this starts an example UAC that sends
+	out an invite via the proxy server.)
+
+Make sure that the proxy settings are correct (check the configfile
+in the proxy directory).
+
+This is a preliminary release of this code and much documentation is
+missing (expect this to improve with time).  If you look at the two
+examples (uas.xml and uac.xml) you can figure most of it out. Basically,
+what is defined in these scripts is a state machine which transitions on
+pattern matching. The patterns are matched on the basis of portions of SIP
+Messages. These are defined in the <MESSAGE_TEMPLATES> section. Events
+that trigger state machine transitions are defined in the <EVENTS>
+section. The state machine itself is defined in the <STATE_MACHINE>
+section. Each node of the state machine is an EXPECT node. When the state
+machine transitions from state to state, it can generate new messages
+and execute fragments of code.  These are specified in the scripting
+language jython (a python implementation in java).
+
+The tool takes a second "agent" script. This defines the identity of the
+caller and the callee. For example in agents.xml, the caller is 
+BigGuy@there.com and he is calling LittleGuy@here.com. If you want
+to repeat the scenario with another caller and callee, you just need
+to change this file.
+
+We will soon be hosting this tool on a web site where you can connect and
+test your client.
+
+Author
+
+M. Ranganathan
+mranga@nist.gov
+
+	

@@ -1,0 +1,258 @@
+<refentry id="uclmmbase-mbus-config" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>mbus_config</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>mbus_config</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="MBUS-CONFIG-VERSION-CAPS">MBUS_CONFIG_VERSION</link>
+#define     <link linkend="SCOPE-HOSTLOCAL-CAPS">SCOPE_HOSTLOCAL</link>
+#define     <link linkend="SCOPE-HOSTLOCAL-NAME-CAPS">SCOPE_HOSTLOCAL_NAME</link>
+#define     <link linkend="SCOPE-LINKLOCAL-CAPS">SCOPE_LINKLOCAL</link>
+#define     <link linkend="SCOPE-LINKLOCAL-NAME-CAPS">SCOPE_LINKLOCAL_NAME</link>
+#define     <link linkend="MBUS-DEFAULT-NET-ADDR-CAPS">MBUS_DEFAULT_NET_ADDR</link>
+#define     <link linkend="MBUS-DEFAULT-NET-PORT-CAPS">MBUS_DEFAULT_NET_PORT</link>
+#define     <link linkend="MBUS-DEFAULT-SCOPE-CAPS">MBUS_DEFAULT_SCOPE</link>
+#define     <link linkend="MBUS-DEFAULT-SCOPE-NAME-CAPS">MBUS_DEFAULT_SCOPE_NAME</link>
+char*       <link linkend="mbus-new-encrkey">mbus_new_encrkey</link>                (void);
+char*       <link linkend="mbus-new-hashkey">mbus_new_hashkey</link>                (void);
+void        <link linkend="mbus-lock-config-file">mbus_lock_config_file</link>           (struct <link linkend="mbus-config">mbus_config</link> *m);
+void        <link linkend="mbus-unlock-config-file">mbus_unlock_config_file</link>         (struct <link linkend="mbus-config">mbus_config</link> *m);
+void        <link linkend="mbus-get-encrkey">mbus_get_encrkey</link>                (struct <link linkend="mbus-config">mbus_config</link> *m,
+                                             struct <link linkend="mbus-key">mbus_key</link> *key);
+void        <link linkend="mbus-get-hashkey">mbus_get_hashkey</link>                (struct <link linkend="mbus-config">mbus_config</link> *m,
+                                             struct <link linkend="mbus-key">mbus_key</link> *key);
+void        <link linkend="mbus-get-net-addr">mbus_get_net_addr</link>               (struct <link linkend="mbus-config">mbus_config</link> *m,
+                                             char *net_addr,
+                                             <link linkend="uint16-t">uint16_t</link> *net_port,
+                                             int *net_scope);
+int         <link linkend="mbus-get-version">mbus_get_version</link>                (struct <link linkend="mbus-config">mbus_config</link> *m);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="MBUS-CONFIG-VERSION-CAPS">MBUS_CONFIG_VERSION</title>
+<programlisting>#define MBUS_CONFIG_VERSION	 1
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="SCOPE-HOSTLOCAL-CAPS">SCOPE_HOSTLOCAL</title>
+<programlisting>#define SCOPE_HOSTLOCAL       	 0
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="SCOPE-HOSTLOCAL-NAME-CAPS">SCOPE_HOSTLOCAL_NAME</title>
+<programlisting>#define SCOPE_HOSTLOCAL_NAME 	"HOSTLOCAL"
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="SCOPE-LINKLOCAL-CAPS">SCOPE_LINKLOCAL</title>
+<programlisting>#define SCOPE_LINKLOCAL       	 1
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="SCOPE-LINKLOCAL-NAME-CAPS">SCOPE_LINKLOCAL_NAME</title>
+<programlisting>#define SCOPE_LINKLOCAL_NAME 	"LINKLOCAL"
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="MBUS-DEFAULT-NET-ADDR-CAPS">MBUS_DEFAULT_NET_ADDR</title>
+<programlisting>#define MBUS_DEFAULT_NET_ADDR 	"224.255.222.239"
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="MBUS-DEFAULT-NET-PORT-CAPS">MBUS_DEFAULT_NET_PORT</title>
+<programlisting>#define MBUS_DEFAULT_NET_PORT 	 47000
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="MBUS-DEFAULT-SCOPE-CAPS">MBUS_DEFAULT_SCOPE</title>
+<programlisting>#define MBUS_DEFAULT_SCOPE    	 SCOPE_HOSTLOCAL
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="MBUS-DEFAULT-SCOPE-NAME-CAPS">MBUS_DEFAULT_SCOPE_NAME</title>
+<programlisting>#define MBUS_DEFAULT_SCOPE_NAME	 SCOPE_HOSTLOCAL_NAME
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="mbus-new-encrkey">mbus_new_encrkey ()</title>
+<programlisting>char*       mbus_new_encrkey                (void);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-new-hashkey">mbus_new_hashkey ()</title>
+<programlisting>char*       mbus_new_hashkey                (void);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-lock-config-file">mbus_lock_config_file ()</title>
+<programlisting>void        mbus_lock_config_file           (struct <link linkend="mbus-config">mbus_config</link> *m);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-unlock-config-file">mbus_unlock_config_file ()</title>
+<programlisting>void        mbus_unlock_config_file         (struct <link linkend="mbus-config">mbus_config</link> *m);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-get-encrkey">mbus_get_encrkey ()</title>
+<programlisting>void        mbus_get_encrkey                (struct <link linkend="mbus-config">mbus_config</link> *m,
+                                             struct <link linkend="mbus-key">mbus_key</link> *key);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-get-hashkey">mbus_get_hashkey ()</title>
+<programlisting>void        mbus_get_hashkey                (struct <link linkend="mbus-config">mbus_config</link> *m,
+                                             struct <link linkend="mbus-key">mbus_key</link> *key);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-get-net-addr">mbus_get_net_addr ()</title>
+<programlisting>void        mbus_get_net_addr               (struct <link linkend="mbus-config">mbus_config</link> *m,
+                                             char *net_addr,
+                                             <link linkend="uint16-t">uint16_t</link> *net_port,
+                                             int *net_scope);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>net_addr</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>net_port</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>net_scope</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-get-version">mbus_get_version ()</title>
+<programlisting>int         mbus_get_version                (struct <link linkend="mbus-config">mbus_config</link> *m);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,47 @@
+<refentry id="uclmmbase-addrsize" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>addrsize</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>addrsize</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="IN6ADDRSZ-CAPS">IN6ADDRSZ</link>
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="IN6ADDRSZ-CAPS">IN6ADDRSZ</title>
+<programlisting>#define IN6ADDRSZ	16	/* IPv6 T_AAAA */
+</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

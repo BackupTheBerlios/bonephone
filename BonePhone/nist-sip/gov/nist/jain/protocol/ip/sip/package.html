@@ -1,0 +1,72 @@
+<body>
+This is the NIST implementation of the JAIN-SIP interfaces.  
+
+<p>
+The stack is configured initially via a configuration file (configfile) 
+which resides in the directory of the application. 
+JAIN does not define a standard way in which to configure the
+ stack. We opt for a simple keyword-value based configuration method
+ (clearly an xml-based scheme would be cleaner).
+
+<p> The file "configfile" in the directory where the main class 
+ (i.e. application) resides has configuration parameters for the stack:
+
+ <pre>
+ authenticationMethod methodName methodClass  [parms]
+ specifies a supported authentication method.
+
+ traceLevel level
+ Specifies the debug trace level (32 is the max trace level)
+ 
+ enableUDP port#
+  Specifies that UDP is supported on port#
+ 
+ enableTCP port#
+  Specifies that TCP is supported on port#
+
+  stackHostName name
+  Specifies a host name (could be a DNS pseudonym) for the stack.
+  
+ stackAddress address
+  Address of host where stack resides.
+  This is a required parameter.
+
+ parseSDP
+  Add this line if you want to parse sdp part of the header. However,
+  in order to access the sdp part, you have to access the implementation
+  (NIST-SIP) object until an API for sdp headers becomes defined.
+ 
+ serverLog logfileName
+  File name where the log is written.
+  
+ enableRecordRoute
+  Add the record route header when forwarding requests.
+
+ defaultRoute string
+  Set the default route (used by gov.nist.sip.stack.DefaultRouter)
+  This has the form hostName:port/Transport
+  The router is consulted to get a list of addresses in order of priority
+  that are tried in order to send an outgoing message.
+
+ router className
+  set a default router. The default router should implement the
+  gov.nist.sip.stack.Router interface.  The algorithm specified in the
+  router returns a prioritized list of addresses for routing outbound
+  sip requests
+
+
+
+  Here is an example configfile:
+ 
+  traceLevel 32
+  stackHostName nist.gov
+  authenticationMethod Digest gov.nist.sip.stack.security.DigestAuthenticationMethod passwords
+  serverLog myLogfile
+  stackAddress 129.6.55.64
+  enableUDP 5061
+  enableUDP 5060
+  defaultRoute is2.antd.nist.gov:5060/UDP
+</pre>
+
+
+</body>

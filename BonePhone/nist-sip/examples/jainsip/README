@@ -1,0 +1,27 @@
+Jainsip examples:
+
+container contains my ideas on how to build a higher level abstraction
+(like servlets) on top of jainsip. These are just my ideas and not
+a servlet implementation!
+
+simple contains the simple example that is from the jainsip documentation.
+
+shootist (inspired by the John Wayne movie of the same name) contains a 
+Shootist that will send messages up to the server (for example, a REGISTER
+from a UAC to the server).
+
+Change to these directories and take a look at the README files therein and
+please let mranga@nist.gov know if the bed bugs bite.
+
+The configuration of the JAIN stack is done via a file called configfile which
+resides in the directory from where the listener is run.
+
+See gov.jain.protocol.ip.sip.SipStackImpl documentation for how to configure
+the file.
+
+Note that the jain architecture and api are still evolving (not finalized yet).
+
+To run examples.jain.shootist on two different machines, you need to modify
+shootist/message_simple.txt (especially the via line).
+
+

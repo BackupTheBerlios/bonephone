@@ -1,0 +1,1 @@
+java -classpath ../../../:../../../lib/jython/jython.jar:../../../lib/xerces/xerces.jar:../../../lib/antlr/antlrall.jar examples.webtest.ua.EventEngine -eventSpec uas.xml -enableUDP 5060 -stackAddress 129.6.55.78 -stackName antd.nist.gov -peerAddress 129.6.55.159:5060/UDP -logFile /tmp/mylogfile -traceLevel 32

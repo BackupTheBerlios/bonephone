@@ -1,0 +1,112 @@
+*** BonePhone V0.8.1 alpha installation instructions ***
+
+
+
+1. unpacking
+
+	When reading this you probably unpacked BonePhone successfully.
+	
+	1. cd to your home directory: 
+
+		cd <RETURN>
+
+	2. unpack the tar archive:
+
+		tar xvzf bonephone-0.8.1-alpha.tgz       or without GNU tar
+
+		gunzip -c bonephone-0.8.1-alpha.tgz | tar xvf -
+
+	Now you have all necessary prgram and resource files in the 
+	bonephone subdirectory. If you have already installed a previous
+	version, you may keep your configuration files. If this is your 
+	first installation you must	unpack the bonphone config files:
+
+	1. cd to your home directory: 
+
+		cd <RETURN>
+
+	2. check for existing bonephone config files:
+
+		.bonephone/bonerc
+		.bonephone/phonebook
+		.bonephone/profiles
+		.mbus
+		bonephone/configfile       (not in the .bonephone directory !!)
+		bonephone/JAVAHOME         (only for the binary distribution)
+
+		If you find these files, you probably don't need to unpack the 
+		config files. If you want to do so anyway, you should check
+		the new config files for your personal settings.
+			
+	3.1 for the binary distribution:
+
+	    unpack the tar archive with the config files:
+
+		tar xvzf bonephone-0.8.1-alpha-cfg.tgz       or without GNU tar:
+
+		gunzip -c bonephone-0.8.1-alpha-cfg.tgz | tar xvf -
+
+	3.2 for the source distribution:
+
+	    unpack the config.tgz archive with the config files:
+
+		tar xvzf config.tgz       or without GNU tar:
+
+		gunzip -c config.tgz | tar xvf -
+
+	4. Customize the config files. Read in README.config contained in the
+	   above tar archive
+
+
+2. startup
+
+	If you have the source distribution, you need to compile things first.
+	read README.compile for this first.
+
+	You need a pre-installed copy of suns Java-II platform jdk 1.4 on your
+	machine. You can get it from suns website at http://www.sun.com and dig
+	for the 1.4 jdk. When this software was written, jdk 1.4 was still in beta
+	state, so any higher version should do the job either.
+
+	1. go to the bonephone directory:
+	
+		cd ; cd bonephone
+
+	2.1 in the binary distribution
+
+	   Edit the JAVAHOME file using your favorite text editor.
+	   It should read like this:
+
+		export JAVAHOME=/usr/java/jdk.1.4
+
+	   The path must point to the jdk1.4 main directrory. Below this directory
+	   the bin and jre/lib directories must exist.
+
+	2.2 in the source distribution
+
+	   Edit the first two settings in the Makefile.
+
+	3.1 run it in the binary distribution
+
+		./run        or if the bash isn't located in /bin
+
+		sh run
+
+	   now the GUI should pop up (can take half a minute).
+
+	3.2 run it in the source distribution
+
+		make run
+
+	   now the GUI should pop up (can take half a minute).
+
+	4. In the main window you should read at least two lines starting
+	   with "Device". These are the audio devices found by the media-engine
+	   (rat-4.2.20). If you see only one line reading "Device: No Audio Device"
+	   there is a driver problem with your soundcard, or rat simply does not
+	   support your audio card.
+
+
+
+Author(s): Application, mbus and rat mods : Jens Fiedler (fiedler@fokus.gmd.de)
+           SIP-UA, NIST-SIP mods: Stefan Foeckel (foeckel@fokus.gmd.de)

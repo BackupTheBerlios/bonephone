@@ -1,0 +1,90 @@
+<refentry id="uclmmbase-hmac" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>HMAC</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>HMAC</refname><refpurpose>
+cryptographic message authentication.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+#include &lt;hmac.h&gt;
+
+
+void        <link linkend="hmac-md5">hmac_md5</link>                        (unsigned char *data,
+                                             int data_len,
+                                             unsigned char *key,
+                                             int key_len,
+                                             unsigned char digest[16]);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+HMAC is a cryptographic mechanism for message authentication described
+in RFC2104.  It allows a sender and receiver with a shared
+cryptographic key to verify the authenticity of a message.
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="hmac-md5">hmac_md5 ()</title>
+<programlisting>void        hmac_md5                        (unsigned char *data,
+                                             int data_len,
+                                             unsigned char *key,
+                                             int key_len,
+                                             unsigned char digest[16]);</programlisting>
+<para>
+Computes MD5 <parameter>digest</parameter> of <parameter>data</parameter> using key <parameter>key</parameter>.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry> pointer to data stream.
+</entry></row>
+<row><entry align="right"><parameter>data_len</parameter>&nbsp;:</entry>
+<entry> length of data stream in bytes.
+</entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry> pointer to authentication key.
+</entry></row>
+<row><entry align="right"><parameter>key_len</parameter>&nbsp;:</entry>
+<entry> length of authentication key in bytes.
+</entry></row>
+<row><entry align="right"><parameter>digest</parameter>&nbsp;:</entry>
+<entry> digest to be filled in.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+
+<ulink url="http://www.ietf.org/rfc/rfc2104.txt">RFC2104 - HMAC: Keyed-Hashing for Message Authentication</ulink>
+
+</para>
+</refsect1>
+
+</refentry>

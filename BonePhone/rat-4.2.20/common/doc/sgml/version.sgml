@@ -1,0 +1,47 @@
+<refentry id="uclmmbase-version" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>version</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>version</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="CCL-VERSION-CAPS">CCL_VERSION</link>
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="CCL-VERSION-CAPS">CCL_VERSION</title>
+<programlisting>#define CCL_VERSION "v1.2.10"
+</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

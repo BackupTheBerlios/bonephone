@@ -1,0 +1,68 @@
+<refentry id="uclmmbase-inet-ntop" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>inet_ntop</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>inet_ntop</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+const char* <link linkend="inet-ntop">inet_ntop</link>                       (int af,
+                                             const void *src,
+                                             char *dst,
+                                             <link linkend="size-t">size_t</link> size);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="inet-ntop">inet_ntop ()</title>
+<programlisting>const char* inet_ntop                       (int af,
+                                             const void *src,
+                                             char *dst,
+                                             <link linkend="size-t">size_t</link> size);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>af</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>src</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>dst</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>size</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,255 @@
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
+
+configure:601: checking host system type
+configure:622: checking target system type
+configure:640: checking build system type
+configure:666: checking for gcc
+configure:779: checking whether the C compiler (gcc  ) works
+configure:795: gcc -o conftest    conftest.c  1>&5
+configure:821: checking whether the C compiler (gcc  ) is a cross-compiler
+configure:826: checking whether we are using GNU C
+configure:835: gcc -E conftest.c
+configure:854: checking whether gcc accepts -g
+configure:886: checking how to run the C preprocessor
+configure:907: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:968: checking for ranlib
+configure:997: checking for ANSI C header files
+configure:1010: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1077: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1101: checking for sys/wait.h that is POSIX.1 compatible
+configure:1122: gcc -c -g -O2  conftest.c 1>&5
+configure:1143: checking for working const
+configure:1197: gcc -c -g -O2  conftest.c 1>&5
+configure:1218: checking for size_t
+configure:1266: checking whether byte ordering is bigendian
+configure:1284: gcc -c -g -O2  conftest.c 1>&5
+configure:1299: gcc -c -g -O2  conftest.c 1>&5
+configure: In function `main':
+configure:1294: `not' undeclared (first use in this function)
+configure:1294: (Each undeclared identifier is reported only once
+configure:1294: for each function it appears in.)
+configure:1294: parse error before `big'
+configure: failed program was:
+#line 1288 "configure"
+#include "confdefs.h"
+#include <sys/types.h>
+#include <sys/param.h>
+int main() {
+
+#if BYTE_ORDER != BIG_ENDIAN
+ not big endian
+#endif
+; return 0; }
+configure:1356: checking whether char is unsigned
+configure:1435: checking for stdint.h
+configure:1445: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1435: checking for inttypes.h
+configure:1445: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1435: checking for stropts.h
+configure:1445: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1435: checking for sys/filio.h
+configure:1445: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1441: sys/filio.h: No such file or directory
+configure: failed program was:
+#line 1440 "configure"
+#include "confdefs.h"
+#include <sys/filio.h>
+configure:1435: checking for malloc.h
+configure:1445: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1435: checking for bstring.h
+configure:1445: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1441: bstring.h: No such file or directory
+configure: failed program was:
+#line 1440 "configure"
+#include "confdefs.h"
+#include <bstring.h>
+configure:1475: checking for sys/sockio.h
+configure:1485: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1481: sys/sockio.h: No such file or directory
+configure: failed program was:
+#line 1480 "configure"
+#include "confdefs.h"
+#include <sys/sockio.h>
+configure:1516: checking for kill declaration
+configure:1539: checking for gettimeofday declaration
+configure:1567: checking for library containing socket
+configure:1585: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c  1>&5
+configure:1629: checking for library containing inet_addr
+configure:1647: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c  1>&5
+configure:1691: checking for library containing dlopen
+configure:1709: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c  1>&5
+/tmp/cc8l8Pq2.o: In function `main':
+/home/jfi/Studienarbeit/rat-4.2.20/rat/configure:1705: undefined reference to `dlopen'
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 1698 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char dlopen();
+
+int main() {
+dlopen()
+; return 0; }
+configure:1731: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c -ldl   1>&5
+configure:1753: checking for sin
+configure:1781: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c -ldl  1>&5
+cc1: warnings being treated as errors
+configure:1765: warning: conflicting types for built-in function `sin'
+configure: failed program was:
+#line 1758 "configure"
+#include "confdefs.h"
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char sin(); below.  */
+#include <assert.h>
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char sin();
+
+int main() {
+
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub_sin) || defined (__stub___sin)
+choke me
+#else
+sin();
+#endif
+
+; return 0; }
+configure:1802: checking for main in -lieee
+configure:1817: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c -lieee  -ldl  1>&5
+configure:1844: checking for int8_t
+configure:1877: checking for int16_t
+configure:1910: checking for int32_t
+configure:1943: checking for int64_t
+configure:1980: checking for uint8_t in <stdint.h>
+configure:2040: checking for uint16_t in <stdint.h>
+configure:2100: checking for uint32_t in <stdint.h>
+configure:2185: checking for usleep
+configure:2213: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c -ldl  1>&5
+configure:2239: checking for snprintf
+configure:2267: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c -ldl  1>&5
+configure:2368: checking for linux/telephony.h
+configure:2378: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:2396: checking for recent telephony drivers
+configure:2427: checking for sys/asoundlib.h
+configure:2437: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:2477: checking for sys/soundcard.h
+configure:2487: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:2477: checking for soundcard.h
+configure:2487: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:2483: soundcard.h: No such file or directory
+configure: failed program was:
+#line 2482 "configure"
+#include "confdefs.h"
+#include <soundcard.h>
+configure:2619: checking for X
+configure:2933: checking for dnet_ntoa in -ldnet
+configure:2952: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c -ldnet  -ldl  1>&5
+/usr/i486-suse-linux/bin/ld: cannot find -ldnet
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 2941 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char dnet_ntoa();
+
+int main() {
+dnet_ntoa()
+; return 0; }
+configure:2974: checking for dnet_ntoa in -ldnet_stub
+configure:2993: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c -ldnet_stub  -ldl  1>&5
+/usr/i486-suse-linux/bin/ld: cannot find -ldnet_stub
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 2982 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char dnet_ntoa();
+
+int main() {
+dnet_ntoa()
+; return 0; }
+configure:3022: checking for gethostbyname
+configure:3050: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c -ldl  1>&5
+configure:3120: checking for connect
+configure:3148: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c -ldl  1>&5
+configure:3212: checking for remove
+configure:3240: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c -ldl  1>&5
+configure:3304: checking for shmat
+configure:3332: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c -ldl  1>&5
+configure:3405: checking for IceConnectionNumber in -lICE
+configure:3424: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   -L/usr/X11R6/lib conftest.c -lICE  -ldl  1>&5
+configure:3455: checking whether X11 headers are broken
+configure:3471: gcc -c  -I/usr/X11R6/include -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror  conftest.c 1>&5
+configure:3595: checking for /home/jfi/Studienarbeit/rat-4.2.20/tcl-8.0/generic/tcl.h
+configure:3605: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:3654: checking for library containing Tcl_Init
+configure:3672: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c  1>&5
+/tmp/ccofxG5b.o: In function `main':
+/home/jfi/Studienarbeit/rat-4.2.20/rat/configure:3668: undefined reference to `Tcl_Init'
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 3661 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char Tcl_Init();
+
+int main() {
+Tcl_Init()
+; return 0; }
+configure:3694: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c -ltcl8.0 -L/home/jfi/Studienarbeit/rat-4.2.20/tcl-8.0/unix -ldl  -lm  1>&5
+/home/jfi/Studienarbeit/rat-4.2.20/tcl-8.0/unix/libtcl8.0.a(tclUnixPipe.o): In function `TclpCreateTempFile':
+tclUnixPipe.o(.text+0xcf): the use of `tmpnam' is dangerous, better use `mkstemp'
+configure:3745: checking for /home/jfi/Studienarbeit/rat-4.2.20/tk-8.0/generic/tk.h
+configure:3777: checking for library containing Tk_Init
+configure:3795: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c  1>&5
+/tmp/cclvy2mW.o: In function `main':
+/home/jfi/Studienarbeit/rat-4.2.20/rat/configure:3791: undefined reference to `Tk_Init'
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 3784 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char Tk_Init();
+
+int main() {
+Tk_Init()
+; return 0; }
+configure:3817: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c -ltk8.0 -L/home/jfi/Studienarbeit/rat-4.2.20/tk-8.0/unix -L/home/jfi/Studienarbeit/rat-4.2.20/tcl-8.0/unix -ltcl8.0   -L/usr/X11R6/lib  -lSM -lICE  -lXext -lX11  -ldl  -lm  1>&5
+/home/jfi/Studienarbeit/rat-4.2.20/tcl-8.0/unix/libtcl8.0.a(tclUnixPipe.o): In function `TclpCreateTempFile':
+tclUnixPipe.o(.text+0xcf): the use of `tmpnam' is dangerous, better use `mkstemp'
+configure:3903: checking for /home/jfi/Studienarbeit/rat-4.2.20/common/src/mbus.h
+configure:3913: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:3958: checking for mbus_init in -luclmmbase
+configure:3977: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c -luclmmbase -L/home/jfi/Studienarbeit/rat-4.2.20/common/src -ldl  1>&5
+configure:4027: checking signed arithmetic shift right
+configure:4039: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c -ldl  1>&5
+configure:4082: checking for g728_encoder_init in -lg728
+configure:4101: gcc -o conftest -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror   conftest.c -lg728 -L/home/jfi/Studienarbeit/rat-4.2.20/g728lib -lm -ldl  1>&5
+/usr/i486-suse-linux/bin/ld: cannot find -lg728
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 4090 "configure"
+#include "confdefs.h"
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char g728_encoder_init();
+
+int main() {
+g728_encoder_init()
+; return 0; }

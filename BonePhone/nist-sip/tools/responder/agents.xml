@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE agentscript SYSTEM "agentscript.dtd">
+<AGENTS>
+<!-- This is the guy that we want to call -->
+<AGENT
+	agentId = "caller"
+	userName = "BigGuy"
+	host = "here.com"
+	displayName = "Big Guy"
+	requestURI = "sip:LittleGuy@there.com"
+/>
+
+<!-- This is the recipient of the call -->
+<AGENT
+	agentId   = "callee"
+	requestURI  = "sip:LittleGuy@there.com"
+	userName    = "LittleGuy"
+	displayName = "Little Guy"
+	host	    = "there.com"
+	contactHost = "127.0.0.1"
+	contactPort = "5070"
+/>
+</AGENTS>

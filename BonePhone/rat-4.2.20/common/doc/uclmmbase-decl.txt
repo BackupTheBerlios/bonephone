@@ -1,0 +1,1628 @@
+<FUNCTION>
+<NAME>vsnprintf</NAME>
+<RETURNS>int  </RETURNS>
+char *s, size_t buf_size, const char *format, va_list ap
+</FUNCTION>
+<MACRO>
+<NAME>UNUSED</NAME>
+#define UNUSED(x)	(x=x)
+</MACRO>
+<MACRO>
+<NAME>debug_msg</NAME>
+#define debug_msg	_dprintf("[pid/%d +%d %s] ", getpid(), __LINE__, __FILE__), _dprintf
+</MACRO>
+<FUNCTION>
+<NAME>debug_dump</NAME>
+<RETURNS>void  </RETURNS>
+void*lp, long len
+</FUNCTION>
+<FUNCTION>
+<NAME>debug_set_core_dir</NAME>
+<RETURNS>void  </RETURNS>
+const char *argv0
+</FUNCTION>
+<MACRO>
+<NAME>HAVE_SYS_WAIT_H</NAME>
+#define HAVE_SYS_WAIT_H 1
+</MACRO>
+<MACRO>
+<NAME>STDC_HEADERS</NAME>
+#define STDC_HEADERS 1
+</MACRO>
+<MACRO>
+<NAME>TIME_WITH_SYS_TIME</NAME>
+#define TIME_WITH_SYS_TIME 1
+</MACRO>
+<MACRO>
+<NAME>HAVE_DEV_URANDOM</NAME>
+#define HAVE_DEV_URANDOM 1
+</MACRO>
+<MACRO>
+<NAME>HAVE_IPv6</NAME>
+#define HAVE_IPv6 1
+</MACRO>
+<MACRO>
+<NAME>HAVE_ST_ADDRINFO</NAME>
+#define HAVE_ST_ADDRINFO 1
+</MACRO>
+<MACRO>
+<NAME>HAVE_GETIPNODEBYNAME</NAME>
+#define HAVE_GETIPNODEBYNAME 1
+</MACRO>
+<MACRO>
+<NAME>HAVE_VSNPRINTF</NAME>
+#define HAVE_VSNPRINTF 1
+</MACRO>
+<MACRO>
+<NAME>HAVE_INTTYPES_H</NAME>
+#define HAVE_INTTYPES_H 1
+</MACRO>
+<MACRO>
+<NAME>HAVE_STDINT_H</NAME>
+#define HAVE_STDINT_H 1
+</MACRO>
+<MACRO>
+<NAME>HAVE_STROPTS_H</NAME>
+#define HAVE_STROPTS_H 1
+</MACRO>
+<MACRO>
+<NAME>HAVE_SYS_TIME_H</NAME>
+#define HAVE_SYS_TIME_H 1
+</MACRO>
+<MACRO>
+<NAME>WORDS_SMALLENDIAN</NAME>
+#define WORDS_SMALLENDIAN
+</MACRO>
+<TYPEDEF>
+<NAME>MD5_CTX</NAME>
+typedef struct {
+  uint32_t state[4];            /* state (ABCD) */
+  uint32_t count[2];        	/* number of bits, modulo 2^64 (lsb first) */
+  unsigned char buffer[64];     /* input buffer */
+} MD5_CTX;
+</TYPEDEF>
+<FUNCTION>
+<NAME>MD5Init</NAME>
+<RETURNS>void  </RETURNS>
+MD5_CTX *context
+</FUNCTION>
+<FUNCTION>
+<NAME>MD5Update</NAME>
+<RETURNS>void  </RETURNS>
+MD5_CTX *context, unsigned char *input, unsigned int inputLen
+</FUNCTION>
+<FUNCTION>
+<NAME>MD5Final</NAME>
+<RETURNS>void  </RETURNS>
+unsigned char digest[16], MD5_CTX *context
+</FUNCTION>
+<MACRO>
+<NAME>ntp64_to_ntp32</NAME>
+#define  ntp64_to_ntp32(ntp_sec, ntp_frac)          \
+               ((((ntp_sec)  & 0x0000ffff) << 16) | \
+                (((ntp_frac) & 0xffff0000) >> 16))
+</MACRO>
+<MACRO>
+<NAME>ntp32_sub</NAME>
+#define  ntp32_sub(now, then) ((now) > (then)) ? ((now) - (then)) : (((now) - (then)) + 0x7fffffff)
+</MACRO>
+<FUNCTION>
+<NAME>ntp64_time</NAME>
+<RETURNS>void  </RETURNS>
+uint32_t *ntp_sec, uint32_t *ntp_frac
+</FUNCTION>
+<MACRO>
+<NAME>RTP_VERSION</NAME>
+#define RTP_VERSION 2
+</MACRO>
+<MACRO>
+<NAME>RTP_PACKET_HEADER_SIZE</NAME>
+#define RTP_PACKET_HEADER_SIZE	((sizeof(char *) * 2) + sizeof(uint32_t *) + (2 * sizeof(int)))
+</MACRO>
+<MACRO>
+<NAME>RTP_MAX_PACKET_LEN</NAME>
+#define RTP_MAX_PACKET_LEN 1500
+</MACRO>
+<TYPEDEF>
+<NAME>rtp_packet</NAME>
+typedef struct {
+	/* The following are pointers to the data in the packet as    */
+	/* it came off the wire. The packet it read in such that the  */
+	/* header maps onto the latter part of this struct, and the   */
+	/* fields in this first part of the struct point into it. The */
+	/* entire packet can be freed by freeing this struct, without */
+	/* having to free the csrc, data and extn blocks separately.  */
+	/* WARNING: Don't change the size of the first portion of the */
+	/* struct without changing RTP_PACKET_HEADER_SIZE to match.   */
+	uint32_t	*csrc;
+	char		*data;
+	int		 data_len;
+	unsigned char	*extn;
+	uint16_t	 extn_len;	/* Size of the extension in 32 bit words minus one */
+	uint16_t	 extn_type;	/* Extension type field in the RTP packet header   */
+	/* The following map directly onto the RTP packet header...   */
+#ifdef WORDS_BIGENDIAN
+	unsigned short   v:2;		/* packet type                */
+	unsigned short   p:1;		/* padding flag               */
+	unsigned short   x:1;		/* header extension flag      */
+	unsigned short   cc:4;		/* CSRC count                 */
+	unsigned short   m:1;		/* marker bit                 */
+	unsigned short   pt:7;		/* payload type               */
+#else
+	unsigned short   cc:4;		/* CSRC count                 */
+	unsigned short   x:1;		/* header extension flag      */
+	unsigned short   p:1;		/* padding flag               */
+	unsigned short   v:2;		/* packet type                */
+	unsigned short   pt:7;		/* payload type               */
+	unsigned short   m:1;		/* marker bit                 */
+#endif
+	uint16_t          seq;		/* sequence number            */
+	uint32_t          ts;		/* timestamp                  */
+	uint32_t          ssrc;		/* synchronization source     */
+	/* The csrc list, header extension and data follow, but can't */
+	/* be represented in the struct.                              */
+} rtp_packet;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>rtcp_sr</NAME>
+typedef struct {
+	uint32_t         ssrc;
+	uint32_t         ntp_sec;
+	uint32_t         ntp_frac;
+	uint32_t         rtp_ts;
+	uint32_t         sender_pcount;
+	uint32_t         sender_bcount;
+} rtcp_sr;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>rtcp_rr</NAME>
+typedef struct {
+	uint32_t	ssrc;		/* The ssrc to which this RR pertains */
+#ifdef WORDS_BIGENDIAN
+	uint32_t	fract_lost:8;
+	uint32_t	total_lost:24;
+#else
+	uint32_t	total_lost:24;
+	uint32_t	fract_lost:8;
+#endif	
+	uint32_t	last_seq;
+	uint32_t	jitter;
+	uint32_t	lsr;
+	uint32_t	dlsr;
+} rtcp_rr;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>rtcp_app</NAME>
+typedef struct {
+#ifdef WORDS_BIGENDIAN
+	unsigned short  version:2;	/* RTP version            */
+	unsigned short  p:1;		/* padding flag           */
+	unsigned short  subtype:5;	/* application dependent  */
+#else
+	unsigned short  subtype:5;	/* application dependent  */
+	unsigned short  p:1;		/* padding flag           */
+	unsigned short  version:2;	/* RTP version            */
+#endif
+	unsigned short  pt:8;		/* packet type            */
+	uint16_t        length;		/* packet length          */
+	uint32_t        ssrc;
+	char            name[4];        /* four ASCII characters  */
+	char            data[1];        /* variable length field  */
+} rtcp_app;
+</TYPEDEF>
+<ENUM>
+<NAME>rtp_event_type</NAME>
+typedef enum {
+        RX_RTP,
+        RX_SR,
+        RX_RR,
+        RX_SDES,
+        RX_BYE,         /* Source is leaving the session, database entry is still valid                           */
+        SOURCE_CREATED,
+        SOURCE_DELETED, /* Source has been removed from the database                                              */
+        RX_RR_EMPTY,    /* We've received an empty reception report block                                         */
+        RX_RTCP_START,  /* Processing a compound RTCP packet about to start. The SSRC is not valid in this event. */
+        RX_RTCP_FINISH,	/* Processing a compound RTCP packet finished. The SSRC is not valid in this event.       */
+        RR_TIMEOUT,
+        RX_APP
+} rtp_event_type;
+</ENUM>
+<TYPEDEF>
+<NAME>rtp_event</NAME>
+typedef struct {
+	uint32_t	 ssrc;
+	rtp_event_type	 type;
+	void		*data;
+	struct timeval	*ts;
+} rtp_event;
+</TYPEDEF>
+<USER_FUNCTION>
+<NAME>rtp_callback</NAME>
+<RETURNS>void </RETURNS>
+struct rtp *session, rtp_event *e
+</USER_FUNCTION>
+<USER_FUNCTION>
+<NAME>rtcp_app_callback</NAME>
+<RETURNS>rtcp_app *</RETURNS>
+struct rtp *session, uint32_t rtp_ts, int max_size
+</USER_FUNCTION>
+<ENUM>
+<NAME>rtcp_sdes_type</NAME>
+typedef enum  {
+        RTCP_SDES_END   = 0,
+        RTCP_SDES_CNAME = 1,
+        RTCP_SDES_NAME  = 2,
+        RTCP_SDES_EMAIL = 3,
+        RTCP_SDES_PHONE = 4,
+        RTCP_SDES_LOC   = 5,
+        RTCP_SDES_TOOL  = 6,
+        RTCP_SDES_NOTE  = 7,
+        RTCP_SDES_PRIV  = 8
+} rtcp_sdes_type;
+</ENUM>
+<TYPEDEF>
+<NAME>rtcp_sdes_item</NAME>
+typedef struct {
+	uint8_t		type;		/* type of SDES item              */
+	uint8_t		length;		/* length of SDES item (in bytes) */
+	char		data[1];	/* text, not zero-terminated      */
+} rtcp_sdes_item;
+</TYPEDEF>
+<ENUM>
+<NAME>rtp_option</NAME>
+typedef enum {
+        RTP_OPT_PROMISC =	    1,
+        RTP_OPT_WEAK_VALIDATION	=   2,
+        RTP_OPT_FILTER_MY_PACKETS = 3
+} rtp_option;
+</ENUM>
+<FUNCTION>
+<NAME>rtp_init</NAME>
+<RETURNS>rtp_t 	</RETURNS>
+const char *addr,uint16_t rx_port, uint16_t tx_port,int ttl, double rtcp_bw,rtp_callback callback,uint8_t *userdata
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_init_if</NAME>
+<RETURNS>rtp_t 	</RETURNS>
+const char *addr, char *iface,uint16_t rx_port, uint16_t tx_port,int ttl, double rtcp_bw,rtp_callback callback,uint8_t *userdata
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_send_bye</NAME>
+<RETURNS>void 	</RETURNS>
+struct rtp *session
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_done</NAME>
+<RETURNS>void 	</RETURNS>
+struct rtp *session
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_set_option</NAME>
+<RETURNS>int  </RETURNS>
+struct rtp *session, rtp_option optname, int optval
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_get_option</NAME>
+<RETURNS>int  </RETURNS>
+struct rtp *session, rtp_option optname, int *optval
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_recv</NAME>
+<RETURNS>int  </RETURNS>
+struct rtp *session,struct timeval *timeout, uint32_t curr_rtp_ts
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_send_data</NAME>
+<RETURNS>int  </RETURNS>
+struct rtp *session,uint32_t rtp_ts, char pt, int m,int cc, uint32_t csrc[],char *data, int data_len,char *extn, uint16_t extn_len, uint16_t extn_type
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_send_ctrl</NAME>
+<RETURNS>void  </RETURNS>
+struct rtp *session, uint32_t rtp_ts,rtcp_app_callback appcallback
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_update</NAME>
+<RETURNS>void  </RETURNS>
+struct rtp *session
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_my_ssrc</NAME>
+<RETURNS>uint32_t 	</RETURNS>
+struct rtp *session
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_add_csrc</NAME>
+<RETURNS>int 	</RETURNS>
+struct rtp *session, uint32_t csrc
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_del_csrc</NAME>
+<RETURNS>int 	</RETURNS>
+struct rtp *session, uint32_t csrc
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_set_sdes</NAME>
+<RETURNS>int 	</RETURNS>
+struct rtp *session, uint32_t ssrc,rtcp_sdes_type type,const char *value, int length
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_get_sdes</NAME>
+<RETURNS>const char 	*</RETURNS>
+struct rtp *session, uint32_t ssrc, rtcp_sdes_type type
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_get_sr</NAME>
+<RETURNS>const rtcp_sr 	*</RETURNS>
+struct rtp *session, uint32_t ssrc
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_get_rr</NAME>
+<RETURNS>const rtcp_rr 	*</RETURNS>
+struct rtp *session, uint32_t reporter, uint32_t reportee
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_set_encryption_key</NAME>
+<RETURNS>int  </RETURNS>
+struct rtp *session, const char *passphrase
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_set_my_ssrc</NAME>
+<RETURNS>int  </RETURNS>
+struct rtp *session, uint32_t ssrc
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_get_addr</NAME>
+<RETURNS>char  		*</RETURNS>
+struct rtp *session
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_get_rx_port</NAME>
+<RETURNS>uint16_t 	</RETURNS>
+struct rtp *session
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_get_tx_port</NAME>
+<RETURNS>uint16_t 	</RETURNS>
+struct rtp *session
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_get_ttl</NAME>
+<RETURNS>int 	</RETURNS>
+struct rtp *session
+</FUNCTION>
+<FUNCTION>
+<NAME>rtp_get_userdata</NAME>
+<RETURNS>uint8_t 		*</RETURNS>
+struct rtp *session
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_addr_match</NAME>
+<RETURNS>int  </RETURNS>
+const char *a, const char *b
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_addr_identical</NAME>
+<RETURNS>int  </RETURNS>
+const char *a, const char *b
+</FUNCTION>
+<FUNCTION>
+<NAME>gettimeofday</NAME>
+<RETURNS>int  </RETURNS>
+struct timeval *tp, void *
+</FUNCTION>
+<STRUCT>
+<NAME>socket_udp</NAME>
+</STRUCT>
+<FUNCTION>
+<NAME>udp_addr_valid</NAME>
+<RETURNS>int  </RETURNS>
+const char *addr
+</FUNCTION>
+<FUNCTION>
+<NAME>udp_init</NAME>
+<RETURNS>socket_udp  *</RETURNS>
+const char *addr, uint16_t rx_port, uint16_t tx_port, int ttl
+</FUNCTION>
+<FUNCTION>
+<NAME>udp_init_if</NAME>
+<RETURNS>socket_udp  *</RETURNS>
+const char *addr, const char *iface, uint16_t rx_port, uint16_t tx_port, int ttl
+</FUNCTION>
+<FUNCTION>
+<NAME>udp_exit</NAME>
+<RETURNS>void  </RETURNS>
+socket_udp *s
+</FUNCTION>
+<FUNCTION>
+<NAME>udp_send</NAME>
+<RETURNS>int  </RETURNS>
+socket_udp *s, char *buffer, int buflen
+</FUNCTION>
+<FUNCTION>
+<NAME>udp_recv</NAME>
+<RETURNS>int  </RETURNS>
+socket_udp *s, char *buffer, int buflen
+</FUNCTION>
+<FUNCTION>
+<NAME>udp_host_addr</NAME>
+<RETURNS>const char  *</RETURNS>
+socket_udp *s
+</FUNCTION>
+<FUNCTION>
+<NAME>udp_fd</NAME>
+<RETURNS>int  </RETURNS>
+socket_udp *s
+</FUNCTION>
+<FUNCTION>
+<NAME>udp_select</NAME>
+<RETURNS>int  </RETURNS>
+struct timeval *timeout
+</FUNCTION>
+<FUNCTION>
+<NAME>udp_fd_zero</NAME>
+<RETURNS>void  </RETURNS>
+void
+</FUNCTION>
+<FUNCTION>
+<NAME>udp_fd_set</NAME>
+<RETURNS>void  </RETURNS>
+socket_udp *s
+</FUNCTION>
+<FUNCTION>
+<NAME>udp_fd_isset</NAME>
+<RETURNS>int  </RETURNS>
+socket_udp *s
+</FUNCTION>
+<MACRO>
+<NAME>WEXITSTATUS</NAME>
+#define WEXITSTATUS(stat_val) ((unsigned)(stat_val) >> 8)
+</MACRO>
+<MACRO>
+<NAME>WIFEXITED</NAME>
+#define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
+</MACRO>
+<MACRO>
+<NAME>IPV6_ADD_MEMBERSHIP</NAME>
+#define IPV6_ADD_MEMBERSHIP IPV6_JOIN_GROUP
+</MACRO>
+<MACRO>
+<NAME>IPV6_DROP_MEMBERSHIP</NAME>
+#define IPV6_DROP_MEMBERSHIP IPV6_LEAVE_GROUP
+</MACRO>
+<TYPEDEF>
+<NAME>ttl_t</NAME>
+typedef u_char	ttl_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>fd_t</NAME>
+typedef int	fd_t;
+</TYPEDEF>
+<MACRO>
+<NAME>USERNAMELEN</NAME>
+#define USERNAMELEN	8
+</MACRO>
+<MACRO>
+<NAME>max</NAME>
+#define max(a, b)	(((a) > (b))? (a): (b))
+</MACRO>
+<MACRO>
+<NAME>min</NAME>
+#define min(a, b)	(((a) < (b))? (a): (b))
+</MACRO>
+<MACRO>
+<NAME>assert</NAME>
+#define assert(x) if ((x) == 0) fprintf(stderr, "%s:%u: failed assertion\n", __FILE__, __LINE__)
+</MACRO>
+<FUNCTION>
+<NAME>gettimeofday</NAME>
+<RETURNS>int  </RETURNS>
+struct timeval *tp, void *
+</FUNCTION>
+<FUNCTION>
+<NAME>gethostname</NAME>
+<RETURNS>int  </RETURNS>
+char *name, int namelen
+</FUNCTION>
+<MACRO>
+<NAME>EXIT_SUCCESS</NAME>
+#define EXIT_SUCCESS 0
+</MACRO>
+<MACRO>
+<NAME>EXIT_FAILURE</NAME>
+#define EXIT_FAILURE 7
+</MACRO>
+<MACRO>
+<NAME>EAI_ADDRFAMILY</NAME>
+#define	EAI_ADDRFAMILY	 1	/* address family for hostname not supported */
+</MACRO>
+<MACRO>
+<NAME>EAI_AGAIN</NAME>
+#define	EAI_AGAIN	 2	/* temporary failure in name resolution */
+</MACRO>
+<MACRO>
+<NAME>EAI_BADFLAGS</NAME>
+#define	EAI_BADFLAGS	 3	/* invalid value for ai_flags */
+</MACRO>
+<MACRO>
+<NAME>EAI_FAIL</NAME>
+#define	EAI_FAIL	 4	/* non-recoverable failure in name resolution */
+</MACRO>
+<MACRO>
+<NAME>EAI_FAMILY</NAME>
+#define	EAI_FAMILY	 5	/* ai_family not supported */
+</MACRO>
+<MACRO>
+<NAME>EAI_MEMORY</NAME>
+#define	EAI_MEMORY	 6	/* memory allocation failure */
+</MACRO>
+<MACRO>
+<NAME>EAI_NODATA</NAME>
+#define	EAI_NODATA	 7	/* no address associated with hostname */
+</MACRO>
+<MACRO>
+<NAME>EAI_NONAME</NAME>
+#define	EAI_NONAME	 8	/* hostname nor servname provided, or not known */
+</MACRO>
+<MACRO>
+<NAME>EAI_SERVICE</NAME>
+#define	EAI_SERVICE	 9	/* servname not supported for ai_socktype */
+</MACRO>
+<MACRO>
+<NAME>EAI_SOCKTYPE</NAME>
+#define	EAI_SOCKTYPE	10	/* ai_socktype not supported */
+</MACRO>
+<MACRO>
+<NAME>EAI_SYSTEM</NAME>
+#define	EAI_SYSTEM	11	/* system error returned in errno */
+</MACRO>
+<MACRO>
+<NAME>EAI_BADHINTS</NAME>
+#define EAI_BADHINTS	12
+</MACRO>
+<MACRO>
+<NAME>EAI_PROTOCOL</NAME>
+#define EAI_PROTOCOL	13
+</MACRO>
+<MACRO>
+<NAME>EAI_MAX</NAME>
+#define EAI_MAX		14
+</MACRO>
+<MACRO>
+<NAME>NETDB_INTERNAL</NAME>
+#define	NETDB_INTERNAL	-1	/* see errno */
+</MACRO>
+<MACRO>
+<NAME>AI_PASSIVE</NAME>
+#define	AI_PASSIVE	0x00000001 /* get address to use bind() */
+</MACRO>
+<MACRO>
+<NAME>AI_CANONNAME</NAME>
+#define	AI_CANONNAME	0x00000002 /* fill ai_canonname */
+</MACRO>
+<MACRO>
+<NAME>AI_NUMERICHOST</NAME>
+#define	AI_NUMERICHOST	0x00000004 /* prevent name resolution */
+</MACRO>
+<MACRO>
+<NAME>AI_MASK</NAME>
+#define	AI_MASK		(AI_PASSIVE | AI_CANONNAME | AI_NUMERICHOST)
+</MACRO>
+<MACRO>
+<NAME>AI_ALL</NAME>
+#define	AI_ALL		0x00000100 /* IPv6 and IPv4-mapped (with AI_V4MAPPED) */
+</MACRO>
+<MACRO>
+<NAME>AI_V4MAPPED_CFG</NAME>
+#define	AI_V4MAPPED_CFG	0x00000200 /* accept IPv4-mapped if kernel supports */
+</MACRO>
+<MACRO>
+<NAME>AI_ADDRCONFIG</NAME>
+#define	AI_ADDRCONFIG	0x00000400 /* only if any address is assigned */
+</MACRO>
+<MACRO>
+<NAME>AI_V4MAPPED</NAME>
+#define	AI_V4MAPPED	0x00000800 /* accept IPv4-mapped IPv6 address */
+</MACRO>
+<MACRO>
+<NAME>AI_DEFAULT</NAME>
+#define	AI_DEFAULT	(AI_V4MAPPED_CFG | AI_ADDRCONFIG)
+</MACRO>
+<MACRO>
+<NAME>NI_MAXHOST</NAME>
+#define	NI_MAXHOST	1025
+</MACRO>
+<MACRO>
+<NAME>NI_MAXSERV</NAME>
+#define	NI_MAXSERV	32
+</MACRO>
+<MACRO>
+<NAME>NI_NOFQDN</NAME>
+#define	NI_NOFQDN	0x00000001
+</MACRO>
+<MACRO>
+<NAME>NI_NUMERICHOST</NAME>
+#define	NI_NUMERICHOST	0x00000002
+</MACRO>
+<MACRO>
+<NAME>NI_NAMEREQD</NAME>
+#define	NI_NAMEREQD	0x00000004
+</MACRO>
+<MACRO>
+<NAME>NI_NUMERICSERV</NAME>
+#define	NI_NUMERICSERV	0x00000008
+</MACRO>
+<MACRO>
+<NAME>NI_DGRAM</NAME>
+#define	NI_DGRAM	0x00000010
+</MACRO>
+<FUNCTION>
+<NAME>hmac_md5</NAME>
+<RETURNS>void  </RETURNS>
+unsigned char *data, int data_len,unsigned char *key,  int key_len,unsigned char  digest[16]
+</FUNCTION>
+<TYPEDEF>
+<NAME>ttl_t</NAME>
+typedef int		ttl_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>fd_t</NAME>
+typedef unsigned int	fd_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>uint8_t</NAME>
+typedef u_char		uint8_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>uint16_t</NAME>
+typedef u_short		uint16_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>uint32_t</NAME>
+typedef u_long		uint32_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>int8_t</NAME>
+typedef char		int8_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>int16_t</NAME>
+typedef short		int16_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>int32_t</NAME>
+typedef long		int32_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>int64_t</NAME>
+typedef __int64		int64_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>in_addr_t</NAME>
+typedef unsigned long	in_addr_t;
+</TYPEDEF>
+<MACRO>
+<NAME>USERNAMELEN</NAME>
+#define USERNAMELEN	8
+</MACRO>
+<MACRO>
+<NAME>WORDS_SMALLENDIAN</NAME>
+#define WORDS_SMALLENDIAN
+</MACRO>
+<MACRO>
+<NAME>NEED_INET_ATON</NAME>
+#define NEED_INET_ATON
+</MACRO>
+<MACRO>
+<NAME>NEED_DRAND48</NAME>
+#define NEED_DRAND48
+</MACRO>
+<MACRO>
+<NAME>NEED_GETTIMEOFDAY</NAME>
+#define NEED_GETTIMEOFDAY
+</MACRO>
+<MACRO>
+<NAME>assert</NAME>
+#define assert(x) if ((x) == 0) fprintf(stderr, "%s:%u: failed assertion\n", __FILE__, __LINE__)
+</MACRO>
+<MACRO>
+<NAME>inline</NAME>
+#define inline
+</MACRO>
+<MACRO>
+<NAME>AUDIO_MICROPHONE</NAME>
+#define AUDIO_MICROPHONE	1
+</MACRO>
+<MACRO>
+<NAME>AUDIO_LINE_IN</NAME>
+#define AUDIO_LINE_IN		2
+</MACRO>
+<MACRO>
+<NAME>AUDIO_CD</NAME>
+#define AUDIO_CD            4
+</MACRO>
+<MACRO>
+<NAME>AUDIO_SPEAKER</NAME>
+#define AUDIO_SPEAKER		0
+</MACRO>
+<MACRO>
+<NAME>AUDIO_HEADPHONE</NAME>
+#define AUDIO_HEADPHONE		1
+</MACRO>
+<MACRO>
+<NAME>AUDIO_LINE_OUT</NAME>
+#define AUDIO_LINE_OUT		4
+</MACRO>
+<MACRO>
+<NAME>srand48</NAME>
+#define srand48	srand
+</MACRO>
+<MACRO>
+<NAME>lrand48</NAME>
+#define lrand48 rand() * rand
+</MACRO>
+<MACRO>
+<NAME>snprintf</NAME>
+#define snprintf _snprintf
+</MACRO>
+<MACRO>
+<NAME>IN_CLASSD</NAME>
+#define IN_CLASSD(i)	(((long)(i) & 0xf0000000) == 0xe0000000)
+</MACRO>
+<MACRO>
+<NAME>IN_MULTICAST</NAME>
+#define IN_MULTICAST(i)	IN_CLASSD(i)
+</MACRO>
+<TYPEDEF>
+<NAME>caddr_t</NAME>
+typedef char	*caddr_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>ssize_t</NAME>
+typedef int	ssize_t;
+</TYPEDEF>
+<MACRO>
+<NAME>MAXHOSTNAMELEN</NAME>
+#define MAXHOSTNAMELEN	256
+</MACRO>
+<TYPEDEF>
+<NAME>pid_t</NAME>
+typedef int pid_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>uid_t</NAME>
+typedef int uid_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>gid_t</NAME>
+typedef int gid_t;
+</TYPEDEF>
+<FUNCTION>
+<NAME>uname</NAME>
+<RETURNS>int  </RETURNS>
+struct utsname *
+</FUNCTION>
+<FUNCTION>
+<NAME>getopt</NAME>
+<RETURNS>int  </RETURNS>
+int, char * const *, const char *
+</FUNCTION>
+<FUNCTION>
+<NAME>strncasecmp</NAME>
+<RETURNS>int  </RETURNS>
+const char *, const char*, int len
+</FUNCTION>
+<FUNCTION>
+<NAME>srandom</NAME>
+<RETURNS>int  </RETURNS>
+int
+</FUNCTION>
+<FUNCTION>
+<NAME>random</NAME>
+<RETURNS>int  </RETURNS>
+void
+</FUNCTION>
+<FUNCTION>
+<NAME>gethostid</NAME>
+<RETURNS>int  </RETURNS>
+void
+</FUNCTION>
+<FUNCTION>
+<NAME>getuid</NAME>
+<RETURNS>int  </RETURNS>
+void
+</FUNCTION>
+<FUNCTION>
+<NAME>getgid</NAME>
+<RETURNS>int  </RETURNS>
+void
+</FUNCTION>
+<FUNCTION>
+<NAME>getpid</NAME>
+<RETURNS>int  </RETURNS>
+void
+</FUNCTION>
+<FUNCTION>
+<NAME>nice</NAME>
+<RETURNS>int  </RETURNS>
+int
+</FUNCTION>
+<FUNCTION>
+<NAME>usleep</NAME>
+<RETURNS>int  </RETURNS>
+unsigned int
+</FUNCTION>
+<FUNCTION>
+<NAME>time</NAME>
+<RETURNS>time_t  </RETURNS>
+time_t *
+</FUNCTION>
+<FUNCTION>
+<NAME>w32_make_version_info</NAME>
+<RETURNS>const char  *</RETURNS>
+char * rat_verion
+</FUNCTION>
+<MACRO>
+<NAME>strcasecmp</NAME>
+#define strcasecmp  _stricmp
+</MACRO>
+<MACRO>
+<NAME>strncasecmp</NAME>
+#define strncasecmp _strnicmp
+</MACRO>
+<FUNCTION>
+<NAME>RegGetValue</NAME>
+<RETURNS>int  </RETURNS>
+HKEY *, char *, char*, char*, int
+</FUNCTION>
+<FUNCTION>
+<NAME>ShowMessage</NAME>
+<RETURNS>void  </RETURNS>
+int level, char *msg
+</FUNCTION>
+<MACRO>
+<NAME>bcopy</NAME>
+#define bcopy(from,to,len) memcpy(to,from,len)
+</MACRO>
+<MACRO>
+<NAME>ECONNREFUSED</NAME>
+#define ECONNREFUSED	WSAECONNREFUSED
+</MACRO>
+<MACRO>
+<NAME>ENETUNREACH</NAME>
+#define ENETUNREACH		WSAENETUNREACH
+</MACRO>
+<MACRO>
+<NAME>EHOSTUNREACH</NAME>
+#define EHOSTUNREACH	WSAEHOSTUNREACH
+</MACRO>
+<MACRO>
+<NAME>EWOULDBLOCK</NAME>
+#define EWOULDBLOCK		WSAEWOULDBLOCK
+</MACRO>
+<MACRO>
+<NAME>EAFNOSUPPORT</NAME>
+#define EAFNOSUPPORT	WSAEAFNOSUPPORT
+</MACRO>
+<MACRO>
+<NAME>M_PI</NAME>
+#define M_PI		3.14159265358979323846
+</MACRO>
+<MACRO>
+<NAME>MBUS_MESSAGE_LOST</NAME>
+#define MBUS_MESSAGE_LOST           1
+</MACRO>
+<MACRO>
+<NAME>MBUS_DESTINATION_UNKNOWN</NAME>
+#define MBUS_DESTINATION_UNKNOWN    2
+</MACRO>
+<MACRO>
+<NAME>MBUS_DESTINATION_NOT_UNIQUE</NAME>
+#define MBUS_DESTINATION_NOT_UNIQUE 3
+</MACRO>
+<FUNCTION>
+<NAME>mbus_cmd_handler</NAME>
+<RETURNS>void  </RETURNS>
+struct mbus *m, void  (*cmd_handler)(char *src, char *cmd, char *arg, void *dat)
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_exit</NAME>
+<RETURNS>void  </RETURNS>
+struct mbus *m
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_addr_valid</NAME>
+<RETURNS>int  </RETURNS>
+struct mbus *m, char *addr
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_qmsg</NAME>
+<RETURNS>void  </RETURNS>
+struct mbus *m, const char *dest, const char *cmnd, const char *args, int reliable
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_qmsgf</NAME>
+<RETURNS>void  </RETURNS>
+struct mbus *m, const char *dest, int reliable, const char *cmnd, const char *format, ...
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_send</NAME>
+<RETURNS>void  </RETURNS>
+struct mbus *m
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_recv</NAME>
+<RETURNS>int  </RETURNS>
+struct mbus *m, void *data, struct timeval *timeout
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_retransmit</NAME>
+<RETURNS>void  </RETURNS>
+struct mbus *m
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_heartbeat</NAME>
+<RETURNS>void  </RETURNS>
+struct mbus *m, int interval
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_waiting_ack</NAME>
+<RETURNS>int  </RETURNS>
+struct mbus *m
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_sent_all</NAME>
+<RETURNS>int  </RETURNS>
+struct mbus *m
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_rendezvous_waiting</NAME>
+<RETURNS>char         *</RETURNS>
+struct mbus *m, char *addr, char *token, void *data
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_rendezvous_go</NAME>
+<RETURNS>char         *</RETURNS>
+struct mbus *m, char *token, void *data
+</FUNCTION>
+<MACRO>
+<NAME>IN6ADDRSZ</NAME>
+#define IN6ADDRSZ	16	/* IPv6 T_AAAA */
+</MACRO>
+<FUNCTION>
+<NAME>mbus_parse_done</NAME>
+<RETURNS>void 	</RETURNS>
+struct mbus_parser *m
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_parse_lst</NAME>
+<RETURNS>int 	</RETURNS>
+struct mbus_parser *m, char **l
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_parse_str</NAME>
+<RETURNS>int 	</RETURNS>
+struct mbus_parser *m, char **s
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_parse_sym</NAME>
+<RETURNS>int 	</RETURNS>
+struct mbus_parser *m, char **s
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_parse_int</NAME>
+<RETURNS>int 	</RETURNS>
+struct mbus_parser *m, int *i
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_parse_ts</NAME>
+<RETURNS>int  </RETURNS>
+struct mbus_parser *m, struct timeval *ts
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_parse_flt</NAME>
+<RETURNS>int 	</RETURNS>
+struct mbus_parser *m, double *d
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_decode_str</NAME>
+<RETURNS>char 			*</RETURNS>
+char *s
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_encode_str</NAME>
+<RETURNS>char 			*</RETURNS>
+const char *s
+</FUNCTION>
+<MACRO>
+<NAME>DIR_ENCRYPT</NAME>
+#define     DIR_ENCRYPT           0 /*  Are we encrpyting?  */
+</MACRO>
+<MACRO>
+<NAME>DIR_DECRYPT</NAME>
+#define     DIR_DECRYPT           1 /*  Are we decrpyting?  */
+</MACRO>
+<MACRO>
+<NAME>MODE_ECB</NAME>
+#define     MODE_ECB              1 /*  Are we ciphering in ECB mode?   */
+</MACRO>
+<MACRO>
+<NAME>MODE_CBC</NAME>
+#define     MODE_CBC              2 /*  Are we ciphering in CBC mode?   */
+</MACRO>
+<MACRO>
+<NAME>MODE_CFB1</NAME>
+#define     MODE_CFB1             3 /*  Are we ciphering in 1-bit CFB mode? */
+</MACRO>
+<MACRO>
+<NAME>BITSPERBLOCK</NAME>
+#define     BITSPERBLOCK        128 /* Default number of bits in a cipher block */
+</MACRO>
+<MACRO>
+<NAME>BAD_KEY_DIR</NAME>
+#define     BAD_KEY_DIR          -1 /*  Key direction is invalid, e.g., unknown value */
+</MACRO>
+<MACRO>
+<NAME>BAD_KEY_MAT</NAME>
+#define     BAD_KEY_MAT          -2 /*  Key material not of correct length */
+</MACRO>
+<MACRO>
+<NAME>BAD_KEY_INSTANCE</NAME>
+#define     BAD_KEY_INSTANCE     -3 /*  Key passed is not valid */
+</MACRO>
+<MACRO>
+<NAME>BAD_CIPHER_MODE</NAME>
+#define     BAD_CIPHER_MODE      -4 /*  Params struct passed to cipherInit invalid */
+</MACRO>
+<MACRO>
+<NAME>BAD_CIPHER_STATE</NAME>
+#define     BAD_CIPHER_STATE     -5 /*  Cipher in wrong state (e.g., not initialized) */
+</MACRO>
+<MACRO>
+<NAME>BAD_BLOCK_LENGTH</NAME>
+#define     BAD_BLOCK_LENGTH     -6
+</MACRO>
+<MACRO>
+<NAME>BAD_CIPHER_INSTANCE</NAME>
+#define     BAD_CIPHER_INSTANCE  -7
+</MACRO>
+<MACRO>
+<NAME>BAD_DATA</NAME>
+#define     BAD_DATA             -8 /*  Data contents are invalid, e.g., invalid padding */
+</MACRO>
+<MACRO>
+<NAME>BAD_OTHER</NAME>
+#define     BAD_OTHER            -9 /*  Unknown error */
+</MACRO>
+<MACRO>
+<NAME>MAX_KEY_SIZE</NAME>
+#define     MAX_KEY_SIZE         64 /* # of ASCII char's needed to represent a key */
+</MACRO>
+<MACRO>
+<NAME>MAX_IV_SIZE</NAME>
+#define     MAX_IV_SIZE          16 /* # bytes needed to represent an IV  */
+</MACRO>
+<TYPEDEF>
+<NAME>BYTE</NAME>
+typedef unsigned char   BYTE;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>keyInstance</NAME>
+typedef struct {
+    BYTE  direction;                /* Key used for encrypting or decrypting? */
+    int   keyLen;                   /* Length of the key  */
+    char  keyMaterial[MAX_KEY_SIZE+1];  /* Raw key data in ASCII, e.g., user input or KAT values */
+        /*  The following parameters are algorithm dependent, replace or add as necessary  */
+	int   ROUNDS;                   /* key-length-dependent number of rounds */
+    int   blockLen;                 /* block length */
+    word8 keySched[MAXROUNDS+1][4][4];	/* key schedule		*/
+} keyInstance;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>cipherInstance</NAME>
+typedef struct {                    /* changed order of the components */
+    BYTE  mode;                     /* MODE_ECB, MODE_CBC, or MODE_CFB1 */
+    BYTE  IV[MAX_IV_SIZE];          /* A possible Initialization Vector for ciphering */
+        /*  Add any algorithm specific parameters needed here  */
+    int   blockLen;                 /* Sample: Handles non-128 bit block sizes (if available) */
+} cipherInstance;
+</TYPEDEF>
+<FUNCTION>
+<NAME>makeKey</NAME>
+<RETURNS>int  </RETURNS>
+keyInstance *key, BYTE direction, int keyLen, char *keyMaterial
+</FUNCTION>
+<FUNCTION>
+<NAME>cipherInit</NAME>
+<RETURNS>int  </RETURNS>
+cipherInstance *cipher, BYTE mode, char *IV
+</FUNCTION>
+<FUNCTION>
+<NAME>blockEncrypt</NAME>
+<RETURNS>int  </RETURNS>
+cipherInstance *cipher, keyInstance *key,BYTE *input, int inputLen, BYTE *outBuffer
+</FUNCTION>
+<FUNCTION>
+<NAME>padEncrypt</NAME>
+<RETURNS>int  </RETURNS>
+cipherInstance *cipher, keyInstance *key,BYTE *input, int inputOctets, BYTE *outBuffer
+</FUNCTION>
+<FUNCTION>
+<NAME>blockDecrypt</NAME>
+<RETURNS>int  </RETURNS>
+cipherInstance *cipher, keyInstance *key,BYTE *input, int inputLen, BYTE *outBuffer
+</FUNCTION>
+<FUNCTION>
+<NAME>padDecrypt</NAME>
+<RETURNS>int  </RETURNS>
+cipherInstance *cipher, keyInstance *key,BYTE *input, int inputOctets, BYTE *outBuffer
+</FUNCTION>
+<FUNCTION>
+<NAME>cipherUpdateRounds</NAME>
+<RETURNS>int  </RETURNS>
+cipherInstance *cipher, keyInstance *key,BYTE *input, int inputLen, BYTE *outBuffer, int Rounds
+</FUNCTION>
+<MACRO>
+<NAME>block_alloc</NAME>
+#define block_alloc(x)	_block_alloc(x,__FILE__,__LINE__)
+</MACRO>
+<MACRO>
+<NAME>block_free</NAME>
+#define block_free(x,y) _block_free(x,y,__LINE__)
+</MACRO>
+<FUNCTION>
+<NAME>block_release_all</NAME>
+<RETURNS>void 	</RETURNS>
+void
+</FUNCTION>
+<FUNCTION>
+<NAME>block_trash_check</NAME>
+<RETURNS>void  </RETURNS>
+void
+</FUNCTION>
+<FUNCTION>
+<NAME>block_check</NAME>
+<RETURNS>void  </RETURNS>
+char *p
+</FUNCTION>
+<FUNCTION>
+<NAME>purge_chars</NAME>
+<RETURNS>void  </RETURNS>
+char *src, char *to_go
+</FUNCTION>
+<FUNCTION>
+<NAME>overlapping_words</NAME>
+<RETURNS>int  </RETURNS>
+const char *s1, const char *s2, int max_words
+</FUNCTION>
+<FUNCTION>
+<NAME>strfind</NAME>
+<RETURNS>int  </RETURNS>
+const char *haystack,const char *needle_start,const char *needle_end
+</FUNCTION>
+<FUNCTION>
+<NAME>lbl_srandom</NAME>
+<RETURNS>void  </RETURNS>
+uint32_t seed
+</FUNCTION>
+<FUNCTION>
+<NAME>lbl_random</NAME>
+<RETURNS>uint32_t  </RETURNS>
+void
+</FUNCTION>
+<TYPEDEF>
+<NAME>u_int8_t</NAME>
+typedef unsigned char u_int8_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>u_int8_t</NAME>
+typedef unsigned int u_int8_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>u_int16_t</NAME>
+typedef unsigned short u_int16_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>u_int16_t</NAME>
+typedef unsigned int u_int16_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>u_int16_t</NAME>
+typedef unsigned char u_int16_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>u_int32_t</NAME>
+typedef unsigned int u_int32_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>u_int32_t</NAME>
+typedef unsigned long u_int32_t;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>u_int32_t</NAME>
+typedef unsigned short u_int32_t;
+</TYPEDEF>
+<MACRO>
+<NAME>MBUS_CONFIG_VERSION</NAME>
+#define MBUS_CONFIG_VERSION	 1
+</MACRO>
+<MACRO>
+<NAME>SCOPE_HOSTLOCAL</NAME>
+#define SCOPE_HOSTLOCAL       	 0
+</MACRO>
+<MACRO>
+<NAME>SCOPE_HOSTLOCAL_NAME</NAME>
+#define SCOPE_HOSTLOCAL_NAME 	"HOSTLOCAL"
+</MACRO>
+<MACRO>
+<NAME>SCOPE_LINKLOCAL</NAME>
+#define SCOPE_LINKLOCAL       	 1
+</MACRO>
+<MACRO>
+<NAME>SCOPE_LINKLOCAL_NAME</NAME>
+#define SCOPE_LINKLOCAL_NAME 	"LINKLOCAL"
+</MACRO>
+<MACRO>
+<NAME>MBUS_DEFAULT_NET_ADDR</NAME>
+#define MBUS_DEFAULT_NET_ADDR 	"224.255.222.239"
+</MACRO>
+<MACRO>
+<NAME>MBUS_DEFAULT_NET_PORT</NAME>
+#define MBUS_DEFAULT_NET_PORT 	 47000
+</MACRO>
+<MACRO>
+<NAME>MBUS_DEFAULT_SCOPE</NAME>
+#define MBUS_DEFAULT_SCOPE    	 SCOPE_HOSTLOCAL
+</MACRO>
+<MACRO>
+<NAME>MBUS_DEFAULT_SCOPE_NAME</NAME>
+#define MBUS_DEFAULT_SCOPE_NAME	 SCOPE_HOSTLOCAL_NAME
+</MACRO>
+<FUNCTION>
+<NAME>mbus_new_encrkey</NAME>
+<RETURNS>char  *</RETURNS>
+void
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_new_hashkey</NAME>
+<RETURNS>char  *</RETURNS>
+void
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_lock_config_file</NAME>
+<RETURNS>void  </RETURNS>
+struct mbus_config *m
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_unlock_config_file</NAME>
+<RETURNS>void  </RETURNS>
+struct mbus_config *m
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_get_encrkey</NAME>
+<RETURNS>void  </RETURNS>
+struct mbus_config *m, struct mbus_key *key
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_get_hashkey</NAME>
+<RETURNS>void  </RETURNS>
+struct mbus_config *m, struct mbus_key *key
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_get_net_addr</NAME>
+<RETURNS>void  </RETURNS>
+struct mbus_config *m, char *net_addr, uint16_t *net_port, int *net_scope
+</FUNCTION>
+<FUNCTION>
+<NAME>mbus_get_version</NAME>
+<RETURNS>int  </RETURNS>
+struct mbus_config *m
+</FUNCTION>
+<FUNCTION>
+<NAME>inet_ntop</NAME>
+<RETURNS>const char  *</RETURNS>
+int af, const void *src, char *dst, size_t size
+</FUNCTION>
+<FUNCTION>
+<NAME>inet_pton</NAME>
+<RETURNS>int  </RETURNS>
+int af, const char *src, void *dst
+</FUNCTION>
+<STRUCT>
+<NAME>asarray</NAME>
+</STRUCT>
+<FUNCTION>
+<NAME>asarray_create</NAME>
+<RETURNS>int32_t  </RETURNS>
+asarray **ppa
+</FUNCTION>
+<FUNCTION>
+<NAME>asarray_destroy</NAME>
+<RETURNS>void  </RETURNS>
+asarray **ppa
+</FUNCTION>
+<FUNCTION>
+<NAME>asarray_add</NAME>
+<RETURNS>int32_t  </RETURNS>
+asarray *pa, const char *key, const char *value
+</FUNCTION>
+<FUNCTION>
+<NAME>asarray_remove</NAME>
+<RETURNS>void  </RETURNS>
+asarray *pa, const char *key
+</FUNCTION>
+<FUNCTION>
+<NAME>asarray_lookup</NAME>
+<RETURNS>int32_t  </RETURNS>
+asarray *pa, const char *key, char **value
+</FUNCTION>
+<FUNCTION>
+<NAME>asarray_get_key_no</NAME>
+<RETURNS>const char *</RETURNS>
+asarray *pa, int32_t index
+</FUNCTION>
+<MACRO>
+<NAME>BINARY_KEY_MATERIAL</NAME>
+#define BINARY_KEY_MATERIAL
+</MACRO>
+<MACRO>
+<NAME>MAXKC</NAME>
+#define MAXKC			(256/32)
+</MACRO>
+<MACRO>
+<NAME>MAXROUNDS</NAME>
+#define MAXROUNDS		14
+</MACRO>
+<MACRO>
+<NAME>USUAL_TYPES</NAME>
+#define USUAL_TYPES
+</MACRO>
+<TYPEDEF>
+<NAME>byte</NAME>
+typedef unsigned char	byte;
+</TYPEDEF>
+<TYPEDEF>
+<NAME>word8</NAME>
+typedef unsigned char	word8;	
+</TYPEDEF>
+<TYPEDEF>
+<NAME>word16</NAME>
+typedef unsigned short	word16;	
+</TYPEDEF>
+<TYPEDEF>
+<NAME>word32</NAME>
+typedef unsigned int	word32;
+</TYPEDEF>
+<FUNCTION>
+<NAME>rijndaelKeySched</NAME>
+<RETURNS>int  </RETURNS>
+word8 k[MAXKC][4], word8 rk[MAXROUNDS+1][4][4], int ROUNDS
+</FUNCTION>
+<FUNCTION>
+<NAME>rijndaelKeyEncToDec</NAME>
+<RETURNS>int  </RETURNS>
+word8 W[MAXROUNDS+1][4][4], int ROUNDS
+</FUNCTION>
+<FUNCTION>
+<NAME>rijndaelEncrypt</NAME>
+<RETURNS>int  </RETURNS>
+word8 a[16], word8 b[16], word8 rk[MAXROUNDS+1][4][4], int ROUNDS
+</FUNCTION>
+<FUNCTION>
+<NAME>rijndaelEncryptRound</NAME>
+<RETURNS>int  </RETURNS>
+word8 a[4][4], word8 rk[MAXROUNDS+1][4][4], int ROUNDS, int rounds
+</FUNCTION>
+<FUNCTION>
+<NAME>rijndaelDecrypt</NAME>
+<RETURNS>int  </RETURNS>
+word8 a[16], word8 b[16], word8 rk[MAXROUNDS+1][4][4], int ROUNDS
+</FUNCTION>
+<FUNCTION>
+<NAME>rijndaelDecryptRound</NAME>
+<RETURNS>int  </RETURNS>
+word8 a[4][4], word8 rk[MAXROUNDS+1][4][4], int ROUNDS, int rounds
+</FUNCTION>
+<FUNCTION>
+<NAME>drand48</NAME>
+<RETURNS>double  </RETURNS>
+void
+</FUNCTION>
+<MACRO>
+<NAME>CCL_VERSION</NAME>
+#define CCL_VERSION "v1.2.10"
+</MACRO>
+<FUNCTION>
+<NAME>base64encode</NAME>
+<RETURNS>int  </RETURNS>
+const unsigned char *input, int input_length, unsigned char *output, int output_length
+</FUNCTION>
+<FUNCTION>
+<NAME>base64decode</NAME>
+<RETURNS>int  </RETURNS>
+const unsigned char *input, int input_length, unsigned char *output, int output_length
+</FUNCTION>
+<MACRO>
+<NAME>WORDS_SMALLENDIAN</NAME>
+#define WORDS_SMALLENDIAN
+</MACRO>
+<ENUM>
+<NAME>QFDES_what</NAME>
+typedef enum {qfDES_encrypt, qfDES_decrypt} QFDES_what;
+</ENUM>
+<ENUM>
+<NAME>QFDES_mode</NAME>
+typedef enum {qfDES_ecb, qfDES_cbc, qfDES_cfb, qfDES_ofb} QFDES_mode;
+</ENUM>
+<ENUM>
+<NAME>QFDES_parity</NAME>
+typedef enum {qfDES_even, qfDES_odd} QFDES_parity;
+</ENUM>
+<ENUM>
+<NAME>QFDES_generate</NAME>
+typedef enum {qfDES_key, qfDES_iv} QFDES_generate;
+</ENUM>
+<FUNCTION>
+<NAME>qfDES</NAME>
+<RETURNS>int  </RETURNS>
+unsigned char *key, unsigned char *data, unsigned int size, const QFDES_what what, const QFDES_mode mode, unsigned char *initVec
+</FUNCTION>
+<MACRO>
+<NAME>qfDES_ECB_e</NAME>
+#define qfDES_ECB_e(_key, _data, _size) qfDES(_key, _data, _size, qfDES_encrypt, qfDES_ecb, (unsigned char *) 0)
+</MACRO>
+<MACRO>
+<NAME>qfDES_ECB_d</NAME>
+#define qfDES_ECB_d(_key, _data, _size) qfDES(_key, _data, _size, qfDES_decrypt, qfDES_ecb, (unsigned char *) 0)
+</MACRO>
+<MACRO>
+<NAME>qfDES_CBC_e</NAME>
+#define qfDES_CBC_e(_key, _data, _size, _initVec) qfDES(_key, _data, _size, qfDES_encrypt, qfDES_cbc, _initVec)
+</MACRO>
+<MACRO>
+<NAME>qfDES_CBC_d</NAME>
+#define qfDES_CBC_d(_key, _data, _size, _initVec) qfDES(_key, _data, _size, qfDES_decrypt, qfDES_cbc, _initVec)
+</MACRO>
+<MACRO>
+<NAME>qfDES_CFB_e</NAME>
+#define qfDES_CFB_e(_key, _data, _size, _initVec) qfDES(_key, _data, _size, qfDES_encrypt, qfDES_cfb, _initVec)
+</MACRO>
+<MACRO>
+<NAME>qfDES_CFB_d</NAME>
+#define qfDES_CFB_d(_key, _data, _size, _initVec) qfDES(_key, _data, _size, qfDES_decrypt, qfDES_cfb, _initVec)
+</MACRO>
+<MACRO>
+<NAME>qfDES_OFB_e</NAME>
+#define qfDES_OFB_e(_key, _data, _size, _initVec) qfDES(_key, _data, _size, qfDES_encrypt, qfDES_ofb, _initVec)
+</MACRO>
+<MACRO>
+<NAME>qfDES_OFB_d</NAME>
+#define qfDES_OFB_d(_key, _data, _size, _initVec) qfDES(_key, _data, _size, qfDES_decrypt, qfDES_ofb, _initVec)
+</MACRO>
+<FUNCTION>
+<NAME>qfDES_setPad</NAME>
+<RETURNS>unsigned char  </RETURNS>
+unsigned char pad
+</FUNCTION>
+<MACRO>
+<NAME>qfDES_padSpace</NAME>
+#define qfDES_padSpace() qfDES_setPad((unsigned char) ' ')
+</MACRO>
+<MACRO>
+<NAME>qfDES_padZero</NAME>
+#define qfDES_padZero() qfDES_setPad((unsigned char) '\0')
+</MACRO>
+<MACRO>
+<NAME>qfDES_plainTextSize</NAME>
+#define qfDES_plainTextSize(_ptr, _size) (unsigned int) ((_size) - (unsigned int) (_ptr)[(_size) - 1])
+</MACRO>
+<FUNCTION>
+<NAME>qfDES_setParity</NAME>
+<RETURNS>void  </RETURNS>
+unsigned char *ptr, unsigned int size, const QFDES_parity parity
+</FUNCTION>
+<FUNCTION>
+<NAME>qfDES_checkParity</NAME>
+<RETURNS>unsigned int  </RETURNS>
+unsigned char *ptr, unsigned int size, const QFDES_parity parity
+</FUNCTION>
+<FUNCTION>
+<NAME>qfDES_generate</NAME>
+<RETURNS>unsigned char  *</RETURNS>
+const QFDES_generate what
+</FUNCTION>
+<MACRO>
+<NAME>qfDES_generateKey</NAME>
+#define qfDES_generateKey() qfDES_generate(qfDES_key)
+</MACRO>
+<MACRO>
+<NAME>qfDES_generateIV</NAME>
+#define qfDES_generateIV() qfDES_generate(qfDES_iv)
+</MACRO>
+<FUNCTION>
+<NAME>qfDES_checkWeakKeys</NAME>
+<RETURNS>int  </RETURNS>
+unsigned char *key
+</FUNCTION>
+<FUNCTION>
+<NAME>btree_create</NAME>
+<RETURNS>int  </RETURNS>
+btree_t **tree
+</FUNCTION>
+<FUNCTION>
+<NAME>btree_destroy</NAME>
+<RETURNS>int  </RETURNS>
+btree_t **tree
+</FUNCTION>
+<FUNCTION>
+<NAME>btree_add</NAME>
+<RETURNS>int  </RETURNS>
+btree_t *tree, uint32_t key, void *data
+</FUNCTION>
+<FUNCTION>
+<NAME>btree_remove</NAME>
+<RETURNS>int  </RETURNS>
+btree_t *tree, uint32_t key, void **d
+</FUNCTION>
+<FUNCTION>
+<NAME>btree_find</NAME>
+<RETURNS>int  </RETURNS>
+btree_t *tree, uint32_t key, void **d
+</FUNCTION>
+<FUNCTION>
+<NAME>btree_get_min_key</NAME>
+<RETURNS>int  </RETURNS>
+btree_t *tree, uint32_t *key
+</FUNCTION>
+<FUNCTION>
+<NAME>btree_get_max_key</NAME>
+<RETURNS>int  </RETURNS>
+btree_t *tree, uint32_t *key
+</FUNCTION>
+<FUNCTION>
+<NAME>btree_get_next_key</NAME>
+<RETURNS>int  </RETURNS>
+btree_t *tree, uint32_t cur_key, uint32_t *next_key
+</FUNCTION>
+<MACRO>
+<NAME>xmalloc</NAME>
+#define xmalloc(x)	_xmalloc(x,__FILE__,__LINE__)
+</MACRO>
+<MACRO>
+<NAME>xrealloc</NAME>
+#define xrealloc(p,x)	_xrealloc(p, x,__FILE__,__LINE__)
+</MACRO>
+<MACRO>
+<NAME>xstrdup</NAME>
+#define xstrdup(str)	_xstrdup(str,__FILE__,__LINE__)
+</MACRO>
+<FUNCTION>
+<NAME>xdoneinit</NAME>
+<RETURNS>void  </RETURNS>
+void
+</FUNCTION>
+<FUNCTION>
+<NAME>xmemchk</NAME>
+<RETURNS>void 	</RETURNS>
+void
+</FUNCTION>
+<FUNCTION>
+<NAME>xmemdmp</NAME>
+<RETURNS>void  </RETURNS>
+void
+</FUNCTION>
+<FUNCTION>
+<NAME>xclaim</NAME>
+<RETURNS>void  </RETURNS>
+void *addr, const char *filen, int line
+</FUNCTION>
+<FUNCTION>
+<NAME>xmemdist</NAME>
+<RETURNS>void  </RETURNS>
+FILE *fp
+</FUNCTION>
+<FUNCTION>
+<NAME>xfree</NAME>
+<RETURNS>void 	</RETURNS>
+void *p
+</FUNCTION>

@@ -1,0 +1,268 @@
+<?xml version='1.0' encoding='us-ascii'?> 
+<!DOCTYPE eventscript SYSTEM "eventscript.dtd" >  
+
+<!-- 
+This defines the event-driven behavior of a UAS in reponse to a simple
+ invite request. This script is the call flow for a successful invite. 
+ The following callflow defines a state machine for the call.
+-->
+
+
+<!-- Instatiate a new event pattern for each new CallID -->
+
+<CALLFLOW
+	title = "Simulation of UAS behavior (Successful Invite with RTP stream)"
+	description = 
+" This defines the event-driven behavior of a UAS in reponse to a simple
+  invite request. This script is the call flow for a successful invite.
+  The following callflow defines a state machine for the call."
+   	instantiateOn = "newCallID"
+>
+
+<!-- Define match patterns for the messages we want to match -->
+<MESSAGE_TEMPLATES>
+
+<SIP_RESPONSE
+	templateId = "OK"
+>
+<STATUS_LINE
+	statusCode = "200"
+/>
+</SIP_RESPONSE>
+
+<SIP_REQUEST
+	templateId = "BYE"
+>
+<REQUEST_LINE
+	method = "BYE"
+/>
+</SIP_REQUEST>
+
+<SIP_REQUEST
+	templateId = "INVITE"
+>
+
+<REQUEST_LINE
+	method = "INVITE"
+/>
+
+</SIP_REQUEST>
+
+
+<SIP_REQUEST
+	templateId = "CANCEL"
+>
+
+<REQUEST_LINE
+	method = "CANCEL"
+/>
+</SIP_REQUEST>
+
+
+<SIP_REQUEST
+	templateId = "ACK"
+>
+
+<REQUEST_LINE
+	method = "ACK"
+/>
+
+</SIP_REQUEST>
+
+<SIP_REQUEST
+	templateId = "REGISTER"
+>
+<REQUEST_LINE
+	method = "REGISTER"
+/>
+</SIP_REQUEST>
+
+</MESSAGE_TEMPLATES>
+
+
+
+<!-- Describe a re-active state machine for the test case. -->
+<STATE_MACHINE>
+<!-- Send a register off to proxy (EXEPCT has no dependency)-->
+<EXPECT
+	nodeId = "node1"
+	generatedEvent = "RegisterSent"
+>
+<GENERATE
+	retransmit= "true"
+	messageId = "REGISTER"
+>
+<SIP_REQUEST>
+<REQUEST_LINE
+	method = "REGISTER"
+	agentId = "callee"
+/>
+
+<FROM
+	agentId = "callee"
+/>
+
+<TO
+	agentId = "callee"
+/>
+
+<CONTACT
+	agentId = "callee"
+	action="proxy"
+/>
+<CALLID />
+</SIP_REQUEST>
+</GENERATE>
+</EXPECT>
+
+<!-- Expect an OK for the registration -->
+<EXPECT
+	nodeId = "node2"
+	enablingEvent  = "RegisterSent"
+	triggerMessage = "OK"
+	generatedEvent = "RegistrationComplete"
+/>
+
+<!-- Expect an INVITE and send out a 200 OK in response to the invite -->
+<EXPECT
+	nodeId 		 = "node3"
+	enablingEvent    = "RegistrationComplete"
+	triggerMessage   = "INVITE"
+	generatedEvent   = "INVITEReceivedOKSent"
+	executeOnTrigger = "onInviteReceived"
+>
+
+<GENERATE
+	retransmit   = "false"
+	messageId    = "INVITE_OK"
+>
+<SIP_RESPONSE>
+<STATUS_LINE
+	statusCode  = "200"
+/>
+</SIP_RESPONSE>
+</GENERATE>
+<![CDATA[
+# This code runs after the OK is sent 
+print "Registering Handler"
+def onInviteReceived(sipMsg):
+	global sdpAnnounce
+	sdpAnnounce = None
+	print "Hi I got an Invite"
+	sdpFields = sipMsg.getMessageContent()
+	print "sdpFields = ", sdpFields 
+	if sdpFields != None:
+		sdpParser = StringMsgParser()
+		# Stash away the sdp Announcement in a global variable.
+		sdpAnnounce = sdpParser.parseSDPAnnounce(sdpFields)
+]]>
+</EXPECT>
+
+
+<!-- Expect an ACK and send a BYE 40 seconds after the ACK.
+ Note that this includes some imbedded code that triggers when
+ the ACK arrives. When the transaction complets the onCompletion
+ attribute specifies the code fragment that runs  
+-->
+<EXPECT
+	enablingEvent      = "INVITEReceivedOKSent"
+	triggerMessage     = "ACK"
+	generatedEvent     = "ACKReceived"
+	executeOnTrigger   = "onACKReceived"
+	executeOnCompletion = "onTransactionComplete"
+>
+<GENERATE 
+	delay 	    = "2"
+	messageId   = "BYE"
+	retransmit = "true"
+>
+<SIP_REQUEST>
+<REQUEST_LINE
+	method = "BYE"
+/>
+</SIP_REQUEST>
+</GENERATE>
+<![CDATA[
+print "registering onACKReceived"
+wantRTP = 0
+def onACKReceived(sipMsg):
+	global sdpAnnounce
+	global playerRTP
+	global wantRTP
+	if sdpAnnounce != None :
+		print sdpAnnounce
+		# change this url if you want...
+		if wantRTP == 1 :
+ 	        	playerRTP= PlayerRTP(sdpAnnounce, \
+				"file://home/deruelle/nist-sip/" + \
+				"tools/responder/alanis.mp3")
+        		playerRTP.start()
+
+# This code runs after the transaction has completed
+def onTransactionComplete():
+	System.out.println("Transaction is complete")
+	System.exit(0)
+	
+
+]]>
+	
+</EXPECT>
+
+<!--Expect a cancel and send an OK and then exit -->
+<EXPECT
+	nodeId = "node4"
+	triggerMessage = "CANCEL"
+	generatedEvent = "CANCELReceived"
+>
+
+<GENERATE
+	retransmit = "false"
+	messageType = "SipResponse"
+	messageId   = "CANCEL_OK"
+>
+<SIP_RESPONSE>
+<STATUS_LINE
+	statusCode = "200"
+/>
+<![CDATA[
+print "registering cancel script"
+def onCancelReceived(sipMsg):
+	print "CANCEL received"
+	System.exit(0)
+]]>
+</SIP_RESPONSE>
+</GENERATE>
+
+</EXPECT>
+
+<!--Expect a BYE and  send an OK exit if you get a bye -->
+<EXPECT
+	nodeId = "node5"
+	executeOnTrigger    = "onBYEReceived"
+	triggerMessage   = "BYE"
+>
+<GENERATE
+	retransmit="false"
+	messageType = "SipRequest"
+	messageId = "BYE_OK"
+>
+<SIP_RESPONSE>
+<STATUS_LINE
+	statusCode = "200"
+/>
+</SIP_RESPONSE>
+</GENERATE>
+<!-- Note that this fragement of code runs *after* the response is sent-->
+<![CDATA[
+print "registering onBYEReceived"
+def onBYEReceived(sipMsg):
+	print "Bye received"
+	System.exit(0)
+
+]]>
+
+</EXPECT>
+</STATE_MACHINE>
+</CALLFLOW>
+	
+

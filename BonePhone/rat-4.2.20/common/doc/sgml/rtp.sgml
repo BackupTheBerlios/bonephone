@@ -1,0 +1,1278 @@
+<refentry id="uclmmbase-rtp" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>RTP</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>RTP</refname><refpurpose>Real-Time Transport Protocol (RTP) Implementation.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+#include &lt;rtp.h&gt;
+
+
+#define     <link linkend="RTP-VERSION-CAPS">RTP_VERSION</link>
+#define     <link linkend="RTP-MAX-PACKET-LEN-CAPS">RTP_MAX_PACKET_LEN</link>
+typedef     <link linkend="rtp-packet">rtp_packet</link>;
+#define     <link linkend="RTP-PACKET-HEADER-SIZE-CAPS">RTP_PACKET_HEADER_SIZE</link>
+typedef     <link linkend="rtcp-sr">rtcp_sr</link>;
+typedef     <link linkend="rtcp-rr">rtcp_rr</link>;
+enum        <link linkend="rtcp-sdes-type">rtcp_sdes_type</link>;
+typedef     <link linkend="rtcp-sdes-item">rtcp_sdes_item</link>;
+typedef     <link linkend="rtcp-app">rtcp_app</link>;
+<link linkend="rtcp-app">rtcp_app</link>*   (<link linkend="rtcp-app-callback">*rtcp_app_callback</link>)            (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> rtp_ts,
+                                             int max_size);
+enum        <link linkend="rtp-event-type">rtp_event_type</link>;
+typedef     <link linkend="rtp-event">rtp_event</link>;
+void        (<link linkend="rtp-callback">*rtp_callback</link>)                 (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="rtp-event">rtp_event</link> *e);
+enum        <link linkend="rtp-option">rtp_option</link>;
+<link linkend="rtp-t">rtp_t</link>       <link linkend="rtp-init">rtp_init</link>                        (const char *addr,
+                                             <link linkend="uint16-t">uint16_t</link> rx_port,
+                                             <link linkend="uint16-t">uint16_t</link> tx_port,
+                                             int ttl,
+                                             <link linkend="double">double</link> rtcp_bw,
+                                             <link linkend="rtp-callback">rtp_callback</link> callback,
+                                             <link linkend="uint8-t">uint8_t</link> *userdata);
+<link linkend="rtp-t">rtp_t</link>       <link linkend="rtp-init-if">rtp_init_if</link>                     (const char *addr,
+                                             char *iface,
+                                             <link linkend="uint16-t">uint16_t</link> rx_port,
+                                             <link linkend="uint16-t">uint16_t</link> tx_port,
+                                             int ttl,
+                                             <link linkend="double">double</link> rtcp_bw,
+                                             <link linkend="rtp-callback">rtp_callback</link> callback,
+                                             <link linkend="uint8-t">uint8_t</link> *userdata);
+void        <link linkend="rtp-send-bye">rtp_send_bye</link>                    (struct <link linkend="rtp">rtp</link> *session);
+void        <link linkend="rtp-done">rtp_done</link>                        (struct <link linkend="rtp">rtp</link> *session);
+int         <link linkend="rtp-set-option">rtp_set_option</link>                  (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="rtp-option">rtp_option</link> optname,
+                                             int optval);
+int         <link linkend="rtp-get-option">rtp_get_option</link>                  (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="rtp-option">rtp_option</link> optname,
+                                             int *optval);
+int         <link linkend="rtp-recv">rtp_recv</link>                        (struct <link linkend="rtp">rtp</link> *session,
+                                             struct <link linkend="timeval">timeval</link> *timeout,
+                                             <link linkend="uint32-t">uint32_t</link> curr_rtp_ts);
+int         <link linkend="rtp-send-data">rtp_send_data</link>                   (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> rtp_ts,
+                                             char pt,
+                                             int m,
+                                             int cc,
+                                             <link linkend="uint32-t">uint32_t</link> csrc[],
+                                             char *data,
+                                             int data_len,
+                                             char *extn,
+                                             <link linkend="uint16-t">uint16_t</link> extn_len,
+                                             <link linkend="uint16-t">uint16_t</link> extn_type);
+void        <link linkend="rtp-send-ctrl">rtp_send_ctrl</link>                   (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> rtp_ts,
+                                             <link linkend="rtcp-app-callback">rtcp_app_callback</link> appcallback);
+void        <link linkend="rtp-update">rtp_update</link>                      (struct <link linkend="rtp">rtp</link> *session);
+<link linkend="uint32-t">uint32_t</link>    <link linkend="rtp-my-ssrc">rtp_my_ssrc</link>                     (struct <link linkend="rtp">rtp</link> *session);
+int         <link linkend="rtp-add-csrc">rtp_add_csrc</link>                    (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> csrc);
+int         <link linkend="rtp-del-csrc">rtp_del_csrc</link>                    (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> csrc);
+int         <link linkend="rtp-set-sdes">rtp_set_sdes</link>                    (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> ssrc,
+                                             <link linkend="rtcp-sdes-type">rtcp_sdes_type</link> type,
+                                             const char *value,
+                                             int length);
+const char* <link linkend="rtp-get-sdes">rtp_get_sdes</link>                    (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> ssrc,
+                                             <link linkend="rtcp-sdes-type">rtcp_sdes_type</link> type);
+const <link linkend="rtcp-sr">rtcp_sr</link>* <link linkend="rtp-get-sr">rtp_get_sr</link>                   (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> ssrc);
+const <link linkend="rtcp-rr">rtcp_rr</link>* <link linkend="rtp-get-rr">rtp_get_rr</link>                   (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> reporter,
+                                             <link linkend="uint32-t">uint32_t</link> reportee);
+int         <link linkend="rtp-set-encryption-key">rtp_set_encryption_key</link>          (struct <link linkend="rtp">rtp</link> *session,
+                                             const char *passphrase);
+int         <link linkend="rtp-set-my-ssrc">rtp_set_my_ssrc</link>                 (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> ssrc);
+char*       <link linkend="rtp-get-addr">rtp_get_addr</link>                    (struct <link linkend="rtp">rtp</link> *session);
+<link linkend="uint16-t">uint16_t</link>    <link linkend="rtp-get-rx-port">rtp_get_rx_port</link>                 (struct <link linkend="rtp">rtp</link> *session);
+<link linkend="uint16-t">uint16_t</link>    <link linkend="rtp-get-tx-port">rtp_get_tx_port</link>                 (struct <link linkend="rtp">rtp</link> *session);
+int         <link linkend="rtp-get-ttl">rtp_get_ttl</link>                     (struct <link linkend="rtp">rtp</link> *session);
+<link linkend="uint8-t">uint8_t</link>*    <link linkend="rtp-get-userdata">rtp_get_userdata</link>                (struct <link linkend="rtp">rtp</link> *session);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+The Real-Time Transport Protocol (RTP) is a protocol for the transport
+of audio, video, and other real-time data across IP capable networks.
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="RTP-VERSION-CAPS">RTP_VERSION</title>
+<programlisting>#define RTP_VERSION 2
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="RTP-MAX-PACKET-LEN-CAPS">RTP_MAX_PACKET_LEN</title>
+<programlisting>#define RTP_MAX_PACKET_LEN 1500
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="rtp-packet">rtp_packet</title>
+<programlisting>typedef struct {
+	/* The following are pointers to the data in the packet as    */
+	/* it came off the wire. The packet it read in such that the  */
+	/* header maps onto the latter part of this struct, and the   */
+	/* fields in this first part of the struct point into it. The */
+	/* entire packet can be freed by freeing this struct, without */
+	/* having to free the csrc, data and extn blocks separately.  */
+	/* WARNING: Don't change the size of the first portion of the */
+	/* struct without changing RTP_PACKET_HEADER_SIZE to match.   */
+	uint32_t	*csrc;
+	char		*data;
+	int		 data_len;
+	unsigned char	*extn;
+	uint16_t	 extn_len;	/* Size of the extension in 32 bit words minus one */
+	uint16_t	 extn_type;	/* Extension type field in the RTP packet header   */
+	/* The following map directly onto the RTP packet header...   */
+#ifdef WORDS_BIGENDIAN
+	unsigned short   v:2;		/* packet type                */
+	unsigned short   p:1;		/* padding flag               */
+	unsigned short   x:1;		/* header extension flag      */
+	unsigned short   cc:4;		/* CSRC count                 */
+	unsigned short   m:1;		/* marker bit                 */
+	unsigned short   pt:7;		/* payload type               */
+#else
+	unsigned short   cc:4;		/* CSRC count                 */
+	unsigned short   x:1;		/* header extension flag      */
+	unsigned short   p:1;		/* padding flag               */
+	unsigned short   v:2;		/* packet type                */
+	unsigned short   pt:7;		/* payload type               */
+	unsigned short   m:1;		/* marker bit                 */
+#endif
+	uint16_t          seq;		/* sequence number            */
+	uint32_t          ts;		/* timestamp                  */
+	uint32_t          ssrc;		/* synchronization source     */
+	/* The csrc list, header extension and data follow, but can't */
+	/* be represented in the struct.                              */
+} rtp_packet;
+</programlisting>
+<para>
+The struct begins with pointers to the data in the packet as
+it came off the wire. The packet is read in such that the
+header maps onto the latter part of this struct, and the
+fields in this first part of the struct point into it. The
+entire packet can be freed by freeing this struct, without
+having to free the csrc, data and extn blocks separately.
+WARNING: Don't change the size of the first portion of the
+struct without changing RTP_PACKET_HEADER_SIZE to match.
+</para></refsect2>
+<refsect2>
+<title><anchor id="RTP-PACKET-HEADER-SIZE-CAPS">RTP_PACKET_HEADER_SIZE</title>
+<programlisting>#define RTP_PACKET_HEADER_SIZE	((sizeof(char *) * 2) + sizeof(uint32_t *) + (2 * sizeof(int)))
+</programlisting>
+<para>
+This macro MUST resolve to the offset of the first packet
+field in the <link linkend="rtp-packet">rtp_packet</link> struct, including all padding.
+If you change rtp_packet, make sure to change this too.
+</para></refsect2>
+<refsect2>
+<title><anchor id="rtcp-sr">rtcp_sr</title>
+<programlisting>typedef struct {
+	uint32_t         ssrc;
+	uint32_t         ntp_sec;
+	uint32_t         ntp_frac;
+	uint32_t         rtp_ts;
+	uint32_t         sender_pcount;
+	uint32_t         sender_bcount;
+} rtcp_sr;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="rtcp-rr">rtcp_rr</title>
+<programlisting>typedef struct {
+	uint32_t	ssrc;		/* The ssrc to which this RR pertains */
+#ifdef WORDS_BIGENDIAN
+	uint32_t	fract_lost:8;
+	uint32_t	total_lost:24;
+#else
+	uint32_t	total_lost:24;
+	uint32_t	fract_lost:8;
+#endif	
+	uint32_t	last_seq;
+	uint32_t	jitter;
+	uint32_t	lsr;
+	uint32_t	dlsr;
+} rtcp_rr;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="rtcp-sdes-type">enum rtcp_sdes_type</title>
+<programlisting>typedef enum  {
+        RTCP_SDES_END   = 0,
+        RTCP_SDES_CNAME = 1,
+        RTCP_SDES_NAME  = 2,
+        RTCP_SDES_EMAIL = 3,
+        RTCP_SDES_PHONE = 4,
+        RTCP_SDES_LOC   = 5,
+        RTCP_SDES_TOOL  = 6,
+        RTCP_SDES_NOTE  = 7,
+        RTCP_SDES_PRIV  = 8
+} rtcp_sdes_type;
+</programlisting>
+<para>
+Possible values of Session Description (SDES) identifiers.  SDES items
+are announced via <link linkend="rtp-callback">rtp_callback</link> (with RX_SDES events) when they are
+received.  SDES items may be configured and queried with <link linkend="rtp-set-sdes">rtp_set_sdes</link>
+and <link linkend="rtp-get-sdes">rtp_get_sdes</link>.  The RTP guidelines recommend keeping SDES items
+constant during an RTP session to avoid confusing end users.
+</para><informaltable pgwide=1 frame="none" role="enum">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row>
+<entry><literal>RTCP_SDES_END</literal></entry>
+<entry>Indicates the end of SDES item processing when SDES data is received.  Has no meaning with <link linkend="rtp-set-sdes">rtp_set_sdes</link> and <link linkend="rtp-get-sdes">rtp_get_sdes</link>.
+</entry>
+</row>
+<row>
+<entry><literal>RTCP_SDES_CNAME</literal></entry>
+<entry>The canonical name associated with participant. It is algorithmically derived and should never be changed.
+</entry>
+</row>
+<row>
+<entry><literal>RTCP_SDES_NAME</literal></entry>
+<entry>The local participant's name, typically displayed in RTP session participant list. The name can take any form, and should remain constant during a session to avoid confusion.
+</entry>
+</row>
+<row>
+<entry><literal>RTCP_SDES_EMAIL</literal></entry>
+<entry>The local participant's email address (optional).
+</entry>
+</row>
+<row>
+<entry><literal>RTCP_SDES_PHONE</literal></entry>
+<entry>The local participant's telephone number (optional).
+</entry>
+</row>
+<row>
+<entry><literal>RTCP_SDES_LOC</literal></entry>
+<entry>The local participant's geographic location (optional).
+</entry>
+</row>
+<row>
+<entry><literal>RTCP_SDES_TOOL</literal></entry>
+<entry>The local participant's tool (optional).
+</entry>
+</row>
+<row>
+<entry><literal>RTCP_SDES_NOTE</literal></entry>
+<entry>Any additional information the local participant wishes to communicate about themselves (optional).
+</entry>
+</row>
+<row>
+<entry><literal>RTCP_SDES_PRIV</literal></entry>
+<entry>Private extension SDES item see <ulink url="http://www.ietf.org/rfc/rfc1889.txt">RFC1889</ulink> for details.
+
+</entry>
+</row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtcp-sdes-item">rtcp_sdes_item</title>
+<programlisting>typedef struct {
+	uint8_t		type;		/* type of SDES item              */
+	uint8_t		length;		/* length of SDES item (in bytes) */
+	char		data[1];	/* text, not zero-terminated      */
+} rtcp_sdes_item;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="rtcp-app">rtcp_app</title>
+<programlisting>typedef struct {
+#ifdef WORDS_BIGENDIAN
+	unsigned short  version:2;	/* RTP version            */
+	unsigned short  p:1;		/* padding flag           */
+	unsigned short  subtype:5;	/* application dependent  */
+#else
+	unsigned short  subtype:5;	/* application dependent  */
+	unsigned short  p:1;		/* padding flag           */
+	unsigned short  version:2;	/* RTP version            */
+#endif
+	unsigned short  pt:8;		/* packet type            */
+	uint16_t        length;		/* packet length          */
+	uint32_t        ssrc;
+	char            name[4];        /* four ASCII characters  */
+	char            data[1];        /* variable length field  */
+} rtcp_app;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="rtcp-app-callback">rtcp_app_callback ()</title>
+<programlisting><link linkend="rtcp-app">rtcp_app</link>*   (*rtcp_app_callback)            (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> rtp_ts,
+                                             int max_size);</programlisting>
+<para>
+This callback function crafts an RTCP APP packet to be sent with
+an RTCP RR.
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry>the session pointer (returned by <link linkend="rtp-init">rtp_init</link>())
+</entry></row>
+<row><entry align="right"><parameter>rtp_ts</parameter>&nbsp;:</entry>
+<entry>the current time expressed in units of the media timestamp.
+</entry></row>
+<row><entry align="right"><parameter>max_size</parameter>&nbsp;:</entry>
+<entry>the max allowed size of an APP packet.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>A fully-formed RTCP APP packet as an <link linkend="rtcp-app">rtcp_app</link>, or NULL (???)
+if no APP packet needs to be sent at this time.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-event-type">enum rtp_event_type</title>
+<programlisting>typedef enum {
+        RX_RTP,
+        RX_SR,
+        RX_RR,
+        RX_SDES,
+        RX_BYE,         /* Source is leaving the session, database entry is still valid                           */
+        SOURCE_CREATED,
+        SOURCE_DELETED, /* Source has been removed from the database                                              */
+        RX_RR_EMPTY,    /* We've received an empty reception report block                                         */
+        RX_RTCP_START,  /* Processing a compound RTCP packet about to start. The SSRC is not valid in this event. */
+        RX_RTCP_FINISH,	/* Processing a compound RTCP packet finished. The SSRC is not valid in this event.       */
+        RR_TIMEOUT,
+        RX_APP
+} rtp_event_type;
+</programlisting>
+<para>
+The possible values for the type field in <link linkend="rtp-event">rtp_event</link>.
+Each value represents an event in RTP or RTCP processing.
+</para><informaltable pgwide=1 frame="none" role="enum">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row>
+<entry><literal>RX_RTP</literal></entry>
+<entry>An RTP data packet was received.
+The ssrc field contains the RTP data packet's SSRC.
+The data field points to a <link linkend="rtp-packet">rtp_packet</link> containing the RTP data packet.
+The callback must free the rtp_packet when it's done with it using the <link linkend="xfree">xfree</link>() function.
+</entry>
+</row>
+<row>
+<entry><literal>RX_SR</literal></entry>
+<entry>An RTCP SR packet was received.
+The ssrc field contains the SR packet's SSRC.
+The data field points to an <link linkend="rtcp-sr">rtcp_sr</link>.
+</entry>
+</row>
+<row>
+<entry><literal>RX_RR</literal></entry>
+<entry>An RTCP RR packet was received.
+The ssrc field contains the RR packet's SSRC.
+The data field points to an <link linkend="rtcp-rr">rtcp_rr</link>.
+</entry>
+</row>
+<row>
+<entry><literal>RX_SDES</literal></entry>
+<entry>An RTCP SDES packet was received.
+The ssrc field contains the SDES packet's SSRC.
+The data field points to an <link linkend="rtcp-sdes-item">rtcp_sdes_item</link>.
+</entry>
+</row>
+<row>
+<entry><literal>RX_BYE</literal></entry>
+<entry>An RTCP BYE packet was received.
+The ssrc field contains the BYE packet's SSRC.
+</entry>
+</row>
+<row>
+<entry><literal>SOURCE_CREATED</literal></entry>
+<entry>A new session participant was heard from.
+The ssrc field contains the new participant's SSRC.
+</entry>
+</row>
+<row>
+<entry><literal>SOURCE_DELETED</literal></entry>
+<entry>A source was deleted from the database.
+The ssrc field contains the ex-participant's SSRC.
+</entry>
+</row>
+<row>
+<entry><literal>RX_RR_EMPTY</literal></entry>
+<entry>An RTCP RR packet with no sources listed was received.
+The ssrc field contains the RR packet's SSRC.
+</entry>
+</row>
+<row>
+<entry><literal>RX_RTCP_START</literal></entry>
+<entry>Called at the start of parsing an RTCP packet.
+Neither the ssrc nor data fields are valid.
+</entry>
+</row>
+<row>
+<entry><literal>RX_RTCP_FINISH</literal></entry>
+<entry>Called at the end of parsing an RTCP packet.
+Neither the ssrc nor data fields are valid.
+</entry>
+</row>
+<row>
+<entry><literal>RR_TIMEOUT</literal></entry>
+<entry>An RR from the given receiver has not been refreshed recently enough.
+The ssrc field contains the RR packet's SSRC.
+The data field points to the expiring <link linkend="rtcp-rr">rtcp_rr</link>.
+</entry>
+</row>
+<row>
+<entry><literal>RX_APP</literal></entry>
+<entry>An APP packet was received.
+The ssrc field contains the APP packet's SSRC.
+The data field points to an <link linkend="rtcp-app">rtcp_app</link>.
+The callback must free the app packet when it's done with it.
+
+</entry>
+</row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-event">rtp_event</title>
+<programlisting>typedef struct {
+	uint32_t	 ssrc;
+	rtp_event_type	 type;
+	void		*data;
+	struct timeval	*ts;
+} rtp_event;
+</programlisting>
+<para>
+The event structure as passed to <link linkend="rtp-callback">rtp_callback</link>().
+The callback type is carried in the type field; see <link linkend="rtp-event-type">rtp_event_type</link>
+for a description of each callback.
+Unless otherwise noted, the ssrc field contains the SSRC of the participant
+triggering this callback.  The data field points to any data contained in
+this callback; it must be cast to the appropriate type.  The ts field
+contains the timestamp of the packet reception that caused this event.
+</para></refsect2>
+<refsect2>
+<title><anchor id="rtp-callback">rtp_callback ()</title>
+<programlisting>void        (*rtp_callback)                 (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="rtp-event">rtp_event</link> *e);</programlisting>
+<para>
+Handles RTP events in an application-specific way.
+See <link linkend="rtp-event">rtp_event</link> for a description of the possible events and
+how <link linkend="rtp-callback">rtp_callback</link>() should handle each.
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry>The RTP Session.
+</entry></row>
+<row><entry align="right"><parameter>e</parameter>&nbsp;:</entry>
+<entry>The RTP Event information.  See <link linkend="rtp-event">rtp_event</link>.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-option">enum rtp_option</title>
+<programlisting>typedef enum {
+        RTP_OPT_PROMISC =	    1,
+        RTP_OPT_WEAK_VALIDATION	=   2,
+        RTP_OPT_FILTER_MY_PACKETS = 3
+} rtp_option;
+</programlisting>
+<para>
+The possible options for a session that affect which RTP packets are
+passed to the application and when internal state for sources is created.
+</para><informaltable pgwide=1 frame="none" role="enum">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row>
+<entry><literal>RTP_OPT_PROMISC</literal></entry>
+<entry>Pass RTP packets to application irrespective of
+whether a sender report has been received.  Normally, participant
+state is created when a sender report is received and RTP packets that
+arrive prior to the sender report are discarded.
+</entry>
+</row>
+<row>
+<entry><literal>RTP_OPT_WEAK_VALIDATION</literal></entry>
+<entry>Create source state when RTP packets arrive
+if none exists.  This option is set by default.  Disabling the option
+means source state is only created when sender reports are received.
+</entry>
+</row>
+<row>
+<entry><literal>RTP_OPT_FILTER_MY_PACKETS</literal></entry>
+<entry>Filter out packets from local participant
+if they are received.  With multicast sessions, packets may be looped
+back, causing senders packets to be received locally.  This may be
+filtered out with this option.
+
+</entry>
+</row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-init">rtp_init ()</title>
+<programlisting><link linkend="rtp-t">rtp_t</link>       rtp_init                        (const char *addr,
+                                             <link linkend="uint16-t">uint16_t</link> rx_port,
+                                             <link linkend="uint16-t">uint16_t</link> tx_port,
+                                             int ttl,
+                                             <link linkend="double">double</link> rtcp_bw,
+                                             <link linkend="rtp-callback">rtp_callback</link> callback,
+                                             <link linkend="uint8-t">uint8_t</link> *userdata);</programlisting>
+<para>
+</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>addr</parameter>&nbsp;:</entry>
+<entry> IP destination of this session (unicast or multicast),
+as an ASCII string.  May be a host name, which will be looked up,
+or may be an IPv4 dotted quad or IPv6 literal adddress.
+</entry></row>
+<row><entry align="right"><parameter>rx_port</parameter>&nbsp;:</entry>
+<entry> The port to which to bind the UDP socket
+</entry></row>
+<row><entry align="right"><parameter>tx_port</parameter>&nbsp;:</entry>
+<entry> The port to which to send UDP packets
+</entry></row>
+<row><entry align="right"><parameter>ttl</parameter>&nbsp;:</entry>
+<entry> The TTL with which to send multicasts
+</entry></row>
+<row><entry align="right"><parameter>rtcp_bw</parameter>&nbsp;:</entry>
+<entry> The total bandwidth (in units of bytes per second) that is
+allocated to RTCP.
+</entry></row>
+<row><entry align="right"><parameter>callback</parameter>&nbsp;:</entry>
+<entry> See section on <link linkend="rtp-callback">rtp_callback</link>.
+</entry></row>
+<row><entry align="right"><parameter>userdata</parameter>&nbsp;:</entry>
+<entry> Opaque data associated with the session.  See
+<link linkend="rtp-get-userdata">rtp_get_userdata</link>().
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> An opaque session identifier to be used in future calls to
+the RTP library functions, or NULL on failure.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-init-if">rtp_init_if ()</title>
+<programlisting><link linkend="rtp-t">rtp_t</link>       rtp_init_if                     (const char *addr,
+                                             char *iface,
+                                             <link linkend="uint16-t">uint16_t</link> rx_port,
+                                             <link linkend="uint16-t">uint16_t</link> tx_port,
+                                             int ttl,
+                                             <link linkend="double">double</link> rtcp_bw,
+                                             <link linkend="rtp-callback">rtp_callback</link> callback,
+                                             <link linkend="uint8-t">uint8_t</link> *userdata);</programlisting>
+<para>
+Creates and initializes an RTP session.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>addr</parameter>&nbsp;:</entry>
+<entry> IP destination of this session (unicast or multicast),
+as an ASCII string.  May be a host name, which will be looked up,
+or may be an IPv4 dotted quad or IPv6 literal adddress.
+</entry></row>
+<row><entry align="right"><parameter>iface</parameter>&nbsp;:</entry>
+<entry> If the destination of the session is multicast,
+the optional interface to bind to.  May be NULL, in which case
+the default multicast interface as determined by the system
+will be used.
+</entry></row>
+<row><entry align="right"><parameter>rx_port</parameter>&nbsp;:</entry>
+<entry> The port to which to bind the UDP socket
+</entry></row>
+<row><entry align="right"><parameter>tx_port</parameter>&nbsp;:</entry>
+<entry> The port to which to send UDP packets
+</entry></row>
+<row><entry align="right"><parameter>ttl</parameter>&nbsp;:</entry>
+<entry> The TTL with which to send multicasts
+</entry></row>
+<row><entry align="right"><parameter>rtcp_bw</parameter>&nbsp;:</entry>
+<entry> The total bandwidth (in units of ___) that is
+allocated to RTCP.
+</entry></row>
+<row><entry align="right"><parameter>callback</parameter>&nbsp;:</entry>
+<entry> See section on <link linkend="rtp-callback">rtp_callback</link>.
+</entry></row>
+<row><entry align="right"><parameter>userdata</parameter>&nbsp;:</entry>
+<entry> Opaque data associated with the session.  See
+<link linkend="rtp-get-userdata">rtp_get_userdata</link>().
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> An opaque session identifier to be used in future calls to
+the RTP library functions, or NULL on failure.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-send-bye">rtp_send_bye ()</title>
+<programlisting>void        rtp_send_bye                    (struct <link linkend="rtp">rtp</link> *session);</programlisting>
+<para>
+Sends a BYE message on the RTP session, indicating that this
+participant is leaving the session. The process of sending a
+BYE may take some time, and this function will block until 
+it is complete. During this time, RTCP events are reported 
+to the application via the callback function (data packets 
+are silently discarded).</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> The RTP session
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-done">rtp_done ()</title>
+<programlisting>void        rtp_done                        (struct <link linkend="rtp">rtp</link> *session);</programlisting>
+<para>
+Free the state associated with the given RTP session. This function does 
+not send any packets (e.g. an RTCP BYE) - an application which wishes to
+exit in a clean manner should call <link linkend="rtp-send-bye">rtp_send_bye</link>() first.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> the RTP session to finish
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-set-option">rtp_set_option ()</title>
+<programlisting>int         rtp_set_option                  (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="rtp-option">rtp_option</link> optname,
+                                             int optval);</programlisting>
+<para>
+Sets the value of a session option.  See <link linkend="rtp-option">rtp_option</link> for
+documentation on the options and their legal values.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> The RTP session.
+</entry></row>
+<row><entry align="right"><parameter>optname</parameter>&nbsp;:</entry>
+<entry> The option name, see <link linkend="rtp-option">rtp_option</link>.
+</entry></row>
+<row><entry align="right"><parameter>optval</parameter>&nbsp;:</entry>
+<entry> The value to set.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE on success, else FALSE.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-get-option">rtp_get_option ()</title>
+<programlisting>int         rtp_get_option                  (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="rtp-option">rtp_option</link> optname,
+                                             int *optval);</programlisting>
+<para>
+Retrieves the value of a session option.  See <link linkend="rtp-option">rtp_option</link> for
+documentation on the options and their legal values.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> The RTP session.
+</entry></row>
+<row><entry align="right"><parameter>optname</parameter>&nbsp;:</entry>
+<entry> The option name, see <link linkend="rtp-option">rtp_option</link>.
+</entry></row>
+<row><entry align="right"><parameter>optval</parameter>&nbsp;:</entry>
+<entry> The return value.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE and the value of the option in optval on success, else FALSE.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-recv">rtp_recv ()</title>
+<programlisting>int         rtp_recv                        (struct <link linkend="rtp">rtp</link> *session,
+                                             struct <link linkend="timeval">timeval</link> *timeout,
+                                             <link linkend="uint32-t">uint32_t</link> curr_rtp_ts);</programlisting>
+<para>
+Receive RTP packets and dispatch them.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> the session pointer (returned by <link linkend="rtp-init">rtp_init</link>())
+</entry></row>
+<row><entry align="right"><parameter>timeout</parameter>&nbsp;:</entry>
+<entry> the amount of time that <link linkend="rtcp-recv">rtcp_recv</link>() is allowed to block
+</entry></row>
+<row><entry align="right"><parameter>curr_rtp_ts</parameter>&nbsp;:</entry>
+<entry> the current time expressed in units of the media
+timestamp.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE if data received, FALSE if the timeout occurred.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-send-data">rtp_send_data ()</title>
+<programlisting>int         rtp_send_data                   (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> rtp_ts,
+                                             char pt,
+                                             int m,
+                                             int cc,
+                                             <link linkend="uint32-t">uint32_t</link> csrc[],
+                                             char *data,
+                                             int data_len,
+                                             char *extn,
+                                             <link linkend="uint16-t">uint16_t</link> extn_len,
+                                             <link linkend="uint16-t">uint16_t</link> extn_type);</programlisting>
+<para>
+Send an RTP packet.  Most media applications will only set the
+<parameter>session</parameter>, <parameter>rtp_ts</parameter>, <parameter>pt</parameter>, <parameter>m</parameter>, <parameter>data</parameter>, <parameter>data_len</parameter> arguments.
+</para>
+<para>
+Mixers and translators typically set additional contributing sources 
+arguments (<parameter>cc</parameter>, <parameter>csrc</parameter>).
+</para>
+<para>
+Extensions fields (<parameter>extn</parameter>, <parameter>extn_len</parameter>, <parameter>extn_type</parameter>) are for including
+application specific information.  When the widest amount of
+inter-operability is required these fields should be avoided as
+some applications discard packets with extensions they do not
+recognize.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> the session pointer (returned by <link linkend="rtp-init">rtp_init</link>())
+</entry></row>
+<row><entry align="right"><parameter>rtp_ts</parameter>&nbsp;:</entry>
+<entry> The timestamp reflects the sampling instant of the first octet of the RTP data to be sent.  The timestamp is expressed in media units.
+</entry></row>
+<row><entry align="right"><parameter>pt</parameter>&nbsp;:</entry>
+<entry> The payload type identifying the format of the data.
+</entry></row>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry> Marker bit, interpretation defined by media profile of payload.
+</entry></row>
+<row><entry align="right"><parameter>cc</parameter>&nbsp;:</entry>
+<entry> Number of contributing sources (excluding local participant)
+</entry></row>
+<row><entry align="right"><parameter>csrc</parameter>&nbsp;:</entry>
+<entry> Array of SSRC identifiers for contributing sources.
+</entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry> The RTP data to be sent.
+</entry></row>
+<row><entry align="right"><parameter>data_len</parameter>&nbsp;:</entry>
+<entry> The size <parameter>data</parameter> in bytes.
+</entry></row>
+<row><entry align="right"><parameter>extn</parameter>&nbsp;:</entry>
+<entry> Extension data (if present).
+</entry></row>
+<row><entry align="right"><parameter>extn_len</parameter>&nbsp;:</entry>
+<entry> size of <parameter>extn</parameter> in bytes.
+</entry></row>
+<row><entry align="right"><parameter>extn_type</parameter>&nbsp;:</entry>
+<entry> extension type indicator.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> Number of bytes transmitted.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-send-ctrl">rtp_send_ctrl ()</title>
+<programlisting>void        rtp_send_ctrl                   (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> rtp_ts,
+                                             <link linkend="rtcp-app-callback">rtcp_app_callback</link> appcallback);</programlisting>
+<para>
+Checks RTCP timer and sends RTCP data when nececessary.  The
+interval between RTCP packets is randomized over an interval that
+depends on the session bandwidth, the number of participants, and
+whether the local participant is a sender.  This function should be
+called at least once per second, and can be safely called more
+frequently.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> the session pointer (returned by <link linkend="rtp-init">rtp_init</link>())
+</entry></row>
+<row><entry align="right"><parameter>rtp_ts</parameter>&nbsp;:</entry>
+<entry> the current time expressed in units of the media timestamp.
+</entry></row>
+<row><entry align="right"><parameter>appcallback</parameter>&nbsp;:</entry>
+<entry> a callback to create an APP RTCP packet, if needed.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-update">rtp_update ()</title>
+<programlisting>void        rtp_update                      (struct <link linkend="rtp">rtp</link> *session);</programlisting>
+<para>
+Trawls through the internal data structures and performs
+housekeeping.  This function should be called at least once per
+second.  It uses an internal timer to limit the number of passes
+through the data structures to once per second, it can be safely
+called more frequently.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> the session pointer (returned by <link linkend="rtp-init">rtp_init</link>())
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-my-ssrc">rtp_my_ssrc ()</title>
+<programlisting><link linkend="uint32-t">uint32_t</link>    rtp_my_ssrc                     (struct <link linkend="rtp">rtp</link> *session);</programlisting>
+<para>
+</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> The RTP Session.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The SSRC we are currently using in this session. Note that our
+SSRC can change at any time (due to collisions) so applications must not
+store the value returned, but rather should call this function each time 
+they need it.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-add-csrc">rtp_add_csrc ()</title>
+<programlisting>int         rtp_add_csrc                    (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> csrc);</programlisting>
+<para>
+Adds <parameter>csrc</parameter> to list of contributing sources used in SDES items.
+Used by mixers and transcoders.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> the session pointer (returned by <link linkend="rtp-init">rtp_init</link>()) 
+</entry></row>
+<row><entry align="right"><parameter>csrc</parameter>&nbsp;:</entry>
+<entry> Constributing SSRC identifier
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-del-csrc">rtp_del_csrc ()</title>
+<programlisting>int         rtp_del_csrc                    (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> csrc);</programlisting>
+<para>
+Removes <parameter>csrc</parameter> from list of contributing sources used in SDES items.
+Used by mixers and transcoders.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> the session pointer (returned by <link linkend="rtp-init">rtp_init</link>()) 
+</entry></row>
+<row><entry align="right"><parameter>csrc</parameter>&nbsp;:</entry>
+<entry> Constributing SSRC identifier
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE on success, FALSE if <parameter>csrc</parameter> is not a valid source.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-set-sdes">rtp_set_sdes ()</title>
+<programlisting>int         rtp_set_sdes                    (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> ssrc,
+                                             <link linkend="rtcp-sdes-type">rtcp_sdes_type</link> type,
+                                             const char *value,
+                                             int length);</programlisting>
+<para>
+Sets session description information associated with participant
+<parameter>ssrc</parameter>.  Under normal circumstances applications always use the
+<parameter>ssrc</parameter> of the local participant, this SDES information is
+transmitted in receiver reports.  Setting SDES information for
+other participants affects the local SDES entries, but are not
+transmitted onto the network.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> the session pointer (returned by <link linkend="rtp-init">rtp_init</link>()) 
+</entry></row>
+<row><entry align="right"><parameter>ssrc</parameter>&nbsp;:</entry>
+<entry> the SSRC identifier of a participant
+</entry></row>
+<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
+<entry> the SDES type represented by <parameter>value</parameter>
+</entry></row>
+<row><entry align="right"><parameter>value</parameter>&nbsp;:</entry>
+<entry> the SDES description
+</entry></row>
+<row><entry align="right"><parameter>length</parameter>&nbsp;:</entry>
+<entry> the length of the description
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> Returns TRUE if participant exists, FALSE otherwise.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-get-sdes">rtp_get_sdes ()</title>
+<programlisting>const char* rtp_get_sdes                    (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> ssrc,
+                                             <link linkend="rtcp-sdes-type">rtcp_sdes_type</link> type);</programlisting>
+<para>
+Recovers session description (SDES) information on participant
+identified with <parameter>ssrc</parameter>.  The SDES information associated with a
+source is updated when receiver reports are received.  There are
+several different types of SDES information, e.g. username,
+location, phone, email.  These are enumerated by <link linkend="rtcp-sdes-type">rtcp_sdes_type</link>.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> the session pointer (returned by <link linkend="rtp-init">rtp_init</link>()) 
+</entry></row>
+<row><entry align="right"><parameter>ssrc</parameter>&nbsp;:</entry>
+<entry> the SSRC identifier of a participant
+</entry></row>
+<row><entry align="right"><parameter>type</parameter>&nbsp;:</entry>
+<entry> the SDES information to retrieve
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> pointer to string containing SDES description if
+received, NULL otherwise.  
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-get-sr">rtp_get_sr ()</title>
+<programlisting>const <link linkend="rtcp-sr">rtcp_sr</link>* rtp_get_sr                   (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> ssrc);</programlisting>
+<para>
+Retrieve the latest sender report made by sender with <parameter>ssrc</parameter> identifier.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> the session pointer (returned by <link linkend="rtp-init">rtp_init</link>()) 
+</entry></row>
+<row><entry align="right"><parameter>ssrc</parameter>&nbsp;:</entry>
+<entry> identifier of source
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A pointer to an rtcp_sr structure on success, NULL
+otherwise.  The pointer must not be freed.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-get-rr">rtp_get_rr ()</title>
+<programlisting>const <link linkend="rtcp-rr">rtcp_rr</link>* rtp_get_rr                   (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> reporter,
+                                             <link linkend="uint32-t">uint32_t</link> reportee);</programlisting>
+<para>
+Retrieve the latest receiver report on <parameter>reportee</parameter> made by <parameter>reporter</parameter>.
+Provides an indication of other receivers reception service.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> the session pointer (returned by <link linkend="rtp-init">rtp_init</link>())
+</entry></row>
+<row><entry align="right"><parameter>reporter</parameter>&nbsp;:</entry>
+<entry> participant originating receiver report
+</entry></row>
+<row><entry align="right"><parameter>reportee</parameter>&nbsp;:</entry>
+<entry> participant included in receiver report
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A pointer to a rtcp_rr structure on success, NULL
+otherwise.  The pointer must not be freed.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-set-encryption-key">rtp_set_encryption_key ()</title>
+<programlisting>int         rtp_set_encryption_key          (struct <link linkend="rtp">rtp</link> *session,
+                                             const char *passphrase);</programlisting>
+<para>
+Converts the user supplied key into a form suitable for use with RTP
+and install it as the active key. Passing in NULL as the passphrase
+disables encryption. The passphrase is converted into a DES key as
+specified in RFC1890, that is:
+</para>
+<para>
+- convert to canonical form
+</para>
+<para>
+- derive an MD5 hash of the canonical form
+</para>
+<para>
+- take the first 56 bits of the MD5 hash
+</para>
+<para>
+- add parity bits to form a 64 bit key
+</para>
+<para>
+Note that versions of rat prior to 4.1.2 do not convert the passphrase
+to canonical form before taking the MD5 hash, and so will
+not be compatible for keys which are non-invarient under this step.
+</para>
+<para>
+Determine from the user's encryption key which encryption
+mechanism we're using. Per the RTP RFC, if the key is of the form
+</para>
+<para>
+string/key
+</para>
+<para>
+then "string" is the name of the encryption algorithm,  and
+"key" is the key to be used. If no / is present, then the
+algorithm is assumed to be (the appropriate variant of) DES.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> The RTP session.
+</entry></row>
+<row><entry align="right"><parameter>passphrase</parameter>&nbsp;:</entry>
+<entry> The user-provided "pass phrase" to map to an encryption key.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE on success, FALSE on failure.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-set-my-ssrc">rtp_set_my_ssrc ()</title>
+<programlisting>int         rtp_set_my_ssrc                 (struct <link linkend="rtp">rtp</link> *session,
+                                             <link linkend="uint32-t">uint32_t</link> ssrc);</programlisting>
+<para>
+This function coerces the local SSRC identifer to be ssrc.  For
+this function to succeed it must be called immediately after
+rtp_init or rtp_init_if.  The intended purpose of this
+function is to co-ordinate SSRC's between layered sessions, it
+should not be used otherwise.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> the RTP session 
+</entry></row>
+<row><entry align="right"><parameter>ssrc</parameter>&nbsp;:</entry>
+<entry> the SSRC to be used by the RTP session
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> TRUE on success, FALSE otherwise.  
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-get-addr">rtp_get_addr ()</title>
+<programlisting>char*       rtp_get_addr                    (struct <link linkend="rtp">rtp</link> *session);</programlisting>
+<para>
+</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> The RTP Session.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The session's destination address, as set when creating the
+session with <link linkend="rtp-init">rtp_init</link>() or <link linkend="rtp-init-if">rtp_init_if</link>().
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-get-rx-port">rtp_get_rx_port ()</title>
+<programlisting><link linkend="uint16-t">uint16_t</link>    rtp_get_rx_port                 (struct <link linkend="rtp">rtp</link> *session);</programlisting>
+<para>
+</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> The RTP Session.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The UDP port to which this session is bound, as set when
+creating the session with <link linkend="rtp-init">rtp_init</link>() or <link linkend="rtp-init-if">rtp_init_if</link>().
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-get-tx-port">rtp_get_tx_port ()</title>
+<programlisting><link linkend="uint16-t">uint16_t</link>    rtp_get_tx_port                 (struct <link linkend="rtp">rtp</link> *session);</programlisting>
+<para>
+</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> The RTP Session.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The UDP port to which RTP packets are transmitted, as set
+when creating the session with <link linkend="rtp-init">rtp_init</link>() or <link linkend="rtp-init-if">rtp_init_if</link>().
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-get-ttl">rtp_get_ttl ()</title>
+<programlisting>int         rtp_get_ttl                     (struct <link linkend="rtp">rtp</link> *session);</programlisting>
+<para>
+</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> The RTP Session.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> The session's TTL, as set when creating the session with
+<link linkend="rtp-init">rtp_init</link>() or <link linkend="rtp-init-if">rtp_init_if</link>().
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="rtp-get-userdata">rtp_get_userdata ()</title>
+<programlisting><link linkend="uint8-t">uint8_t</link>*    rtp_get_userdata                (struct <link linkend="rtp">rtp</link> *session);</programlisting>
+<para>
+This function returns the userdata pointer that was passed to the
+<link linkend="rtp-init">rtp_init</link>() or <link linkend="rtp-init-if">rtp_init_if</link>() function when creating this session.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>session</parameter>&nbsp;:</entry>
+<entry> The RTP session.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> pointer to userdata.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>See Also</title>
+
+<itemizedlist>
+  <listitem>
+    <para><ulink url="http://www.ietf.org/rfc/rfc1889.txt">RFC1889 - RTP: A Transport Protocol for Real-Time Applications </ulink></para>
+  </listitem> 
+
+  <listitem>
+    <para><ulink url="http://www.ietf.org/rfc/rfc1890.txt">RFC1890 - RTP Profile for Audio and Video Conferences with Minimal Control </ulink></para>
+  </listitem>
+
+  <listitem>
+     <para><ulink url="http://www.ietf.org/html.charters/avt-charter.html"> IETF Audio/Video Transport Group</ulink></para>
+  </listitem>
+
+</itemizedlist>
+</refsect1>
+
+</refentry>

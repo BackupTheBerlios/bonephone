@@ -1,0 +1,95 @@
+#####################################################################
+# This file defines where various build tools live and gets included
+# in each of the makefiles. 
+#
+# The distribution ships with everything you need except for the Java 
+# development kit (get this from www.javasoft.com)
+#
+# You can set the following variables here according to where you 
+# have put things. These values are used in the makefiles.
+#
+# JDK_HOME is the directory where the JDK is installed 
+#	(not included with the distribution)
+#	You can download the latest jdk from www.javasoft.com
+#
+# ANTLR_HOME is the directory where ANTLR is installed - the location where
+# 	the file antlrall.jar can be found (if you want to use
+#	a version that is different from the one included)
+#	You can download the latest antlr from www.antlr.org
+#
+# XERCES_HOME is the directory where the java xml parser is installed 
+#		(if you want to build or run the torture tests).
+#		You can download xerces from www.apache.org
+#
+# JYTHON_HOME (optinal) is the place where the java version of python (jython) 
+#	is to be found (i.e. the location where the file jython.jar lives).
+#	 you need this if you want to run the load generator and
+#	trace verifier tools (the latter is not quite ready yet!).
+# 	You can download the latest jython from www.jython.org
+#
+#
+################################################################
+#
+# ANTLR_FLAGS set to -trace if you want the parser to spew a trace 
+#
+#Corrections contributed by  Lawrence Conroy <lwc@roke.co.uk>
+#
+
+MAKE=make
+
+ifeq (${OS},)
+	OS=$(OSTYPE)
+endif
+
+
+ifeq (${OS},Windows_NT) 
+	JDK_HOME=c:/jdk1.3
+else
+	JDK_HOME=/home/jfi/jdk1.4
+endif
+
+ANTLR_HOME=$(ROOT)/lib/antlr
+
+ANTLRPATH=$(ANTLR_HOME)/antlrall.jar
+
+XERCES_HOME=$(ROOT)/lib/xerces
+
+JYTHON_HOME=$(ROOT)/lib/jython
+
+SERVLET_LIB=$(ROOT)/lib/servlet-lib/servlet.jar
+
+# Set this if you want JMF support in the responder.
+WANT_JMF=0
+ifeq ($(WANT_JMF),1)
+	ifeq (${OS},Windows_NT)
+		JMF_HOME="c:/jmf-2.1.1"
+	else
+		JMF_HOME="/usr/local/jmf-2.1.1"
+	endif
+endif
+
+ 
+ifeq (${OS},Windows_NT)
+	JAVAC=$(JDK_HOME)/bin/javac -classpath "$(JDK_HOME);$(ROOT);$(ANTLRPATH);./"
+	JAVA=$(JDK_HOME)/bin/java -classpath "$(JDK_HOME);$(ANTLRPATH);$(ROOT);./"
+else
+	JAVAC=$(JDK_HOME)/bin/javac -classpath "$(JDK_HOME):$(ROOT):$(ANTLRPATH):./"
+	JAVA=$(JDK_HOME)/bin/java -classpath "$(ANTLRPATH):$(ROOT):./"
+endif
+
+RMIC=$(JDK_HOME)/bin/rmic 
+
+%.class: %.java
+	$(JAVAC) $<
+
+default: 
+	make all
+
+cleanlogs:
+	rm -f sipserverlog.txt
+	rm -f logfile.txt
+
+emacsclean: cleanlogs
+	rm -f *~
+	rm -f .#*
+

@@ -1,0 +1,97 @@
+<refentry id="uclmmbase-base64" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>base64</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>base64</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+int         <link linkend="base64encode">base64encode</link>                    (unsigned char *input,
+                                             int input_length,
+                                             unsigned char *output,
+                                             int output_length);
+int         <link linkend="base64decode">base64decode</link>                    (unsigned char *input,
+                                             int input_length,
+                                             unsigned char *output,
+                                             int output_length);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="base64encode">base64encode ()</title>
+<programlisting>int         base64encode                    (unsigned char *input,
+                                             int input_length,
+                                             unsigned char *output,
+                                             int output_length);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>input</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>input_length</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>output</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>output_length</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="base64decode">base64decode ()</title>
+<programlisting>int         base64decode                    (unsigned char *input,
+                                             int input_length,
+                                             unsigned char *output,
+                                             int output_length);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>input</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>input_length</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>output</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>output_length</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

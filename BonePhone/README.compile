@@ -1,0 +1,9 @@
+1) cd to rat-4.2.20
+2) compile rat the usual way:
+	- tcl
+	- tk
+	- common
+	- rat
+3) compile the phone: make 
+4) run the phone: make run
+

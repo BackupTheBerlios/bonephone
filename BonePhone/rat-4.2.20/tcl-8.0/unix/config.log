@@ -1,0 +1,219 @@
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
+
+configure:543: checking for ranlib
+configure:575: checking for gcc
+configure:652: checking whether the C compiler (gcc  ) works
+configure:666: gcc -o conftest    conftest.c  1>&5
+configure:686: checking whether the C compiler (gcc  ) is a cross-compiler
+configure:691: checking whether we are using GNU C
+configure:700: gcc -E conftest.c
+configure:715: checking whether gcc accepts -g
+configure:763: checking for getcwd
+configure:791: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:825: checking for opendir
+configure:853: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:825: checking for strstr
+configure:853: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:883: checking for strtol
+configure:911: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:883: checking for tmpnam
+configure:911: gcc -o conftest -g -O2   conftest.c  1>&5
+/tmp/ccjuXbmn.o: In function `main':
+/home/jfi/Studienarbeit/rat-4.2.20/tcl-8.0/unix/configure:905: the use of `tmpnam' is dangerous, better use `mkstemp'
+configure:883: checking for waitpid
+configure:911: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:938: checking for strerror
+configure:966: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:990: checking for getwd
+configure:1018: gcc -o conftest -g -O2   conftest.c  1>&5
+/tmp/cckpJp8x.o: In function `main':
+/home/jfi/Studienarbeit/rat-4.2.20/tcl-8.0/unix/configure:1012: the `getwd' function is dangerous and should not be used.
+configure:1042: checking for wait3
+configure:1070: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1094: checking for uname
+configure:1122: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1154: checking for sin
+configure:1182: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1166: warning: conflicting types for built-in function `sin'
+/tmp/ccYqqGec.o: In function `main':
+/home/jfi/Studienarbeit/rat-4.2.20/tcl-8.0/unix/configure:1176: undefined reference to `sin'
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 1159 "configure"
+#include "confdefs.h"
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char sin(); below.  */
+#include <assert.h>
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char sin();
+
+int main() {
+
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub_sin) || defined (__stub___sin)
+choke me
+#else
+sin();
+#endif
+
+; return 0; }
+configure:1203: checking for main in -lieee
+configure:1218: gcc -o conftest -g -O2   conftest.c -lieee   1>&5
+configure:1303: checking dirent.h
+configure:1331: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1349: checking how to run the C preprocessor
+configure:1370: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1411: checking for errno.h
+configure:1421: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1448: checking for float.h
+configure:1458: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1485: checking for values.h
+configure:1495: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1522: checking for limits.h
+configure:1532: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1559: checking for stdlib.h
+configure:1569: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1641: checking for string.h
+configure:1651: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1709: checking for sys/wait.h
+configure:1719: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1746: checking for dlfcn.h
+configure:1756: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1785: checking for unistd.h
+configure:1795: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1829: checking termios vs. termio vs. sgtty
+configure:1850: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1958: checking fd_set and sys/select
+configure:1967: gcc -c -g -O2  conftest.c 1>&5
+configure:2013: checking for sys/time.h
+configure:2023: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:2050: checking whether time.h and sys/time.h may both be included
+configure:2064: gcc -c -g -O2  conftest.c 1>&5
+configure:2085: checking whether struct tm is in sys/time.h or time.h
+configure:2098: gcc -c -g -O2  conftest.c 1>&5
+configure:2119: checking for tm_zone in struct tm
+configure:2132: gcc -c -g -O2  conftest.c 1>&5
+configure:2190: checking tm_tzadj in struct tm
+configure:2199: gcc -c -g -O2  conftest.c 1>&5
+configure: In function `main':
+configure:2195: structure has no member named `tm_tzadj'
+configure: failed program was:
+#line 2192 "configure"
+#include "confdefs.h"
+#include <time.h>
+int main() {
+struct tm tm; tm.tm_tzadj;
+; return 0; }
+configure:2215: checking tm_gmtoff in struct tm
+configure:2224: gcc -c -g -O2  conftest.c 1>&5
+configure:2245: checking long timezone variable
+configure:2256: gcc -c -g -O2  conftest.c 1>&5
+configure:2322: checking for st_blksize in struct stat
+configure:2335: gcc -c -g -O2  conftest.c 1>&5
+configure:2362: checking proper strstr implementation
+configure:2377: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:2403: checking for strtoul
+configure:2431: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:2471: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:2494: checking for strtod
+configure:2522: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:2562: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:2587: checking for strtod
+configure:2637: checking for Solaris strtod bug
+configure:2657: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:2687: checking for ANSI C header files
+configure:2700: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:2767: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:2791: checking for mode_t
+configure:2824: checking for pid_t
+configure:2857: checking for size_t
+configure:2890: checking for uid_t in sys/types.h
+configure:2932: checking for opendir
+configure:2993: checking union wait
+configure:3007: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:3031: checking matherr support
+configure:3044: gcc -c -g -O2  conftest.c 1>&5
+configure:3071: checking return type of signal handlers
+configure:3093: gcc -c -g -O2  conftest.c 1>&5
+configure:3112: checking for vfork
+configure:3140: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:3162: checking vfork/signal bug
+configure:3195: gcc -o conftest -g -O2   conftest.c  1>&5
+configure: In function `main':
+configure:3181: warning: passing arg 2 of `signal' from incompatible pointer type
+configure:3228: checking for strncasecmp
+configure:3256: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:3378: checking for BSDgettimeofday
+configure:3406: gcc -o conftest -g -O2   conftest.c  1>&5
+/tmp/ccOusDPw.o: In function `main':
+/home/jfi/Studienarbeit/rat-4.2.20/tcl-8.0/unix/configure:3400: undefined reference to `BSDgettimeofday'
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 3383 "configure"
+#include "confdefs.h"
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char BSDgettimeofday(); below.  */
+#include <assert.h>
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char BSDgettimeofday();
+
+int main() {
+
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub_BSDgettimeofday) || defined (__stub___BSDgettimeofday)
+choke me
+#else
+BSDgettimeofday();
+#endif
+
+; return 0; }
+configure:3427: checking for gettimeofday
+configure:3455: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:3481: checking for gettimeofday declaration
+configure:3510: checking for main in -linet
+configure:3525: gcc -o conftest -g -O2   conftest.c -linet   1>&5
+/usr/i486-suse-linux/bin/ld: cannot find -linet
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 3518 "configure"
+#include "confdefs.h"
+
+int main() {
+main()
+; return 0; }
+configure:3547: checking for net/errno.h
+configure:3557: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:3553: net/errno.h: No such file or directory
+configure: failed program was:
+#line 3552 "configure"
+#include "confdefs.h"
+#include <net/errno.h>
+configure:3589: checking whether char is unsigned
+configure:3652: checking signed char declarations
+configure:3664: gcc -c -g -O2  conftest.c 1>&5
+configure:3702: checking for connect
+configure:3730: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:3843: checking for gethostbyname
+configure:3871: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:3983: checking system version (for dynamic loading)
+configure:4009: checking for dlopen in -ldl
+configure:4028: gcc -o conftest -g -O2   conftest.c -ldl   1>&5
+configure:4700: checking for sys/ioctl.h
+configure:4710: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:4740: checking for sys/filio.h
+configure:4750: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:4746: sys/filio.h: No such file or directory
+configure: failed program was:
+#line 4745 "configure"
+#include "confdefs.h"
+#include <sys/filio.h>
+configure:4777: checking FIONBIO vs. O_NONBLOCK for nonblocking I/O

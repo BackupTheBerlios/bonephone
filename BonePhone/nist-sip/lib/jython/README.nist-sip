@@ -1,0 +1,5 @@
+This directory has the java implementation of python (see copyright notice
+in this directory). Please install the jython distribution if you want to 
+try the trace analyzer tool. You can install this by running java on the
+class file that is incuded herein.
+

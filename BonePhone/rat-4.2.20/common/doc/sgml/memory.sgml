@@ -1,0 +1,214 @@
+<refentry id="uclmmbase-memory" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>Memory</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>Memory</refname><refpurpose>
+Memory allocation and debugging functions.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+#include &lt;memory.h&gt;
+
+
+#define     <link linkend="xmalloc">xmalloc</link>                         (x)
+#define     <link linkend="xrealloc">xrealloc</link>                        (p,x)
+#define     <link linkend="xstrdup">xstrdup</link>                         (str)
+void        <link linkend="xdoneinit">xdoneinit</link>                       (void);
+void        <link linkend="xmemchk">xmemchk</link>                         (void);
+void        <link linkend="xmemdmp">xmemdmp</link>                         (void);
+void        <link linkend="xclaim">xclaim</link>                          (void *addr,
+                                             const char *filen,
+                                             int line);
+void        <link linkend="xmemdist">xmemdist</link>                        (<link linkend="FILE-CAPS">FILE</link> *fp);
+void        <link linkend="xfree">xfree</link>                           (void *p);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+This set of functions is semantically similar functions to standard C
+library memory allocation routines.  When memory debugging is enabled
+these functions include support to detect buffer overruns.  When
+memory debugging is not enabled the allocation and free calls are
+wrappers around the standard C allocation routines, and checking
+routines are null ops.
+
+</para>
+
+<para>
+Memory debugging is enabled when DEBUG_MEM is defined at compilation
+time.  On Unix systems, the <filename>configure</filename> script has
+a command-line option <option>--enable-debug-mem</option>.  On Win32,
+a memory debugging is enabled in the debug configuration.
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="xmalloc">xmalloc()</title>
+<programlisting>#define xmalloc(x)	_xmalloc(x,__FILE__,__LINE__)
+</programlisting>
+<para>
+Allocates a block of memory.  Semantically equivalent to <link linkend="malloc">malloc</link>().
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
+<entry>size of allocation.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="xrealloc">xrealloc()</title>
+<programlisting>#define xrealloc(p,x)	_xrealloc(p, x,__FILE__,__LINE__)
+</programlisting>
+<para>
+Re-sizes a block of memory. Semantically equivalent to <link linkend="realloc">realloc</link>().
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>p</parameter>&nbsp;:</entry>
+<entry>Pointer to block to be re-dimensioned.
+</entry></row>
+<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
+<entry>New size.
+
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="xstrdup">xstrdup()</title>
+<programlisting>#define xstrdup(str)	_xstrdup(str,__FILE__,__LINE__)
+</programlisting>
+<para>
+<link linkend="xmalloc">xmalloc</link>()'s sufficient memory to store <parameter>str</parameter>, copies <parameter>str</parameter> into it, and
+returns pointer to new string.  Semantically equivalent to <link linkend="strdup">strdup</link>().
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>str</parameter>&nbsp;:</entry>
+<entry></entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="xdoneinit">xdoneinit ()</title>
+<programlisting>void        xdoneinit                       (void);</programlisting>
+<para>
+Marks end of an applications initialization period.  For media
+applications with real-time data transfer it's sometimes helpful to
+distinguish between memory allocated during application
+initialization and when application is running.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="xmemchk">xmemchk ()</title>
+<programlisting>void        xmemchk                         (void);</programlisting>
+<para>
+Check for bounds overruns in all memory allocated with <link linkend="xmalloc">xmalloc</link>(),
+<link linkend="xrealloc">xrealloc</link>(), and <link linkend="xstrdup">xstrdup</link>().  Information on corrupted blocks is
+rendered on the standard error stream.  This includes where the
+block was allocated, the size of the block, and the number of
+allocations made since the block was created.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="xmemdmp">xmemdmp ()</title>
+<programlisting>void        xmemdmp                         (void);</programlisting>
+<para>
+Dumps the address, size, age, and point of allocation in code.</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="xclaim">xclaim ()</title>
+<programlisting>void        xclaim                          (void *addr,
+                                             const char *filen,
+                                             int line);</programlisting>
+<para>
+Coerces information in allocation table about allocation file and
+line to be <parameter>filen</parameter> and <parameter>line</parameter>.  This is used by the evil
+<link linkend="block-alloc">block_alloc</link>() and should probably not be used anywhere else ever.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>addr</parameter>&nbsp;:</entry>
+<entry> address
+</entry></row>
+<row><entry align="right"><parameter>filen</parameter>&nbsp;:</entry>
+<entry> new filename
+</entry></row>
+<row><entry align="right"><parameter>line</parameter>&nbsp;:</entry>
+<entry> new allocation line
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="xmemdist">xmemdist ()</title>
+<programlisting>void        xmemdist                        (<link linkend="FILE-CAPS">FILE</link> *fp);</programlisting>
+<para>
+Dumps information on existing memory allocations to file.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>fp</parameter>&nbsp;:</entry>
+<entry> file pointer
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="xfree">xfree ()</title>
+<programlisting>void        xfree                           (void *p);</programlisting>
+<para>
+Free block of memory.  Semantically equivalent to <link linkend="free">free</link>(), but
+checks for bounds overruns in <parameter>p</parameter> and tidies up state associated
+additional functionality.
+</para>
+<para>
+Must be used to free memory allocated with <link linkend="xmalloc">xmalloc</link>(), <link linkend="xrealloc">xrealloc</link>(),
+and <link linkend="xstrdup">xstrdup</link>().</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>p</parameter>&nbsp;:</entry>
+<entry> pointer to block to freed.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

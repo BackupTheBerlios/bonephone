@@ -1,0 +1,18 @@
+New entries are added at the top of this file.
+
+0.8.2  * removed a bug that caused the audio engine to start with in/out 
+         volumes of zero. Users had to move the volume sliders to set the 
+         correct volume. This should be fixed now.
+       * added hack to have no empty Subject lines appear. This confuses the 
+         message parser in a way that a JAIN exception is thrown when reading
+         an empty Subject line. This is avoided by mapping empty subjects to
+         the String "empty". Nevertheless this bug will get triggered again
+         when using something else than bonephone to call in.
+
+0.8.1  * Added "AutoAnswer" feature (tested)
+       * wrote README.config
+       * README.config and Changelog are now part of the main archive
+       * replaced SIP-UA with a new version from Stefan Foeckel 
+         (foeckel@fokus.gmd.de)
+
+--------------------------------------------------------------------------------

@@ -1,0 +1,16 @@
+# Test configuration file for the SIP server
+# see the documentation of gov.nist.jain.protocol.ip.sip.SipServer for
+# explanations and other configuration switches.
+disableAuthentication
+traceLevel 0
+enableUDP 5070
+stackHostName antd.nist.gov
+stackAddress 127.0.0.1
+serverLog myserverlog.txt
+enableRecordRoute
+defaultRoute 127.0.0.1:5061/UDP
+transactionTimeout 1
+transactionLifetime 100
+#traceLevel 32
+accessLogViaRMI
+traceLevel 32

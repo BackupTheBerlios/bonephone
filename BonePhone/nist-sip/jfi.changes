@@ -1,0 +1,16 @@
+geaenderte Klassen/Interfaces/Methoden
+
+gov.nist.sip.net.Host
+	equals(Object)          // geaendert
+	encode()                // geaendert   ( V6 -> [a:b:c::d] )
+	Host(String hostname)   // geaendert 
+	setHostAddress(String)  // geaendert
+	setAddress(String)      // geaendert
+	compareAddress(String)  // hinzugefuegt (private)
+	countColons(String)     // hinzugefuegt (private)
+	getIpAddress()          // nicht geaendert, aber kann jetzt eine V6 Addresse liefern
+                            // dies koennte im caller probleme bereiten.
+
+gov.nist.sip.net.HostAddrTypes
+	IPV6ADDRESS             // Feld hinzugefuegt.
+

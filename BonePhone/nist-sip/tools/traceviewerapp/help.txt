@@ -1,0 +1,2 @@
+This trace viewer works accessing the log from the proxy server or stack via RMI.
+Hit refresh to reload the trace.

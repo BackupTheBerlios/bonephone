@@ -1,0 +1,214 @@
+# Generated automatically from Makefile.in by configure.
+#
+# Makefile for the RAT project. This requires GNU make on many systems.
+#
+
+# Configure substitutes variables here... #####################################
+
+DEFS    = -DHAVE_CONFIG_H
+CFLAGS  = -g -O2 -W -Wall -Wbad-function-cast -Wmissing-prototypes -Werror $(DEFS)
+LIBS    = -ldl  -lieee -lm
+LDLIBS  = 
+INCLUDE = -I/home/jfi/Studienarbeit/rat-4.2.20/common/src  -I/home/jfi/Studienarbeit/rat-4.2.20/tcl-8.0/generic -I/home/jfi/Studienarbeit/rat-4.2.20/tk-8.0/generic 
+CC      = gcc
+AR      = ar
+RANLIB  = ranlib
+ECHO    = echo
+STRIP	= strip
+
+VERSION = 4.2.20
+RATVER  = rat-$(VERSION)
+
+AU_OBJ  =  auddev_alsa.o auddev_oss.o
+AU_INC  = 
+AU_LIB  =  /usr/lib/libasound.a
+
+TCL_LIB    = -L/home/jfi/Studienarbeit/rat-4.2.20/tcl-8.0/unix -ltcl8.0 
+TK_LIB     = -L/home/jfi/Studienarbeit/rat-4.2.20/tk-8.0/unix -ltk8.0 
+X_CFLAGS   =  -I/usr/X11R6/include 
+X_LIB      =  -lSM -lICE  -L/usr/X11R6/lib -lX11 -lXext    
+COMMON_LIB = -L/home/jfi/Studienarbeit/rat-4.2.20/common/src -luclmmbase
+EXTRA_OBJ  = 
+EXTERNAL_DEP =  /home/jfi/Studienarbeit/rat-4.2.20/common/src/libuclmmbase.a
+
+G728_CODEC_OBJ = 
+G728_LIB       = 
+
+WBS_CODEC_OBJ = codec_wbs.o cx_wbs.o
+
+prefix      = /usr/local
+exec_prefix = ${prefix}
+bindir      = ${exec_prefix}/bin
+mandir      = ${prefix}/man
+
+# Nothing below here set by configure #########################################
+
+AUDIO_OBJS   = $(AU_OBJ) auddev_null.o audio_fmt.o audio_util.o \
+               auddev_trans.o auddev.o
+
+CODEC_OBJS   = codec.o codec_state.o codec_dvi.o codec_gsm.o \
+               codec_l8.o codec_l16.o codec_g711.o codec_g726.o codec_lpc.o \
+               codec_types.o codec_vdvi.o \
+               cx_g726.o cx_g726_16.o cx_g726_24.o cx_g726_32.o cx_g726_40.o \
+               cx_gsm.o cx_lpc.o cx_vdvi.o cx_dvi.o \
+               converter.o convert_util.o convert_extra.o convert_linear.o \
+               convert_sinc.o bitstream.o  $(WBS_CODEC_OBJ)
+
+SNDFILE_OBJS = sndfile.o sndfile_au.o sndfile_raw.o sndfile_wav.o
+
+MEDIALIBS    = libuclaudio.a libuclcodec.a libuclsndfile.a 
+
+CHANNEL_OBJS = channel.o channel_types.o cc_vanilla.o cc_rdncy.o cc_layered.o
+
+TOY_OBJS     = render_3D.o repair.o 
+
+MEDIA_OBJS   = ts.o playout.o net.o source.o session.o \
+               main_engine.o mbus_engine.o audio.o cushion.o mix.o \
+               parameters.o transmit.o playout_calc.o \
+               ui_send_rtp.o ui_send_audio.o ui_send_prefs.o ui_send_stats.o \
+	       transcoder.o rtp_dump.o rtp_callback.o settings.o \
+               pdb.o pktbuf.o tonegen.o voxlet.o fatal_error.o $(EXTRA_OBJ)
+
+UI_OBJS      = tcltk.o mbus_ui.o main_ui.o fatal_error.o
+
+CTRL_OBJS    = main_control.o mbus_control.o codec_compat.o fatal_error.o \
+               process.o cmd_parser.o
+
+TCL_OBJS     = ui_audiotool.o ui_transcoder.o 
+
+TCL_SRCS     = $(TCL_OBJS:%.o=%.c)
+
+ALL_OBJS     = $(AUDIO_OBJS) $(CODEC_OBJS) $(SNDFILE_OBJS) $(CHANNEL_OBJS) \
+               $(TOY_OBJS) $(MEDIA_OBJS) $(UI_OBJS) $(CTRL_OBJS)
+
+ALL_SRCS     = $(ALL_OBJS:%.o=%.c)
+
+INSTALL_OBJS = ui_installer.o installer.o binaries.o
+
+all: version.h sdr2.plugin.S02.audio.rtp.-.$(RATVER) $(RATVER).spec $(RATVER) $(RATVER)-ui $(RATVER)-media rat Makefile
+
+libuclaudio.a: $(AUDIO_OBJS)
+	$(AR) r $@ $(AUDIO_OBJS)
+	$(RANLIB) $@
+
+libuclcodec.a: $(CODEC_OBJS)
+	$(AR) r $@ $(CODEC_OBJS)
+	$(RANLIB) $@
+
+libuclsndfile.a: $(SNDFILE_OBJS)
+	$(AR) r $@ $(SNDFILE_OBJS)
+	$(RANLIB) $@
+
+$(RATVER)-media: $(CHANNEL_OBJS) $(TOY_OBJS) $(MEDIA_OBJS) $(MEDIALIBS) $(EXTERNAL_DEP)
+	$(CC) $(CFLAGS) $(CHANNEL_OBJS) $(TOY_OBJS) $(MEDIA_OBJS) $(MEDIALIBS) $(COMMON_LIB) $(AU_LIB) $(LIBS) $(G728_LIB) -o $(RATVER)-media
+
+$(RATVER)-ui: $(TCL_OBJS) $(UI_OBJS) $(EXTERNAL_DEP)
+	$(CC) $(CFLAGS) $(TCL_OBJS) $(UI_OBJS) $(COMMON_LIB)  $(TCL_LIB) $(TK_LIB) $(X_LIB) $(LIBS) -o $(RATVER)-ui 
+
+$(RATVER): $(CTRL_OBJS) $(EXTERNAL_DEP)
+	$(CC) $(CFLAGS) $(CTRL_OBJS) $(COMMON_LIB) $(LIBS) -o $(RATVER)
+
+.c.o:
+	$(CC) $(CFLAGS) $(X_CFLAGS) $(INCLUDE) -c $<
+
+$(TCL_OBJS): $(TCL_SRCS)
+
+ui_transcoder.c: ui_transcoder.tcl tcl2c/tcl2c
+	cat ui_transcoder.tcl | tcl2c/tcl2c ui_transcoder > ui_transcoder.c
+
+ui_audiotool.c: uicomponent_bargraph.tcl uicomponent_chart.tcl uicomponent_help.tcl asfilebox.tcl ui_audiotool.tcl tcl2c/tcl2c
+	cat uicomponent_bargraph.tcl uicomponent_chart.tcl uicomponent_help.tcl asfilebox.tcl ui_audiotool.tcl | tcl2c/tcl2c ui_audiotool > ui_audiotool.c
+
+ui_installer.c: ui_installer.tcl tcl2c/tcl2c
+	cat ui_installer.tcl | tcl2c/tcl2c ui_installer > ui_installer.c
+
+tcl2c/tcl2c: tcl2c/tcl2c.c
+	$(CC) -o tcl2c/tcl2c tcl2c/tcl2c.c
+
+version.h: VERSION
+	@${ECHO} "Generating version.h"
+	@sed -e 's/.*/#define RAT_VERSION "&"/' VERSION > version.h
+
+sdr2.plugin.S02.audio.rtp.-.rat-$(VERSION): sdr2.plugin.in
+	@${ECHO} "Generating sdr plugin"
+	@${ECHO} "# Generated automatically from sdr2.plugin.in" > $@
+	@${ECHO} "# DO NOT EDIT THIS FILE" >> $@
+	@sed -e 's/VERSION/$(VERSION)/g' sdr2.plugin.in >> $@
+
+rat-$(VERSION).spec: rat.spec
+	@${ECHO} "Generating RPM spec file"
+	@${ECHO} "# Generated automatically from rat.spec"  > $@
+	@${ECHO} "# DO NOT EDIT THIS FILE"                 >> $@
+	@cat rat.spec | sed s/VERSION/$(VERSION)/g       >> $@
+
+rat: VERSION Makefile
+	@${ECHO} "Generating rat shell script"
+	@${ECHO} "#/bin/sh" > $@
+	@${ECHO} "# Generated automatically from RAT Makefile.  Edit there." >> $@
+	@${ECHO} "exec rat-$(VERSION)" '$$*' >> $@
+	@chmod a+x rat
+
+clean:
+	-rm -f $(CTRL_OBJS) $(AUDIO_OBJS) $(CODEC_OBJS) $(SNDFILE_OBJS) $(CHANNEL_OBJS) $(TOY_OBJS) $(MEDIA_OBJS) $(UI_OBJS) $(TCL_OBJS)
+	-rm -f $(MEDIALIBS)
+	-rm -f tcl_libs.c ui_audiotool.c ui_transcoder.c ui_installer.c version.h
+	-rm -f tcl2c/tcl2c sdr2.plugin.S02.audio.rtp.-.$(RATVER) $(RATVER).spec
+	-rm -f bin2c bin2c.o binaries.c $(INSTALL_OBJS) $(RATVER)-installer
+	-rm -f rat $(RATVER)-media $(RATVER)-ui $(RATVER)
+
+distclean: clean
+	-rm -rf config.cache config.log config.status ratconf.h Makefile
+	-rm -rf core core-$(RATVER)-media core-$(RATVER)-ui
+
+install: all
+	./install-sh -m 555 -c rat             $(bindir)
+	./install-sh -m 555 -c $(RATVER)       $(bindir)
+	./install-sh -m 555 -c $(RATVER)-media $(bindir)
+	./install-sh -m 555 -c $(RATVER)-ui    $(bindir)
+	./install-sh -m 444 -c man/man1/rat.1  $(mandir)/man1/rat.1
+	./install-sh -m 444 -c sdr2.plugin.S02.audio.rtp.-.$(RATVER) $(prefix)/etc/sdr/plugins
+
+installer: $(RATVER)-installer
+	mkdir release
+	mkdir release/$(RATVER)
+	cp $(RATVER)-installer README.* MODS COPYRIGHT INSTALL.TXT VERSION release/$(RATVER)
+	cd release && tar cvf $(RATVER)-$(OSTYPE).tar $(RATVER) && gzip -9 $(RATVER)-$(OSTYPE).tar
+	mv release/$(RATVER)-$(OSTYPE).tar.gz .
+	rm -rf release
+
+$(RATVER)-installer: $(INSTALL_OBJS)
+	$(CC) $(CFLAGS) $(INSTALL_OBJS)  $(TCL_LIB) $(TK_LIB) $(X_LIB) $(LIBS) -o $(RATVER)-installer
+
+binaries.c: $(RATVER)-$(OSTYPE).tar.gz bin2c
+	./bin2c $(RATVER)-$(OSTYPE).tar.gz > binaries.c
+
+bin2c: bin2c.o
+	$(CC) bin2c.o -o bin2c
+
+etags:
+	etags ../common/src/*.[ch] *.[ch]
+
+ctags:
+	ctags ../common/src/*.[ch] *.[ch] 
+
+release:
+	cvs tag release-`cat VERSION | sed "s/\./-/g"`
+
+$(RATVER)-$(OSTYPE).tar.gz: $(RATVER) $(RATVER)-ui $(RATVER)-media rat
+	tar cf $(RATVER)-$(OSTYPE).tar README.* MODS COPYRIGHT INSTALL.TXT VERSION $(RATVER) $(RATVER)-ui $(RATVER)-media sdr2.plugin.S02.audio.rtp.-.rat-$(VERSION) rat
+	rm -f $(RATVER)-$(OSTYPE).tar.gz
+	gzip -9 $(RATVER)-$(OSTYPE).tar
+
+tgz: $(RATVER)-$(OSTYPE).tar.gz
+
+rpm: tgz
+	@${ECHO} "Building $(RATVER).rpm -- this almost certainly needs to run as root on RedHat Linux"
+	install -m 644 $(RATVER)-$(OSTYPE).tar.gz /usr/src/redhat/SOURCES/rat-4.1.2.tar.gz
+	rpm -bb $(RATVER).spec
+
+Makefile: Makefile.in VERSION
+	$(error "Run configure again, the following file(s) are newer than Makefile: $?")
+
+depend:
+	makedepend $(X_CFLAGS) $(INCLUDE) $(ALL_SRCS)
+# DO NOT DELETE THIS LINE

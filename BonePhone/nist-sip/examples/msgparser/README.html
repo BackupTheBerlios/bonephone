@@ -1,0 +1,92 @@
+<html>
+<h1> Parser use examples </h1>
+Each of the following tests illustrates a feature of the Parser. The 
+tests may be built and executed using the provided makefile (make targets
+are indicated):
+
+<h2>
+1. PieplinedMsgParserTest (no make target for this one)
+</h2>
+ Here is an  example  that uses the stream based parser
+ (PipelinedMsgParser)  that reads from stdin, parses input and outputs
+ the result to stdout (typically, that input would come
+ from a TCP connection). A class that implements the SIPMessageListener
+ interface is specified when the parser is created. This interface
+ specifies two methods processMessage and handeException that are
+ invoked by the parser on successful message processing and when a
+ parse exception is encountered respectively. The exception handler
+ gets passed a SIPParseException  object that indicates whether an
+ error was encountered on an individual header or on the entire
+ message (which can happen when the RequestLine is malformed or
+ when there are multiple headers of a type when there should only
+ be a single one). The handleException method can do whatever
+ is appropriate for the application (for example a proxy may
+ simply choose to ignore malformed headers).  The default action
+ is to simply ignore malformed headers and abort  processing on
+ malformed messages. When a message has been successfully parsed,
+ the processMessage method is called from the parser and it is passed
+ a SIPMessage object corresponding to the input that has been read
+ from the input stream.
+
+<h2>
+2. StringMsgParserTest (make target = stringparse) 
+</h2>
+ This example reads a file consisting of multiple messages  into  a buffer
+ (typically, that input would be from a UDP packet) and parses the input
+ by handing that input to the parser.   The parser can take multiple SIP
+ Messages in a single buffer and  returns the parsed result as an array
+ of SIPMessage objects.  Errors are handled  via a class that implements
+ the SIPParseExceptionListener. that can be registered at the time of
+ creation of the parser with the setExceptionListener  method of the
+ StringMsgParser. This class must implement the handleException method
+ that functions as described above. As  above, the  exception listener can
+ be set up to customize error handling by introsepcting on the Exception
+ class that it is passed when an exception occurs.  
+
+<h2>
+3. SIPURLParserTest Illustrates parsing of individual URL's 
+(make target = urlparse)
+</h2>
+This example illustrates how individual URLs may be parsed and output
+as a parsed structure.
+
+<h2>
+4. NewFangledHeaderTest: (make target = extensionparse)
+</h2>
+Illustrates parsing of extension headers.  When an unrecognized header
+is encountered by the parser, if an ExceptionListener (using the
+setExceptionListener call) is registered, its handleException method is
+called back and is passed UnrecognizedExtension exception object. At
+this time, the exception listener can   Extensions are stored in a
+hash table in the SIPMessage and can be retrieved by type by using the
+getExtensionHeader method of the SIPMessage class  by specifying the
+class of the extension header.
+
+<h2>
+5. SIPHeaderParserTest: (make target = headerparse)
+</h2>
+Illustrates parsing of individual headers.  More callouts to the
+parser to parse individual pieces of input may be added as needed by
+adding methods to or extending StringMsgParser.
+
+<h2>
+6. SDPParseTest : (make target = sdpparse)
+</h2>
+The parser may also be used to parse SDP headers. This is not particularly
+relevant for building servers but may be of use in building UAC clients.
+You can turn on parsing SDP headers by enabling the parseMessageContents
+flag in the parser. The SDPParserTest shows how to parse SDP Headers.
+
+<h2>
+7. BadHeader test: ( make target badheaders)
+</h2>
+Illustrates error handling 
+
+<h2>
+pipeline  parser test (make pipeline)
+</h2>
+Illustrates the use of the parser in pileine mode. (starts up an interactive
+shell where you can input sip messages and it will parse it and output the
+result). Gives you an idea of how to use the parser when handling 
+stream-oriented (TCP) input.
+</html>

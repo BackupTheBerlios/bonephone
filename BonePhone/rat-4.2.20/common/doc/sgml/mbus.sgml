@@ -1,0 +1,353 @@
+<refentry id="uclmmbase-mbus" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>mbus</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>mbus</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="MBUS-MESSAGE-LOST-CAPS">MBUS_MESSAGE_LOST</link>
+#define     <link linkend="MBUS-DESTINATION-UNKNOWN-CAPS">MBUS_DESTINATION_UNKNOWN</link>
+#define     <link linkend="MBUS-DESTINATION-NOT-UNIQUE-CAPS">MBUS_DESTINATION_NOT_UNIQUE</link>
+void        <link linkend="mbus-cmd-handler">mbus_cmd_handler</link>                (struct <link linkend="mbus">mbus</link> *m,
+                                             void (*cmd_handler) (char *src, char *cmd, char *arg, void *dat));
+void        <link linkend="mbus-exit">mbus_exit</link>                       (struct <link linkend="mbus">mbus</link> *m);
+int         <link linkend="mbus-addr-valid">mbus_addr_valid</link>                 (struct <link linkend="mbus">mbus</link> *m,
+                                             char *addr);
+void        <link linkend="mbus-qmsg">mbus_qmsg</link>                       (struct <link linkend="mbus">mbus</link> *m,
+                                             const char *dest,
+                                             const char *cmnd,
+                                             const char *args,
+                                             int reliable);
+void        <link linkend="mbus-qmsgf">mbus_qmsgf</link>                      (struct <link linkend="mbus">mbus</link> *m,
+                                             const char *dest,
+                                             int reliable,
+                                             const char *cmnd,
+                                             const char *format,
+                                             ...);
+void        <link linkend="mbus-send">mbus_send</link>                       (struct <link linkend="mbus">mbus</link> *m);
+int         <link linkend="mbus-recv">mbus_recv</link>                       (struct <link linkend="mbus">mbus</link> *m,
+                                             void *data,
+                                             struct <link linkend="timeval">timeval</link> *timeout);
+void        <link linkend="mbus-retransmit">mbus_retransmit</link>                 (struct <link linkend="mbus">mbus</link> *m);
+void        <link linkend="mbus-heartbeat">mbus_heartbeat</link>                  (struct <link linkend="mbus">mbus</link> *m,
+                                             int interval);
+int         <link linkend="mbus-waiting-ack">mbus_waiting_ack</link>                (struct <link linkend="mbus">mbus</link> *m);
+int         <link linkend="mbus-sent-all">mbus_sent_all</link>                   (struct <link linkend="mbus">mbus</link> *m);
+char*       <link linkend="mbus-rendezvous-waiting">mbus_rendezvous_waiting</link>         (struct <link linkend="mbus">mbus</link> *m,
+                                             char *addr,
+                                             char *token,
+                                             void *data);
+char*       <link linkend="mbus-rendezvous-go">mbus_rendezvous_go</link>              (struct <link linkend="mbus">mbus</link> *m,
+                                             char *token,
+                                             void *data);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="MBUS-MESSAGE-LOST-CAPS">MBUS_MESSAGE_LOST</title>
+<programlisting>#define MBUS_MESSAGE_LOST           1
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="MBUS-DESTINATION-UNKNOWN-CAPS">MBUS_DESTINATION_UNKNOWN</title>
+<programlisting>#define MBUS_DESTINATION_UNKNOWN    2
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="MBUS-DESTINATION-NOT-UNIQUE-CAPS">MBUS_DESTINATION_NOT_UNIQUE</title>
+<programlisting>#define MBUS_DESTINATION_NOT_UNIQUE 3
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="mbus-cmd-handler">mbus_cmd_handler ()</title>
+<programlisting>void        mbus_cmd_handler                (struct <link linkend="mbus">mbus</link> *m,
+                                             void (*cmd_handler) (char *src, char *cmd, char *arg, void *dat));</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>cmd_handler</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-exit">mbus_exit ()</title>
+<programlisting>void        mbus_exit                       (struct <link linkend="mbus">mbus</link> *m);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-addr-valid">mbus_addr_valid ()</title>
+<programlisting>int         mbus_addr_valid                 (struct <link linkend="mbus">mbus</link> *m,
+                                             char *addr);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>addr</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-qmsg">mbus_qmsg ()</title>
+<programlisting>void        mbus_qmsg                       (struct <link linkend="mbus">mbus</link> *m,
+                                             const char *dest,
+                                             const char *cmnd,
+                                             const char *args,
+                                             int reliable);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>dest</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>cmnd</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>args</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>reliable</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-qmsgf">mbus_qmsgf ()</title>
+<programlisting>void        mbus_qmsgf                      (struct <link linkend="mbus">mbus</link> *m,
+                                             const char *dest,
+                                             int reliable,
+                                             const char *cmnd,
+                                             const char *format,
+                                             ...);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>dest</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>reliable</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>cmnd</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>format</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>...</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-send">mbus_send ()</title>
+<programlisting>void        mbus_send                       (struct <link linkend="mbus">mbus</link> *m);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-recv">mbus_recv ()</title>
+<programlisting>int         mbus_recv                       (struct <link linkend="mbus">mbus</link> *m,
+                                             void *data,
+                                             struct <link linkend="timeval">timeval</link> *timeout);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>timeout</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-retransmit">mbus_retransmit ()</title>
+<programlisting>void        mbus_retransmit                 (struct <link linkend="mbus">mbus</link> *m);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-heartbeat">mbus_heartbeat ()</title>
+<programlisting>void        mbus_heartbeat                  (struct <link linkend="mbus">mbus</link> *m,
+                                             int interval);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>interval</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-waiting-ack">mbus_waiting_ack ()</title>
+<programlisting>int         mbus_waiting_ack                (struct <link linkend="mbus">mbus</link> *m);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-sent-all">mbus_sent_all ()</title>
+<programlisting>int         mbus_sent_all                   (struct <link linkend="mbus">mbus</link> *m);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-rendezvous-waiting">mbus_rendezvous_waiting ()</title>
+<programlisting>char*       mbus_rendezvous_waiting         (struct <link linkend="mbus">mbus</link> *m,
+                                             char *addr,
+                                             char *token,
+                                             void *data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>addr</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>token</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-rendezvous-go">mbus_rendezvous_go ()</title>
+<programlisting>char*       mbus_rendezvous_go              (struct <link linkend="mbus">mbus</link> *m,
+                                             char *token,
+                                             void *data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>m</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>token</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,287 @@
+<refentry id="uclmmbase-addrinfo" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>addrinfo</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>addrinfo</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="EAI-ADDRFAMILY-CAPS">EAI_ADDRFAMILY</link>
+#define     <link linkend="EAI-AGAIN-CAPS">EAI_AGAIN</link>
+#define     <link linkend="EAI-BADFLAGS-CAPS">EAI_BADFLAGS</link>
+#define     <link linkend="EAI-FAIL-CAPS">EAI_FAIL</link>
+#define     <link linkend="EAI-FAMILY-CAPS">EAI_FAMILY</link>
+#define     <link linkend="EAI-MEMORY-CAPS">EAI_MEMORY</link>
+#define     <link linkend="EAI-NODATA-CAPS">EAI_NODATA</link>
+#define     <link linkend="EAI-NONAME-CAPS">EAI_NONAME</link>
+#define     <link linkend="EAI-SERVICE-CAPS">EAI_SERVICE</link>
+#define     <link linkend="EAI-SOCKTYPE-CAPS">EAI_SOCKTYPE</link>
+#define     <link linkend="EAI-SYSTEM-CAPS">EAI_SYSTEM</link>
+#define     <link linkend="EAI-BADHINTS-CAPS">EAI_BADHINTS</link>
+#define     <link linkend="EAI-PROTOCOL-CAPS">EAI_PROTOCOL</link>
+#define     <link linkend="EAI-MAX-CAPS">EAI_MAX</link>
+#define     <link linkend="NETDB-INTERNAL-CAPS">NETDB_INTERNAL</link>
+#define     <link linkend="AI-PASSIVE-CAPS">AI_PASSIVE</link>
+#define     <link linkend="AI-CANONNAME-CAPS">AI_CANONNAME</link>
+#define     <link linkend="AI-NUMERICHOST-CAPS">AI_NUMERICHOST</link>
+#define     <link linkend="AI-MASK-CAPS">AI_MASK</link>
+#define     <link linkend="AI-ALL-CAPS">AI_ALL</link>
+#define     <link linkend="AI-V4MAPPED-CFG-CAPS">AI_V4MAPPED_CFG</link>
+#define     <link linkend="AI-ADDRCONFIG-CAPS">AI_ADDRCONFIG</link>
+#define     <link linkend="AI-V4MAPPED-CAPS">AI_V4MAPPED</link>
+#define     <link linkend="AI-DEFAULT-CAPS">AI_DEFAULT</link>
+#define     <link linkend="NI-MAXHOST-CAPS">NI_MAXHOST</link>
+#define     <link linkend="NI-MAXSERV-CAPS">NI_MAXSERV</link>
+#define     <link linkend="NI-NOFQDN-CAPS">NI_NOFQDN</link>
+#define     <link linkend="NI-NUMERICHOST-CAPS">NI_NUMERICHOST</link>
+#define     <link linkend="NI-NAMEREQD-CAPS">NI_NAMEREQD</link>
+#define     <link linkend="NI-NUMERICSERV-CAPS">NI_NUMERICSERV</link>
+#define     <link linkend="NI-DGRAM-CAPS">NI_DGRAM</link>
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="EAI-ADDRFAMILY-CAPS">EAI_ADDRFAMILY</title>
+<programlisting>#define	EAI_ADDRFAMILY	 1	/* address family for hostname not supported */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EAI-AGAIN-CAPS">EAI_AGAIN</title>
+<programlisting>#define	EAI_AGAIN	 2	/* temporary failure in name resolution */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EAI-BADFLAGS-CAPS">EAI_BADFLAGS</title>
+<programlisting>#define	EAI_BADFLAGS	 3	/* invalid value for ai_flags */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EAI-FAIL-CAPS">EAI_FAIL</title>
+<programlisting>#define	EAI_FAIL	 4	/* non-recoverable failure in name resolution */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EAI-FAMILY-CAPS">EAI_FAMILY</title>
+<programlisting>#define	EAI_FAMILY	 5	/* ai_family not supported */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EAI-MEMORY-CAPS">EAI_MEMORY</title>
+<programlisting>#define	EAI_MEMORY	 6	/* memory allocation failure */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EAI-NODATA-CAPS">EAI_NODATA</title>
+<programlisting>#define	EAI_NODATA	 7	/* no address associated with hostname */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EAI-NONAME-CAPS">EAI_NONAME</title>
+<programlisting>#define	EAI_NONAME	 8	/* hostname nor servname provided, or not known */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EAI-SERVICE-CAPS">EAI_SERVICE</title>
+<programlisting>#define	EAI_SERVICE	 9	/* servname not supported for ai_socktype */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EAI-SOCKTYPE-CAPS">EAI_SOCKTYPE</title>
+<programlisting>#define	EAI_SOCKTYPE	10	/* ai_socktype not supported */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EAI-SYSTEM-CAPS">EAI_SYSTEM</title>
+<programlisting>#define	EAI_SYSTEM	11	/* system error returned in errno */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EAI-BADHINTS-CAPS">EAI_BADHINTS</title>
+<programlisting>#define EAI_BADHINTS	12
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EAI-PROTOCOL-CAPS">EAI_PROTOCOL</title>
+<programlisting>#define EAI_PROTOCOL	13
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EAI-MAX-CAPS">EAI_MAX</title>
+<programlisting>#define EAI_MAX		14
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="NETDB-INTERNAL-CAPS">NETDB_INTERNAL</title>
+<programlisting>#define	NETDB_INTERNAL	-1	/* see errno */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="AI-PASSIVE-CAPS">AI_PASSIVE</title>
+<programlisting>#define	AI_PASSIVE	0x00000001 /* get address to use bind() */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="AI-CANONNAME-CAPS">AI_CANONNAME</title>
+<programlisting>#define	AI_CANONNAME	0x00000002 /* fill ai_canonname */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="AI-NUMERICHOST-CAPS">AI_NUMERICHOST</title>
+<programlisting>#define	AI_NUMERICHOST	0x00000004 /* prevent name resolution */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="AI-MASK-CAPS">AI_MASK</title>
+<programlisting>#define	AI_MASK		(AI_PASSIVE | AI_CANONNAME | AI_NUMERICHOST)
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="AI-ALL-CAPS">AI_ALL</title>
+<programlisting>#define	AI_ALL		0x00000100 /* IPv6 and IPv4-mapped (with AI_V4MAPPED) */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="AI-V4MAPPED-CFG-CAPS">AI_V4MAPPED_CFG</title>
+<programlisting>#define	AI_V4MAPPED_CFG	0x00000200 /* accept IPv4-mapped if kernel supports */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="AI-ADDRCONFIG-CAPS">AI_ADDRCONFIG</title>
+<programlisting>#define	AI_ADDRCONFIG	0x00000400 /* only if any address is assigned */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="AI-V4MAPPED-CAPS">AI_V4MAPPED</title>
+<programlisting>#define	AI_V4MAPPED	0x00000800 /* accept IPv4-mapped IPv6 address */
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="AI-DEFAULT-CAPS">AI_DEFAULT</title>
+<programlisting>#define	AI_DEFAULT	(AI_V4MAPPED_CFG | AI_ADDRCONFIG)
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="NI-MAXHOST-CAPS">NI_MAXHOST</title>
+<programlisting>#define	NI_MAXHOST	1025
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="NI-MAXSERV-CAPS">NI_MAXSERV</title>
+<programlisting>#define	NI_MAXSERV	32
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="NI-NOFQDN-CAPS">NI_NOFQDN</title>
+<programlisting>#define	NI_NOFQDN	0x00000001
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="NI-NUMERICHOST-CAPS">NI_NUMERICHOST</title>
+<programlisting>#define	NI_NUMERICHOST	0x00000002
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="NI-NAMEREQD-CAPS">NI_NAMEREQD</title>
+<programlisting>#define	NI_NAMEREQD	0x00000004
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="NI-NUMERICSERV-CAPS">NI_NUMERICSERV</title>
+<programlisting>#define	NI_NUMERICSERV	0x00000008
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="NI-DGRAM-CAPS">NI_DGRAM</title>
+<programlisting>#define	NI_DGRAM	0x00000010
+</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,57 @@
+<refentry id="uclmmbase-bittypes" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>bittypes</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>bittypes</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+typedef     <link linkend="u-int8-t">u_int8_t</link>;
+typedef     <link linkend="u-int16-t">u_int16_t</link>;
+typedef     <link linkend="u-int32-t">u_int32_t</link>;
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="u-int8-t">u_int8_t</title>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="u-int16-t">u_int16_t</title>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="u-int32-t">u_int32_t</title>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,233 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE eventscript SYSTEM "eventscript.dtd">
+
+<!-- This defines the event-driven behavior of a UAC in sending out
+  an invite and responding to it with an ACK etc. -->
+
+<CALLFLOW
+        title = "User Agent client engine"
+	description = " This defines the event-driven behavior of a UAC in sending out 
+an invite and responding to it with an ACK etc."
+>
+
+	
+
+<MESSAGE_TEMPLATES>
+<SIP_RESPONSE
+	templateId = "OK"
+>
+<STATUS_LINE
+	statusCode = "200"
+/>
+</SIP_RESPONSE>
+
+<SIP_REQUEST
+	templateId = "BYE"
+>
+<REQUEST_LINE
+	method = "BYE"
+/>
+</SIP_REQUEST>
+
+<!-- Forbidden -->
+<SIP_RESPONSE
+	templateId = "FORBIDDEN"
+>
+<STATUS_LINE
+	statusCode = "403"
+/>
+</SIP_RESPONSE>
+
+
+<!-- Busy -->
+<SIP_RESPONSE
+	templateId = "BUSY"
+>
+<STATUS_LINE
+	statusCode = "486"
+/>
+</SIP_RESPONSE>
+
+</MESSAGE_TEMPLATES>
+
+
+<!-- Define the state machine -->
+<STATE_MACHINE>
+<!-- No preconditions means we execute this right away -->
+<EXPECT
+	nodeId = "sendInvite"
+	generatedEvent = "INVITESent"
+>
+<GENERATE
+	retransmit= "true"
+>
+<SIP_REQUEST>
+<REQUEST_LINE
+	method = "INVITE"
+	agentId = "callee"
+/>
+
+<FROM
+	agentId = "caller"
+/>
+
+<TO
+	agentId = "callee"
+/>
+
+</SIP_REQUEST>
+</GENERATE>
+</EXPECT>
+
+<!-- Wait for the 200 OK and generate an ACK -->
+<EXPECT
+	nodeId               = "InviteSentOKReceived"
+	enablingEvent        = "INVITESent"
+	triggerMessage      = "OK"
+        executeOnTrigger     = "onInviteSentOKReceived"
+	generatedEvent       =  "ACKGenerated"
+>
+<GENERATE
+	retransmit="false"
+	messageType = "SipRequest"
+	messageId = "ACK"
+>
+<SIP_REQUEST>
+<REQUEST_LINE
+	method = "ACK"
+	agentId = "callee"
+/>
+</SIP_REQUEST>
+</GENERATE>
+<![CDATA[
+# This code runs after the 200 OK is received
+print "200 OK received"
+wantRTP = 0
+def onInviteSentOKReceived(sipMsg):
+	global sdpAnnounce
+        global playerRTP
+	global wantRTP
+	sdpAnnounce = None
+	print "Hi I got an 200 OK"
+	sdpFields = sipMsg.getMessageContent()
+	print "sdpFields = ", sdpFields 
+	if sdpFields != None:
+		sdpParser = StringMsgParser()
+		# Stash away the sdp Announcement in a global variable.
+		sdpAnnounce = sdpParser.parseSDPAnnounce(sdpFields)
+		# change this url if you want...
+		if wantRTP == 1 :
+ 	        	playerRTP= PlayerRTP(sdpAnnounce, \
+			"file://home/deruelle/nist-sip/" + \
+		 	"tools/responder/alanis.mp3")
+        		playerRTP.start()
+]]>
+</EXPECT>
+
+
+
+<!-- Wait for the 200 OK and generate a BYE -->
+<EXPECT
+	nodeId         = "ACKSentByeGenerated"
+	enablingEvent  = "ACKGenerated"
+	generatedEvent = "ACKSentByeGenerated"
+        executeOnTrigger      = "onOKReceivedBYE"
+        executeOnCompletion   = "onTransactionCompleteBYE"
+>
+<GENERATE 
+	delay 	    = "2"
+	messageId   = "BYE"
+	retransmit = "true"
+>
+<SIP_REQUEST>
+<REQUEST_LINE
+	method = "BYE"
+/>
+</SIP_REQUEST>
+</GENERATE>
+<![CDATA[
+# This code runs after the 200 OK is received
+def onOKReceivedBYE(sipMsg):
+	print "200 OK received"
+        print "We are going to send a BYE after a while" 
+
+# This code runs after the transaction has completed
+def onTransactionCompleteBYE():
+	global playerRTP
+	System.out.println("Transaction is complete")
+	System.exit(0)
+]]>
+</EXPECT>
+
+
+<!-- Wait for the 403 and generate an ACK -->
+
+<EXPECT
+	nodeId = "FORBIDDENReceived"
+	enablingEvent   = "INVITESent"
+	triggerMessage = "FORBIDDEN"
+>
+<GENERATE
+	retransmit="false"
+	messageType = "SipRequest"
+	messageId = "ACK"
+>
+
+<SIP_REQUEST>
+<REQUEST_LINE
+	method = "ACK"
+	agentId = "callee"
+/>
+</SIP_REQUEST>
+</GENERATE>
+</EXPECT>
+
+<!-- Wait for the 401 and generate an ACK -->
+
+<EXPECT
+	nodeId         = "BUSYReceived"
+	triggerMessage = "BUSY"
+>
+<GENERATE
+	retransmit="false"
+	messageType = "SipRequest"
+>
+<SIP_REQUEST>
+<REQUEST_LINE
+	method = "ACK"
+	agentId = "callee"
+/>
+</SIP_REQUEST>
+</GENERATE>
+</EXPECT>
+
+<!-- Wait for the BYE and generate an OK -->
+<EXPECT
+	nodeId    = "BYEReceived"
+	executeOnTrigger = "onByeReceived"
+	triggerMessage = "BYE"
+>
+<GENERATE
+	retransmit="false"
+	messageType = "SipRequest"
+>
+<SIP_RESPONSE>
+<STATUS_LINE
+	statusCode = "200"
+/>
+</SIP_RESPONSE>
+</GENERATE>
+<![CDATA[
+def onByeReceived(sipMessage):
+	global wantRTP
+        global playerRTP
+        print "I got a BYE message so bye bye!"
+	if wantRTP == 1 :
+		playerRTP.stop()
+	System.exit(0)
+]]>
+</EXPECT>
+</STATE_MACHINE>
+</CALLFLOW>
+
+

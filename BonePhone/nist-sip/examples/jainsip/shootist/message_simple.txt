@@ -1,0 +1,8 @@
+INVITE sip:127.0.0.1 SIP/2.0
+Via: SIP/2.0/UDP 127.0.0.1:5080
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Length: 0

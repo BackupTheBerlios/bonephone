@@ -1,0 +1,15 @@
+# Test configuration file for the SIP server
+authenticationMethod Digest gov.nist.sip.stack.security.DigestAuthenticationMethod passwords
+authenticationMethod Basic  gov.nist.sip.stack.security.BasicAuthenticationMethod passwords
+defaultAuthenticationMethod Digest
+registrationTimeout 1200
+traceLevel 32
+enableTCP 2000
+enableUDP 2000
+stackName  localhost
+stackAddress 127.0.0.1
+serverLog sipserverlog.txt
+#enableDebug
+enableRecordRoute
+accessLogViaRMI
+#disableAuthentication

@@ -1,0 +1,588 @@
+./gov/nist/log/LogWriter.java
+./gov/nist/sip/net/URITypes.java
+./gov/nist/sip/net/HostPort.java
+        public InetAddress getInetAddress() 
+            else return host.getInetAddress();
+./gov/nist/sip/net/HostAddrTypes.java
+./gov/nist/sip/net/AuthorityServer.java
+./gov/nist/sip/net/Address.java
+./gov/nist/sip/net/NetObject.java
+./gov/nist/sip/net/InternalError.java
+./gov/nist/sip/net/TelKeywords.java
+./gov/nist/sip/net/URI.java
+./gov/nist/sip/net/RelPath.java
+./gov/nist/sip/net/Authority.java
+./gov/nist/sip/net/Segment.java
+./gov/nist/sip/net/PathSegments.java
+./gov/nist/sip/net/NetPath.java
+./gov/nist/sip/net/Host.java
+    private InetAddress inetAddress;
+                    other.address = InetAddress.
+                address = InetAddress.getByName(hostname).
+                    inetAddress= InetAddress.getByName(hostname);
+    public InetAddress getInetAddress() throws java.net.UnknownHostException  {
+            inetAddress= InetAddress.getByName(hostname);
+            inetAddress= InetAddress.getByName(address);
+./gov/nist/sip/net/AbsPath.java
+./gov/nist/sip/net/URIKeywords.java
+./gov/nist/sip/net/NetObjectList.java
+./gov/nist/sip/net/Debug.java
+./gov/nist/sip/net/Path.java
+./gov/nist/sip/net/TelephoneNumber.java
+./gov/nist/sip/net/UserInfo.java
+./gov/nist/sip/net/AuthorityRegname.java
+./gov/nist/sip/InternalErrorHandler.java
+./gov/nist/sip/NameValueList.java
+./gov/nist/sip/sdpfields/SDPFieldList.java
+./gov/nist/sip/sdpfields/Format.java
+./gov/nist/sip/sdpfields/Indentation.java
+./gov/nist/sip/sdpfields/SDPFieldNames.java
+./gov/nist/sip/sdpfields/SDPKeywords.java
+./gov/nist/sip/sdpfields/SessionNameField.java
+./gov/nist/sip/sdpfields/OriginField.java
+./gov/nist/sip/sdpfields/InternalError.java
+./gov/nist/sip/sdpfields/ZoneAdjustment.java
+./gov/nist/sip/sdpfields/SDPObjectList.java
+./gov/nist/sip/sdpfields/Email.java
+./gov/nist/sip/sdpfields/TypedTime.java
+./gov/nist/sip/sdpfields/PhoneField.java
+./gov/nist/sip/sdpfields/TimeFieldList.java
+./gov/nist/sip/sdpfields/FormatList.java
+./gov/nist/sip/sdpfields/BandwidthField.java
+./gov/nist/sip/sdpfields/RepeatFieldList.java
+./gov/nist/sip/sdpfields/ProtoVersionField.java
+./gov/nist/sip/sdpfields/URIField.java
+./gov/nist/sip/sdpfields/ConnectionAddress.java
+./gov/nist/sip/sdpfields/TimeField.java
+./gov/nist/sip/sdpfields/ZoneField.java
+./gov/nist/sip/sdpfields/MediaField.java
+./gov/nist/sip/sdpfields/EmailField.java
+./gov/nist/sip/sdpfields/AttributeField.java
+./gov/nist/sip/sdpfields/KeyField.java
+./gov/nist/sip/sdpfields/AttributeFields.java
+./gov/nist/sip/sdpfields/SDPObject.java
+./gov/nist/sip/sdpfields/MediaDescriptionList.java
+./gov/nist/sip/sdpfields/MediaDescription.java
+./gov/nist/sip/sdpfields/EmailAddress.java
+./gov/nist/sip/sdpfields/PhoneFieldList.java
+./gov/nist/sip/sdpfields/InformationField.java
+./gov/nist/sip/sdpfields/RepeatField.java
+./gov/nist/sip/sdpfields/SDPField.java
+./gov/nist/sip/sdpfields/EmailFieldList.java
+./gov/nist/sip/sdpfields/ConnectionField.java
+./gov/nist/sip/stack/UDPMessageChannel.java
+    private InetAddress senderAddress;
+    private InetAddress receiverAddress;
+    public UDPMessageChannel(InetAddress targetAddr, int port, 
+		   InetAddress inetAddr = incomingPacket.getAddress();
+                this.receiverAddress = v.getSentBy().getInetAddress();
+			    InetAddress receiverAddress,
+    protected void sendMessage(byte[] msg, InetAddress receiverAddress,
+./gov/nist/sip/stack/MessageChannel.java
+import java.net.InetAddress;
+					  InetAddress receiverAddress,
+			InetAddress receiverAddress,
+			InetAddress receiverAddress,
+	    InetAddress sourceInetAddress = InetAddress.
+	    rawIpSourceAddress = sourceInetAddress.getHostAddress();
+        getKey(InetAddress inetAddr, int port, String transport){
+	InetAddress address, int port) {
+	InetAddress address, int port) {
+./gov/nist/sip/stack/Hop.java
+./gov/nist/sip/stack/MessageLogTableImpl.java
+./gov/nist/sip/stack/DefaultRouter.java
+./gov/nist/sip/stack/SIPServerResponseInterface.java
+./gov/nist/sip/stack/SIPServerRequestInterface.java
+./gov/nist/sip/stack/TCPMessageChannel.java
+    private InetAddress senderAddress;
+    private InetAddress receiverAddress;
+            senderAddress = mySock.getInetAddress();
+    ( InetAddress inetAddr,
+    public void sendMessage(byte message[], InetAddress receiverAddress,
+        mySock.getInetAddress().getHostAddress().
+                this.receiverAddress  = v.getSentBy().getInetAddress();
+./gov/nist/sip/stack/SIPMessageFormatter.java
+./gov/nist/sip/stack/MessageLog.java
+./gov/nist/sip/stack/Router.java
+./gov/nist/sip/stack/ChannelNotifier.java
+./gov/nist/sip/stack/MessageLogList.java
+./gov/nist/sip/stack/MessageLogTable.java
+./gov/nist/sip/stack/security/Base64Encoder.java
+./gov/nist/sip/stack/security/Base64Decoder.java
+./gov/nist/sip/stack/security/BasicAuthenticationMethod.java
+./gov/nist/sip/stack/security/AuthenticationMethod.java
+./gov/nist/sip/stack/security/Base64FormatException.java
+./gov/nist/sip/stack/security/MyStringTokenizer.java
+./gov/nist/sip/stack/security/SIPAuthenticationException.java
+./gov/nist/sip/stack/security/DigestAuthenticationMethod.java
+./gov/nist/sip/stack/SIPStack.java
+./gov/nist/sip/stack/SIPStackMessageFactory.java
+./gov/nist/sip/stack/ServerLog.java
+./gov/nist/sip/stack/TCPMessageProcessor.java
+./gov/nist/sip/stack/UDPMessageProcessor.java
+./gov/nist/sip/stack/Janitor.java
+./gov/nist/sip/stack/ExtensionParser.java
+./gov/nist/sip/stack/SIPServerException.java
+./gov/nist/sip/stack/Cleanable.java
+./gov/nist/sip/stack/IOHandler.java
+		InetAddress inaddr =  InetAddress.getByName(hostName);
+	public static void sendRequest(InetAddress inaddr, 
+	   InetAddress inetAddr = InetAddress.getByName(host);
+./gov/nist/sip/stack/ServerInternalError.java
+./gov/nist/sip/stack/MessageProcessor.java
+./gov/nist/sip/stack/ServerUtils.java
+./gov/nist/sip/stack/ServerDebug.java
+./gov/nist/sip/NameValue.java
+./gov/nist/sip/PackageNames.java
+./gov/nist/sip/msgparser/sip_messageParser.java
+./gov/nist/sip/msgparser/SIPRequest.java
+./gov/nist/sip/msgparser/SIPMessage.java
+./gov/nist/sip/msgparser/basic_LexerTokenTypes.java
+./gov/nist/sip/msgparser/host_nameParser.java
+./gov/nist/sip/msgparser/SIPParseExceptionListener.java
+./gov/nist/sip/msgparser/SIPUnrecognizedExtensionException.java
+./gov/nist/sip/msgparser/skipLexerTokenTypes.java
+./gov/nist/sip/msgparser/SIPHeaderParseException.java
+./gov/nist/sip/msgparser/charLexer.java
+./gov/nist/sip/msgparser/MimeTypes.java
+./gov/nist/sip/msgparser/tel_urlLexerTokenTypes.java
+./gov/nist/sip/msgparser/SIPDuplicateHeaderException.java
+./gov/nist/sip/msgparser/transport_LexerTokenTypes.java
+./gov/nist/sip/msgparser/host_nameParserTokenTypes.java
+./gov/nist/sip/msgparser/SDPParseException.java
+./gov/nist/sip/msgparser/sip_messageParserTokenTypes.java
+./gov/nist/sip/msgparser/SIPIllegalMessageException.java
+./gov/nist/sip/msgparser/command_keywordLexer.java
+./gov/nist/sip/msgparser/addr_parmsLexerTokenTypes.java
+./gov/nist/sip/msgparser/InternalError.java
+./gov/nist/sip/msgparser/LocalClasses.java
+./gov/nist/sip/msgparser/key_fieldLexer.java
+./gov/nist/sip/msgparser/method_keywordLexerTokenTypes.java
+./gov/nist/sip/msgparser/dateLexer.java
+./gov/nist/sip/msgparser/digest_Lexer.java
+./gov/nist/sip/msgparser/SDPAnnounce.java
+./gov/nist/sip/msgparser/authorization_LexerTokenTypes.java
+./gov/nist/sip/msgparser/content_dispositionLexer.java
+./gov/nist/sip/msgparser/command_keywordLexerTokenTypes.java
+./gov/nist/sip/msgparser/parser_utilParserTokenTypes.java
+./gov/nist/sip/msgparser/sdpLexerTokenTypes.java
+./gov/nist/sip/msgparser/authentication_Lexer.java
+./gov/nist/sip/msgparser/priority_Lexer.java
+./gov/nist/sip/msgparser/sdp_announceParser.java
+./gov/nist/sip/msgparser/sdpLexer.java
+./gov/nist/sip/msgparser/call_infoLexerTokenTypes.java
+./gov/nist/sip/msgparser/SIPMissingHeaderException.java
+./gov/nist/sip/msgparser/tel_urlLexer.java
+./gov/nist/sip/msgparser/hide_Lexer.java
+./gov/nist/sip/msgparser/tel_ParserTokenTypes.java
+./gov/nist/sip/msgparser/SIPIllegalRequestLineException.java
+./gov/nist/sip/msgparser/SIPErrorCodes.java
+./gov/nist/sip/msgparser/method_keywordLexer.java
+./gov/nist/sip/msgparser/contact_parmsLexerTokenTypes.java
+./gov/nist/sip/msgparser/SIPInvalidHeaderException.java
+./gov/nist/sip/msgparser/addr_parmsLexer.java
+./gov/nist/sip/msgparser/sip_urlLexer.java
+./gov/nist/sip/msgparser/contact_parmsLexer.java
+./gov/nist/sip/msgparser/digest_LexerTokenTypes.java
+./gov/nist/sip/msgparser/transport_Lexer.java
+./gov/nist/sip/msgparser/SIPKeyword.java
+./gov/nist/sip/msgparser/sdp_announceParserTokenTypes.java
+./gov/nist/sip/msgparser/dateLexerTokenTypes.java
+./gov/nist/sip/msgparser/DuplicateFieldException.java
+./gov/nist/sip/msgparser/MsgParser.java
+./gov/nist/sip/msgparser/parser_utilParser.java
+./gov/nist/sip/msgparser/SIPParseException.java
+./gov/nist/sip/msgparser/sip_urlLexerTokenTypes.java
+./gov/nist/sip/msgparser/via_parmsLexerTokenTypes.java
+./gov/nist/sip/msgparser/status_lineLexerTokenTypes.java
+./gov/nist/sip/msgparser/content_dispositionLexerTokenTypes.java
+./gov/nist/sip/msgparser/hide_LexerTokenTypes.java
+./gov/nist/sip/msgparser/MessageObject.java
+./gov/nist/sip/msgparser/timeLexer.java
+./gov/nist/sip/msgparser/timeLexerTokenTypes.java
+./gov/nist/sip/msgparser/SIPUnexpectedHeaderException.java
+./gov/nist/sip/msgparser/sip_urlParser.java
+./gov/nist/sip/msgparser/SIPException.java
+./gov/nist/sip/msgparser/SIPIllegalStatusLineException.java
+./gov/nist/sip/msgparser/pgp_Lexer.java
+./gov/nist/sip/msgparser/retry_afterLexer.java
+./gov/nist/sip/msgparser/charLexerTokenTypes.java
+./gov/nist/sip/msgparser/basic_Lexer.java
+./gov/nist/sip/msgparser/accept_languageLexerTokenTypes.java
+./gov/nist/sip/msgparser/retry_afterLexerTokenTypes.java
+./gov/nist/sip/msgparser/StringMsgParser.java
+./gov/nist/sip/msgparser/authorization_Lexer.java
+./gov/nist/sip/msgparser/Debug.java
+./gov/nist/sip/msgparser/SIPMessageListener.java
+./gov/nist/sip/msgparser/pgp_LexerTokenTypes.java
+./gov/nist/sip/msgparser/tel_Parser.java
+./gov/nist/sip/msgparser/ListMap.java
+./gov/nist/sip/msgparser/sip_urlParserTokenTypes.java
+./gov/nist/sip/msgparser/call_infoLexer.java
+./gov/nist/sip/msgparser/accept_languageLexer.java
+./gov/nist/sip/msgparser/priority_LexerTokenTypes.java
+./gov/nist/sip/msgparser/status_lineLexer.java
+./gov/nist/sip/msgparser/SIPResponse.java
+./gov/nist/sip/msgparser/key_fieldLexerTokenTypes.java
+./gov/nist/sip/msgparser/SIPDefaults.java
+./gov/nist/sip/msgparser/PipelinedMsgParser.java
+./gov/nist/sip/msgparser/SIPKeywords.java
+./gov/nist/sip/msgparser/authentication_LexerTokenTypes.java
+./gov/nist/sip/msgparser/SIPMessageParserTokenTypes.java
+./gov/nist/sip/msgparser/skipLexer.java
+./gov/nist/sip/msgparser/via_parmsLexer.java
+./gov/nist/sip/msgparser/CheckConstraints.java
+./gov/nist/sip/sipheaders/AllowList.java
+./gov/nist/sip/sipheaders/Supported.java
+./gov/nist/sip/sipheaders/RecordRouteList.java
+./gov/nist/sip/sipheaders/Server.java
+./gov/nist/sip/sipheaders/AcceptList.java
+./gov/nist/sip/sipheaders/SIPHeader.java
+./gov/nist/sip/sipheaders/SIPDate.java
+./gov/nist/sip/sipheaders/TimeStamp.java
+./gov/nist/sip/sipheaders/Indentation.java
+./gov/nist/sip/sipheaders/ContactKeywords.java
+./gov/nist/sip/sipheaders/CallID.java
+./gov/nist/sip/sipheaders/SIPHeaderNames.java
+./gov/nist/sip/sipheaders/ExtensionHeader.java
+./gov/nist/sip/sipheaders/ContentLanguageList.java
+./gov/nist/sip/sipheaders/ContentLanguage.java
+./gov/nist/sip/sipheaders/AcceptLanguage.java
+./gov/nist/sip/sipheaders/Accept.java
+./gov/nist/sip/sipheaders/Organization.java
+./gov/nist/sip/sipheaders/ViaKeywords.java
+./gov/nist/sip/sipheaders/HideKeywords.java
+./gov/nist/sip/sipheaders/WWWAuthenticate.java
+./gov/nist/sip/sipheaders/InternalError.java
+./gov/nist/sip/sipheaders/DateKeywords.java
+./gov/nist/sip/sipheaders/StatusLine.java
+./gov/nist/sip/sipheaders/AcceptLanguageList.java
+./gov/nist/sip/sipheaders/WWWAuthenticateList.java
+./gov/nist/sip/sipheaders/Authorization.java
+./gov/nist/sip/sipheaders/UnsupportedList.java
+./gov/nist/sip/sipheaders/UserAgent.java
+./gov/nist/sip/sipheaders/InReplyToList.java
+./gov/nist/sip/sipheaders/Route.java
+./gov/nist/sip/sipheaders/CallInfoList.java
+./gov/nist/sip/sipheaders/Require.java
+./gov/nist/sip/sipheaders/RetryAfter.java
+./gov/nist/sip/sipheaders/Allow.java
+./gov/nist/sip/sipheaders/SIPVersion.java
+./gov/nist/sip/sipheaders/ContactList.java
+./gov/nist/sip/sipheaders/SIPDateHeader.java
+./gov/nist/sip/sipheaders/InReplyTo.java
+./gov/nist/sip/sipheaders/Contact.java
+./gov/nist/sip/sipheaders/ContentEncodingList.java
+./gov/nist/sip/sipheaders/MaxForwards.java
+./gov/nist/sip/sipheaders/ViaList.java
+./gov/nist/sip/sipheaders/Credentials.java
+./gov/nist/sip/sipheaders/Priority.java
+./gov/nist/sip/sipheaders/Unsupported.java
+./gov/nist/sip/sipheaders/SIPDateOrDeltaSeconds.java
+./gov/nist/sip/sipheaders/CallIdentifier.java
+./gov/nist/sip/sipheaders/Product.java
+./gov/nist/sip/sipheaders/Via.java
+./gov/nist/sip/sipheaders/WarnAgent.java
+./gov/nist/sip/sipheaders/ExtensionHeaderList.java
+./gov/nist/sip/sipheaders/AcceptEncodingList.java
+./gov/nist/sip/sipheaders/CallInfoKeywords.java
+./gov/nist/sip/sipheaders/Warning.java
+./gov/nist/sip/sipheaders/Subject.java
+./gov/nist/sip/sipheaders/SIPHeaderList.java
+./gov/nist/sip/sipheaders/ErrorInfo.java
+./gov/nist/sip/sipheaders/Hide.java
+./gov/nist/sip/sipheaders/ContentType.java
+./gov/nist/sip/sipheaders/AddressKeywords.java
+./gov/nist/sip/sipheaders/SIPRequestTypes.java
+./gov/nist/sip/sipheaders/From.java
+./gov/nist/sip/sipheaders/ProxyAuthenticate.java
+./gov/nist/sip/sipheaders/AuthorizationKeywords.java
+./gov/nist/sip/sipheaders/ContentDispositionKeywords.java
+./gov/nist/sip/sipheaders/RouteList.java
+./gov/nist/sip/sipheaders/MimeVersion.java
+./gov/nist/sip/sipheaders/CallInfo.java
+./gov/nist/sip/sipheaders/Challenge.java
+./gov/nist/sip/sipheaders/ProxyAuthorization.java
+./gov/nist/sip/sipheaders/WarningList.java
+./gov/nist/sip/sipheaders/ProxyRequireList.java
+./gov/nist/sip/sipheaders/Also.java
+./gov/nist/sip/sipheaders/ResponseKey.java
+./gov/nist/sip/sipheaders/RequireList.java
+./gov/nist/sip/sipheaders/RetryAfterKeywords.java
+./gov/nist/sip/sipheaders/AcceptParams.java
+./gov/nist/sip/sipheaders/Encryption.java
+./gov/nist/sip/sipheaders/ProxyRequire.java
+./gov/nist/sip/sipheaders/MediaRange.java
+./gov/nist/sip/sipheaders/DeltaSeconds.java
+./gov/nist/sip/sipheaders/To.java
+./gov/nist/sip/sipheaders/ErrorInfoList.java
+./gov/nist/sip/sipheaders/CSeq.java
+./gov/nist/sip/sipheaders/Debug.java
+./gov/nist/sip/sipheaders/ContentEncoding.java
+./gov/nist/sip/sipheaders/AcceptEncoding.java
+./gov/nist/sip/sipheaders/SIPObjectList.java
+./gov/nist/sip/sipheaders/PriorityKeywords.java
+./gov/nist/sip/sipheaders/AlsoList.java
+./gov/nist/sip/sipheaders/SupportedList.java
+./gov/nist/sip/sipheaders/AlertInfo.java
+./gov/nist/sip/sipheaders/Expires.java
+./gov/nist/sip/sipheaders/ContentLength.java
+./gov/nist/sip/sipheaders/ContentDisposition.java
+./gov/nist/sip/sipheaders/AlertInfoList.java
+./gov/nist/sip/sipheaders/RequestLine.java
+./gov/nist/sip/sipheaders/SIPParameterNotSetException.java
+./gov/nist/sip/sipheaders/Protocol.java
+./gov/nist/sip/sipheaders/SIPObject.java
+./gov/nist/sip/sipheaders/RecordRoute.java
+./gov/nist/sip/sipheaders/ProxyAuthenticateList.java
+./gov/nist/sip/sipheaders/NameMap.java
+./gov/nist/sip/sipheaders/ProductToken.java
+./gov/nist/sip/GenericObject.java
+./gov/nist/sip/Debug.java
+./gov/nist/sip/GenericObjectList.java
+./gov/nist/sip/SIPCloneable.java
+./gov/nist/sip/Separators.java
+./gov/nist/jain/protocol/ip/sip/NistSipMessageFactoryImpl.java
+./gov/nist/jain/protocol/ip/sip/SipStackImpl.java
+import java.net.InetAddress;
+    createMessageChannel ( InetAddress address, int port, String transport)
+./gov/nist/jain/protocol/ip/sip/NistSipMessageHandlerImpl.java
+./gov/nist/jain/protocol/ip/sip/message/MessageImpl.java
+./gov/nist/jain/protocol/ip/sip/message/NistJAINMessage.java
+./gov/nist/jain/protocol/ip/sip/message/ResponseImpl.java
+./gov/nist/jain/protocol/ip/sip/message/RequestImpl.java
+./gov/nist/jain/protocol/ip/sip/message/MessageFactoryImpl.java
+./gov/nist/jain/protocol/ip/sip/header/NistSIPHeaderMapping.java
+./gov/nist/jain/protocol/ip/sip/header/ResponseKeyHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/FromHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/RecordRouteHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/HeaderIteratorImpl.java
+./gov/nist/jain/protocol/ip/sip/header/RetryAfterHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/RequireHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/DateHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/ContentTypeHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/TimeStampHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/HeaderFactoryImpl.java
+    public ViaHeader createViaHeader(InetAddress host,int port,String transport)
+    public ViaHeader createViaHeader(InetAddress host)
+    public ViaHeader createViaHeader(int port, InetAddress host)
+    public ViaHeader createViaHeader(InetAddress host, String transport)
+./gov/nist/jain/protocol/ip/sip/header/MaxForwardsHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/CSeqHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/CallIdHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/HideHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/EncryptionHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/RouteHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/AllowHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/AcceptLanguageHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/PriorityHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/ExpiresHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/UnsupportedHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/WarningHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/ProxyAuthenticateHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/ToHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/WWWAuthenticateHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/AcceptEncodingHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/ContentEncodingHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/OrganizationHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/SubjectHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/ProxyRequireHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/AuthorizationHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/ServerHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/UserAgentHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/HeaderImpl.java
+                         if ( parameterName.equals("java.net.InetAddress") ) {
+                             arguments[j]=InetAddress.getLocalHost(); 
+./gov/nist/jain/protocol/ip/sip/header/ContentLengthHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/ContactHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/HeaderMap.java
+./gov/nist/jain/protocol/ip/sip/header/ViaHeaderImpl.java
+     * @param host InetAddress to set
+    public void setHost(InetAddress host) throws IllegalArgumentException,
+     * @param mAddr InetAddress to set
+    public void setMAddr(InetAddress mAddr) throws IllegalArgumentException,
+     * @param received InetAddress to set
+    public void setReceived(InetAddress received)
+./gov/nist/jain/protocol/ip/sip/header/AcceptHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/header/ProxyAuthorizationHeaderImpl.java
+./gov/nist/jain/protocol/ip/sip/ListeningPointImpl.java
+./gov/nist/jain/protocol/ip/sip/address/SipURLImpl.java
+    public void setHost(InetAddress host)
+    public void setMAddr(InetAddress mAddr) throws
+                         if ( parameterName.equals("java.net.InetAddress") ) {
+                             arguments[j]=InetAddress.getLocalHost(); 
+./gov/nist/jain/protocol/ip/sip/address/NameAddressImpl.java
+./gov/nist/jain/protocol/ip/sip/address/AddressFactoryImpl.java
+    public SipURL createSipURL(InetAddress host)
+    public SipURL createSipURL(String user, InetAddress host)
+./gov/nist/jain/protocol/ip/sip/address/URIImpl.java
+./gov/nist/jain/protocol/ip/sip/Transaction.java
+./gov/nist/jain/protocol/ip/sip/SipProviderImpl.java
+import  java.net.InetAddress;
+                InetAddress addr = InetAddress.getByName(hop.getHost());
+./jain/protocol/ip/sip/SipEvent.java
+./jain/protocol/ip/sip/SipFactory.java
+./jain/protocol/ip/sip/SipException.java
+./jain/protocol/ip/sip/UnableToDeleteProviderException.java
+./jain/protocol/ip/sip/SipParseException.java
+./jain/protocol/ip/sip/SipListener.java
+./jain/protocol/ip/sip/message/Request.java
+./jain/protocol/ip/sip/message/Message.java
+./jain/protocol/ip/sip/message/Response.java
+./jain/protocol/ip/sip/message/MessageFactory.java
+./jain/protocol/ip/sip/SipStack.java
+./jain/protocol/ip/sip/SipListenerNotRegisteredException.java
+./jain/protocol/ip/sip/Parameters.java
+./jain/protocol/ip/sip/header/ContentEncodingHeader.java
+./jain/protocol/ip/sip/header/HideHeader.java
+./jain/protocol/ip/sip/header/WWWAuthenticateHeader.java
+./jain/protocol/ip/sip/header/PriorityHeader.java
+./jain/protocol/ip/sip/header/ProxyRequireHeader.java
+./jain/protocol/ip/sip/header/ToHeader.java
+./jain/protocol/ip/sip/header/RouteHeader.java
+./jain/protocol/ip/sip/header/ContentLengthHeader.java
+./jain/protocol/ip/sip/header/CSeqHeader.java
+./jain/protocol/ip/sip/header/TimeStampHeader.java
+./jain/protocol/ip/sip/header/HeaderIterator.java
+./jain/protocol/ip/sip/header/RetryAfterHeader.java
+./jain/protocol/ip/sip/header/AllowHeader.java
+./jain/protocol/ip/sip/header/EncodingHeader.java
+./jain/protocol/ip/sip/header/DateHeader.java
+./jain/protocol/ip/sip/header/SubjectHeader.java
+./jain/protocol/ip/sip/header/EncryptionHeader.java
+./jain/protocol/ip/sip/header/UserAgentHeader.java
+./jain/protocol/ip/sip/header/ContentTypeHeader.java
+./jain/protocol/ip/sip/header/ViaHeader.java
+    public void setMAddr(InetAddress mAddr)
+    public void setHost(InetAddress host)
+    public void setReceived(InetAddress received)
+./jain/protocol/ip/sip/header/Header.java
+./jain/protocol/ip/sip/header/OptionTagHeader.java
+./jain/protocol/ip/sip/header/EndPointHeader.java
+./jain/protocol/ip/sip/header/ServerHeader.java
+./jain/protocol/ip/sip/header/ProxyAuthorizationHeader.java
+./jain/protocol/ip/sip/header/OrganizationHeader.java
+./jain/protocol/ip/sip/header/UnsupportedHeader.java
+./jain/protocol/ip/sip/header/ExpiresHeader.java
+./jain/protocol/ip/sip/header/MaxForwardsHeader.java
+./jain/protocol/ip/sip/header/RequireHeader.java
+./jain/protocol/ip/sip/header/ProxyAuthenticateHeader.java
+./jain/protocol/ip/sip/header/WarningHeader.java
+import java.net.InetAddress;
+./jain/protocol/ip/sip/header/HeaderParseException.java
+./jain/protocol/ip/sip/header/SecurityHeader.java
+./jain/protocol/ip/sip/header/AcceptLanguageHeader.java
+./jain/protocol/ip/sip/header/ProductHeader.java
+./jain/protocol/ip/sip/header/AuthorizationHeader.java
+./jain/protocol/ip/sip/header/AcceptEncodingHeader.java
+./jain/protocol/ip/sip/header/AcceptHeader.java
+./jain/protocol/ip/sip/header/FromHeader.java
+./jain/protocol/ip/sip/header/ResponseKeyHeader.java
+./jain/protocol/ip/sip/header/CallIdHeader.java
+./jain/protocol/ip/sip/header/HeaderFactory.java
+    public ViaHeader createViaHeader(InetAddress host, int port, String transport)
+    public ViaHeader createViaHeader(InetAddress host)
+    public ViaHeader createViaHeader(int port, InetAddress host)
+    public ViaHeader createViaHeader(InetAddress host, String transport)
+./jain/protocol/ip/sip/header/RecordRouteHeader.java
+./jain/protocol/ip/sip/header/NameAddressHeader.java
+./jain/protocol/ip/sip/header/ParametersHeader.java
+./jain/protocol/ip/sip/header/ContactHeader.java
+./jain/protocol/ip/sip/TransactionDoesNotExistException.java
+./jain/protocol/ip/sip/ListeningPoint.java
+./jain/protocol/ip/sip/address/URI.java
+./jain/protocol/ip/sip/address/AddressFactory.java
+    public SipURL createSipURL(InetAddress host)
+    public SipURL createSipURL(String user, InetAddress host)
+./jain/protocol/ip/sip/address/NameAddress.java
+./jain/protocol/ip/sip/address/SipURL.java
+import java.net.InetAddress;
+    public void setHost(InetAddress host)
+    public void setMAddr(InetAddress mAddr)
+./jain/protocol/ip/sip/ListeningPointUnavailableException.java
+./jain/protocol/ip/sip/SipListenerAlreadyRegisteredException.java
+./jain/protocol/ip/sip/SipProvider.java
+./jain/protocol/ip/sip/SipPeerUnavailableException.java
+./tools/traceviewerapp/TraceHelpBox.java
+./tools/traceviewerapp/TraceFrame.java
+./tools/traceviewerapp/TraceSessionInfoTextArea.java
+./tools/traceviewerapp/TraceAboutBox.java
+./tools/traceviewerapp/TraceSessionsDisplayer.java
+./tools/traceviewerapp/TraceSessionsList.java
+./tools/traceviewerapp/TraceMessageTextArea.java
+./tools/traceviewerapp/TraceViewer.java
+./tools/traceviewer/TraceCanvas.java
+./tools/traceviewer/TraceSessions.java
+./tools/traceviewer/TraceMessage.java
+./tools/traceviewer/Arrow.java
+./tools/traceviewer/TraceFileParser.java
+./tools/traceviewer/CircleArrow.java
+./tools/traceviewer/TraceSession.java
+./tools/traceviewer/StraightArrow.java
+./tools/traceviewer/TraceAnimationThread.java
+./tools/responder/CallFlow.java
+./tools/responder/JythonInterp.java
+./tools/responder/XMLContentHandler.java
+./tools/responder/EventEngine.java
+        InetAddress hostAddr = InetAddress.getByName(host);
+./tools/responder/DeferredSend.java
+./tools/responder/GeneratedMessage.java
+./tools/responder/TagNames.java
+./tools/responder/MessageTemplate.java
+./tools/responder/EventSet.java
+./tools/responder/Attr.java
+./tools/responder/Debug.java
+./tools/responder/Transaction.java
+./tools/responder/MessageFactoryImpl.java
+./tools/responder/Expect.java
+./examples/proxy/AddressList.java
+./examples/proxy/TransactionNotFoundException.java
+./examples/proxy/AddressNotFoundException.java
+./examples/proxy/SIPServerRequest.java
+import java.net.InetAddress;
+                                InetAddress receiverAddress =
+                                InetAddress.getByName(host);
+./examples/proxy/SessionExpiresHeader.java
+./examples/proxy/DefaultContactMethod.java
+./examples/proxy/ContactMethod.java
+./examples/proxy/SIPStackMessageFactoryImpl.java
+./examples/proxy/ContactNotFoundException.java
+./examples/proxy/ServerContactRecord.java
+import java.net.InetAddress;
+./examples/proxy/FirewallDevice.java
+./examples/proxy/SIPServerResponse.java
+./examples/proxy/CallRecordTable.java
+./examples/proxy/UserLocation.java
+./examples/proxy/ContactTable.java
+./examples/proxy/ForwardedRequest.java
+./examples/proxy/NATDevice.java
+./examples/proxy/TraceBrowser.java
+./examples/proxy/TransactionRecord.java
+./examples/proxy/RefreshDate.java
+./examples/proxy/SessionExpiresParser.java
+./examples/proxy/ServerContactList.java
+./examples/proxy/NetworkBoundaryDevice.java
+./examples/proxy/TransactionHandler.java
+./examples/proxy/CallRecord.java
+./examples/proxy/Debug.java
+./examples/proxy/PeerRecord.java
+./examples/proxy/ServerMain.java
+./examples/proxy/ExtensionMethodHandler.java
+./examples/msgparser/StringParserTest.java
+./examples/msgparser/NewHeaderTest.java
+./examples/msgparser/MatchTest.java
+./examples/msgparser/SIPHeaderParserTest.java
+./examples/msgparser/EditHeaderTest.java
+./examples/msgparser/PipelinedParserTest.java
+./examples/msgparser/SDPParserTest.java
+./examples/msgparser/SIPURLParserTest.java
+./examples/torture/ConfigurationSwitches.java
+./examples/torture/TokenValues.java
+./examples/torture/TagNames.java
+./examples/torture/Torture.java
+./examples/jainsip/shootist/Shootist.java
+./examples/jainsip/container/JAINService.java
+./examples/jainsip/container/TCPService.java
+./examples/jainsip/container/Engine.java
+./examples/jainsip/simple/TestHeaderImpl.java
+./examples/jainsip/simple/Example.java

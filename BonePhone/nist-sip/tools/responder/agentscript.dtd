@@ -1,0 +1,11 @@
+<!ELEMENT AGENTS (AGENT)+ >
+<!ATTLIST  AGENT
+		agentId     CDATA #REQUIRED
+		userName    CDATA #REQUIRED
+		host	    CDATA #REQUIRED
+		displayName CDATA #IMPLIED
+		requestURI  CDATA #IMPLIED
+		port	    CDATA #IMPLIED
+		contactHost CDATA #IMPLIED
+		contactPort CDATA #IMPLIED
+>

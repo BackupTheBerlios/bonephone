@@ -1,0 +1,138 @@
+<refentry id="uclmmbase-md5" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>MD5</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>MD5</refname><refpurpose>
+Message Digest-5 algorithm.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+#include &lt;md5.h&gt;
+
+
+typedef     <link linkend="MD5-CTX-CAPS">MD5_CTX</link>;
+void        <link linkend="MD5Init">MD5Init</link>                         (<link linkend="MD5-CTX-CAPS">MD5_CTX</link> *context);
+void        <link linkend="MD5Update">MD5Update</link>                       (<link linkend="MD5-CTX-CAPS">MD5_CTX</link> *context,
+                                             unsigned char *input,
+                                             unsigned int inputLen);
+void        <link linkend="MD5Final">MD5Final</link>                        (unsigned char digest[16],
+                                             <link linkend="MD5-CTX-CAPS">MD5_CTX</link> *context);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+The MD5 algorithm calculates a 128-bit digest of an arbitrary length
+stream of data.  The digest is a fingerprint that can be used to
+verify the integrity of a transmitted message.  The sender and receiver
+of the message independently calculate the message digest and compare
+values to ascertain the integrity of the message.  The probability of
+two messages having the same digest is miniscule.
+</para>
+
+<para>
+The MD5 algorithm is the intellectual property of RSA Data Security, Inc.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="MD5-CTX-CAPS">MD5_CTX</title>
+<programlisting>typedef struct {
+  uint32_t state[4];            /* state (ABCD) */
+  uint32_t count[2];        	/* number of bits, modulo 2^64 (lsb first) */
+  unsigned char buffer[64];     /* input buffer */
+} MD5_CTX;
+</programlisting>
+<para>
+The state for the MD5 calculation.
+</para></refsect2>
+<refsect2>
+<title><anchor id="MD5Init">MD5Init ()</title>
+<programlisting>void        MD5Init                         (<link linkend="MD5-CTX-CAPS">MD5_CTX</link> *context);</programlisting>
+<para>
+Initializes MD5 context for the start of message digest computation.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>context</parameter>&nbsp;:</entry>
+<entry> MD5 context to be initialized.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="MD5Update">MD5Update ()</title>
+<programlisting>void        MD5Update                       (<link linkend="MD5-CTX-CAPS">MD5_CTX</link> *context,
+                                             unsigned char *input,
+                                             unsigned int inputLen);</programlisting>
+<para>
+MD5 block update operation. Continues an MD5 message-digest operation,
+processing another message block, and updating the context.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>context</parameter>&nbsp;:</entry>
+<entry> MD5 context to be updated.
+</entry></row>
+<row><entry align="right"><parameter>input</parameter>&nbsp;:</entry>
+<entry> pointer to data to be fed into MD5 algorithm.
+</entry></row>
+<row><entry align="right"><parameter>inputLen</parameter>&nbsp;:</entry>
+<entry> size of <parameter>input</parameter> data in bytes.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="MD5Final">MD5Final ()</title>
+<programlisting>void        MD5Final                        (unsigned char digest[16],
+                                             <link linkend="MD5-CTX-CAPS">MD5_CTX</link> *context);</programlisting>
+<para>
+Ends an MD5 message-digest operation, writing the the message
+digest and zeroing the context.  The context must be initialized
+with <link linkend="MD5Init">MD5Init</link>() before being used for other MD5 checksum calculations.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>digest</parameter>&nbsp;:</entry>
+<entry> 16-byte buffer to write MD5 checksum.
+</entry></row>
+<row><entry align="right"><parameter>context</parameter>&nbsp;:</entry>
+<entry> MD5 context to be finalized.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+<ulink url="http://www.ietf.org/rfc/rfc1321.txt">RFC1321 - The MD5
+Message Digest Algorithm</ulink>
+</para>
+</refsect1>
+
+</refentry>

@@ -1,0 +1,331 @@
+<refentry id="uclmmbase-net-udp" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>NETUDP</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>NETUDP</refname><refpurpose>
+A UDP interface for IPv4 and IPv6.</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+#include &lt;net_udp.h&gt;
+
+
+struct      <link linkend="socket-udp">socket_udp</link>;
+int         <link linkend="udp-addr-valid">udp_addr_valid</link>                  (const char *addr);
+<link linkend="socket-udp">socket_udp</link>* <link linkend="udp-init">udp_init</link>                        (const char *addr,
+                                             <link linkend="uint16-t">uint16_t</link> rx_port,
+                                             <link linkend="uint16-t">uint16_t</link> tx_port,
+                                             int ttl);
+<link linkend="socket-udp">socket_udp</link>* <link linkend="udp-init-if">udp_init_if</link>                     (const char *addr,
+                                             const char *iface,
+                                             <link linkend="uint16-t">uint16_t</link> rx_port,
+                                             <link linkend="uint16-t">uint16_t</link> tx_port,
+                                             int ttl);
+void        <link linkend="udp-exit">udp_exit</link>                        (<link linkend="socket-udp">socket_udp</link> *s);
+int         <link linkend="udp-send">udp_send</link>                        (<link linkend="socket-udp">socket_udp</link> *s,
+                                             char *buffer,
+                                             int buflen);
+int         <link linkend="udp-recv">udp_recv</link>                        (<link linkend="socket-udp">socket_udp</link> *s,
+                                             char *buffer,
+                                             int buflen);
+int         <link linkend="udp-select">udp_select</link>                      (struct <link linkend="timeval">timeval</link> *timeout);
+void        <link linkend="udp-fd-zero">udp_fd_zero</link>                     (void);
+void        <link linkend="udp-fd-set">udp_fd_set</link>                      (<link linkend="socket-udp">socket_udp</link> *s);
+int         <link linkend="udp-fd-isset">udp_fd_isset</link>                    (<link linkend="socket-udp">socket_udp</link> *s);
+const char* <link linkend="udp-host-addr">udp_host_addr</link>                   (<link linkend="socket-udp">socket_udp</link> *s);
+int         <link linkend="udp-fd">udp_fd</link>                          (<link linkend="socket-udp">socket_udp</link> *s);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+These functions provide a unified interface for sending are receiving
+UDP datagrams over IPv4 and IPv6 networks.  
+</para>
+
+<para>
+For IPv6 addresses to work the common library must be built with IPv6
+enabled.  On UNIX, the <application>configure</application> script has an option <option>--enable-ip-v6</option>
+for this purpose.  On Win32, there is a project configuration to use
+the Microsoft IPv6 stack when installed.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="socket-udp">struct socket_udp</title>
+<programlisting>struct socket_udp;</programlisting>
+<para>
+An opaque data structure containing information for a UDP session.
+</para></refsect2>
+<refsect2>
+<title><anchor id="udp-addr-valid">udp_addr_valid ()</title>
+<programlisting>int         udp_addr_valid                  (const char *addr);</programlisting>
+<para>
+</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>addr</parameter>&nbsp;:</entry>
+<entry> string representation of IPv4 or IPv6 network address.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>TRUE if <parameter>addr</parameter> is valid, FALSE otherwise.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="udp-init">udp_init ()</title>
+<programlisting><link linkend="socket-udp">socket_udp</link>* udp_init                        (const char *addr,
+                                             <link linkend="uint16-t">uint16_t</link> rx_port,
+                                             <link linkend="uint16-t">uint16_t</link> tx_port,
+                                             int ttl);</programlisting>
+<para>
+Creates a session for sending and receiving UDP datagrams over IP
+networks.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>addr</parameter>&nbsp;:</entry>
+<entry> character string containing an IPv4 or IPv6 network address.
+</entry></row>
+<row><entry align="right"><parameter>rx_port</parameter>&nbsp;:</entry>
+<entry> receive port.
+</entry></row>
+<row><entry align="right"><parameter>tx_port</parameter>&nbsp;:</entry>
+<entry> transmit port.
+</entry></row>
+<row><entry align="right"><parameter>ttl</parameter>&nbsp;:</entry>
+<entry> time-to-live value for transmitted packets.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a pointer to a valid socket_udp structure on success, NULL otherwise.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="udp-init-if">udp_init_if ()</title>
+<programlisting><link linkend="socket-udp">socket_udp</link>* udp_init_if                     (const char *addr,
+                                             const char *iface,
+                                             <link linkend="uint16-t">uint16_t</link> rx_port,
+                                             <link linkend="uint16-t">uint16_t</link> tx_port,
+                                             int ttl);</programlisting>
+<para>
+Creates a session for sending and receiving UDP datagrams over IP
+networks.  The session uses <parameter>iface</parameter> as the interface to send and
+receive datagrams on.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>addr</parameter>&nbsp;:</entry>
+<entry> character string containing an IPv4 or IPv6 network address.
+</entry></row>
+<row><entry align="right"><parameter>iface</parameter>&nbsp;:</entry>
+<entry> character string containing an interface name.
+</entry></row>
+<row><entry align="right"><parameter>rx_port</parameter>&nbsp;:</entry>
+<entry> receive port.
+</entry></row>
+<row><entry align="right"><parameter>tx_port</parameter>&nbsp;:</entry>
+<entry> transmit port.
+</entry></row>
+<row><entry align="right"><parameter>ttl</parameter>&nbsp;:</entry>
+<entry> time-to-live value for transmitted packets.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> a pointer to a socket_udp structure on success, NULL otherwise.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="udp-exit">udp_exit ()</title>
+<programlisting>void        udp_exit                        (<link linkend="socket-udp">socket_udp</link> *s);</programlisting>
+<para>
+Closes UDP session.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>s</parameter>&nbsp;:</entry>
+<entry> UDP session to be terminated.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="udp-send">udp_send ()</title>
+<programlisting>int         udp_send                        (<link linkend="socket-udp">socket_udp</link> *s,
+                                             char *buffer,
+                                             int buflen);</programlisting>
+<para>
+Transmits a UDP datagram containing data from <parameter>buffer</parameter>.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>s</parameter>&nbsp;:</entry>
+<entry> UDP session.
+</entry></row>
+<row><entry align="right"><parameter>buffer</parameter>&nbsp;:</entry>
+<entry> pointer to buffer to be transmitted.
+</entry></row>
+<row><entry align="right"><parameter>buflen</parameter>&nbsp;:</entry>
+<entry> length of <parameter>buffer</parameter>.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> 0 on success, -1 on failure.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="udp-recv">udp_recv ()</title>
+<programlisting>int         udp_recv                        (<link linkend="socket-udp">socket_udp</link> *s,
+                                             char *buffer,
+                                             int buflen);</programlisting>
+<para>
+Reads from datagram queue associated with UDP session.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>s</parameter>&nbsp;:</entry>
+<entry> UDP session.
+</entry></row>
+<row><entry align="right"><parameter>buffer</parameter>&nbsp;:</entry>
+<entry> buffer to read data into.
+</entry></row>
+<row><entry align="right"><parameter>buflen</parameter>&nbsp;:</entry>
+<entry> length of <parameter>buffer</parameter>.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> number of bytes read, returns 0 if no data is available.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="udp-select">udp_select ()</title>
+<programlisting>int         udp_select                      (struct <link linkend="timeval">timeval</link> *timeout);</programlisting>
+<para>
+Waits for data to arrive for UDP sessions.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>timeout</parameter>&nbsp;:</entry>
+<entry> maximum period to wait for data to arrive.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> number of UDP sessions ready for reading.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="udp-fd-zero">udp_fd_zero ()</title>
+<programlisting>void        udp_fd_zero                     (void);</programlisting>
+<para>
+Clears file descriptor from set associated with UDP sessions (see select(2)).</para>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="udp-fd-set">udp_fd_set ()</title>
+<programlisting>void        udp_fd_set                      (<link linkend="socket-udp">socket_udp</link> *s);</programlisting>
+<para>
+Adds file descriptor associated of <parameter>s</parameter> to set associated with UDP sessions.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>s</parameter>&nbsp;:</entry>
+<entry> UDP session.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="udp-fd-isset">udp_fd_isset ()</title>
+<programlisting>int         udp_fd_isset                    (<link linkend="socket-udp">socket_udp</link> *s);</programlisting>
+<para>
+Checks if file descriptor associated with UDP session is ready for
+reading.  This function should be called after <link linkend="udp-select">udp_select</link>().</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>s</parameter>&nbsp;:</entry>
+<entry> UDP session.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> non-zero if set, zero otherwise.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="udp-host-addr">udp_host_addr ()</title>
+<programlisting>const char* udp_host_addr                   (<link linkend="socket-udp">socket_udp</link> *s);</programlisting>
+<para>
+</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>s</parameter>&nbsp;:</entry>
+<entry> UDP session.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> character string containing network address
+associated with session <parameter>s</parameter>.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="udp-fd">udp_fd ()</title>
+<programlisting>int         udp_fd                          (<link linkend="socket-udp">socket_udp</link> *s);</programlisting>
+<para>
+This function allows applications to apply their own <link linkend="socketopt">socketopt</link>()'s
+and <link linkend="ioctl">ioctl</link>()'s to the UDP session.</para>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>s</parameter>&nbsp;:</entry>
+<entry> UDP session.
+</entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> file descriptor of socket used by session <parameter>s</parameter>.
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

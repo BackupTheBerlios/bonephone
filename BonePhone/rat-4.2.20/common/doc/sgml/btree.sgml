@@ -1,0 +1,215 @@
+<refentry id="uclmmbase-btree" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>btree</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>btree</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+int         <link linkend="btree-create">btree_create</link>                    (<link linkend="btree-t">btree_t</link> **tree);
+int         <link linkend="btree-destroy">btree_destroy</link>                   (<link linkend="btree-t">btree_t</link> **tree);
+int         <link linkend="btree-add">btree_add</link>                       (<link linkend="btree-t">btree_t</link> *tree,
+                                             <link linkend="uint32-t">uint32_t</link> key,
+                                             void *data);
+int         <link linkend="btree-remove">btree_remove</link>                    (<link linkend="btree-t">btree_t</link> *tree,
+                                             <link linkend="uint32-t">uint32_t</link> key,
+                                             void **d);
+int         <link linkend="btree-find">btree_find</link>                      (<link linkend="btree-t">btree_t</link> *tree,
+                                             <link linkend="uint32-t">uint32_t</link> key,
+                                             void **d);
+int         <link linkend="btree-get-min-key">btree_get_min_key</link>               (<link linkend="btree-t">btree_t</link> *tree,
+                                             <link linkend="uint32-t">uint32_t</link> *key);
+int         <link linkend="btree-get-max-key">btree_get_max_key</link>               (<link linkend="btree-t">btree_t</link> *tree,
+                                             <link linkend="uint32-t">uint32_t</link> *key);
+int         <link linkend="btree-get-next-key">btree_get_next_key</link>              (<link linkend="btree-t">btree_t</link> *tree,
+                                             <link linkend="uint32-t">uint32_t</link> cur_key,
+                                             <link linkend="uint32-t">uint32_t</link> *next_key);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="btree-create">btree_create ()</title>
+<programlisting>int         btree_create                    (<link linkend="btree-t">btree_t</link> **tree);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>tree</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="btree-destroy">btree_destroy ()</title>
+<programlisting>int         btree_destroy                   (<link linkend="btree-t">btree_t</link> **tree);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>tree</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="btree-add">btree_add ()</title>
+<programlisting>int         btree_add                       (<link linkend="btree-t">btree_t</link> *tree,
+                                             <link linkend="uint32-t">uint32_t</link> key,
+                                             void *data);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>tree</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="btree-remove">btree_remove ()</title>
+<programlisting>int         btree_remove                    (<link linkend="btree-t">btree_t</link> *tree,
+                                             <link linkend="uint32-t">uint32_t</link> key,
+                                             void **d);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>tree</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>d</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="btree-find">btree_find ()</title>
+<programlisting>int         btree_find                      (<link linkend="btree-t">btree_t</link> *tree,
+                                             <link linkend="uint32-t">uint32_t</link> key,
+                                             void **d);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>tree</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>d</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="btree-get-min-key">btree_get_min_key ()</title>
+<programlisting>int         btree_get_min_key               (<link linkend="btree-t">btree_t</link> *tree,
+                                             <link linkend="uint32-t">uint32_t</link> *key);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>tree</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="btree-get-max-key">btree_get_max_key ()</title>
+<programlisting>int         btree_get_max_key               (<link linkend="btree-t">btree_t</link> *tree,
+                                             <link linkend="uint32-t">uint32_t</link> *key);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>tree</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="btree-get-next-key">btree_get_next_key ()</title>
+<programlisting>int         btree_get_next_key              (<link linkend="btree-t">btree_t</link> *tree,
+                                             <link linkend="uint32-t">uint32_t</link> cur_key,
+                                             <link linkend="uint32-t">uint32_t</link> *next_key);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>tree</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>cur_key</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>next_key</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

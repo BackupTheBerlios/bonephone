@@ -1,0 +1,68 @@
+<refentry id="uclmmbase-vsnprintf" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>vsnprintf</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>vsnprintf</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+int         <link linkend="vsnprintf">vsnprintf</link>                       (char *s,
+                                             <link linkend="size-t">size_t</link> buf_size,
+                                             const char *format,
+                                             va_list ap);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="vsnprintf">vsnprintf ()</title>
+<programlisting>int         vsnprintf                       (char *s,
+                                             <link linkend="size-t">size_t</link> buf_size,
+                                             const char *format,
+                                             va_list ap);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>s</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>buf_size</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>format</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>ap</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

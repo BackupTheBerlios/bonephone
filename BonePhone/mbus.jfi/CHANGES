@@ -1,0 +1,41 @@
+Beta 7
+======
+Released 20.04.2000
+
+- There was a bug in the parser that occured when parsing an
+  MString that contained escaped characters like NEWLINE or
+  quotation marks.
+- You can now use the MessageBus class with an address with 
+  more or less than 4 address pairs and where the 4th pair 
+  must not be the "id".
+- The MessageBus class now has an .getTimeout() method.
+
+
+Beta 6
+======
+Released 13.03.2000
+
+With some additions from Roman Kurmanowytsch <romank@infosys.tuwien.ac.at>
+
+- Thanks to Romanthe TransportLayer now allows sending several 
+  commands at once.
+- Thanks to Roman you can now add your own keys to an address.
+- There was a bug when sending reliable messages via the
+  MessageBus class that causes the MBus to ignore the first
+  acknowledgement. That bug is fixed.
+
+Beta 5
+======
+Released 07.03.2000
+
+- There was a severe bug that wouldn't let the beta4
+  compile (requesting for an (unused) package 'org.tzi.mbus.*').
+  This is fixed
+- Some classes contained hard coded references to the 
+  Cryptix API. These references were removed. You now
+  have to tell the Mbus what cryptography provider to use
+  by setting a system property or key in your .mbus file. 
+
+
+Beta 4
+======

@@ -1,0 +1,8010 @@
+<?xml version='1.0' encoding='us-ascii'?>   
+
+<!DOCTYPE torture SYSTEM "torture.dtd" >
+
+<!-- 
+
+A set of torture tests for the SIP message parser.
+These tests are in no particular order. 
+
+The sources for these messages are 
+1. Posting on the SIP Mailing list.
+2. Henning Schulzrinne's SIP bakeoff page:
+http://www.cs.columbia.edu/%7Ehgs/sip/bakeoff/testmsg.html
+3. The call flows document draft-ietf-sip-call-flows-03.txt authored by Johnston et al.
+
+version 1.0
+since   0.9
+
+Revisions for version 1.0:
+1. Added new test messages.
+
+-->
+
+<torture
+	output-parsed-structures = "false" 
+	testlog = "testout.xml"
+	abort-on-fail = "true"
+	debug = "false"
+	test-jain="true"
+	jaintestlog="jainlog.txt"
+>
+
+<testcase>
+
+<!-- The following is the test description -->
+<description>
+<![CDATA[
+1) Illegal enclosing of Request-URI  in Server should respond with 400 + Appropriate Reason Phrase.
+]]>
+</description>
+
+<!-- The following is the test message -->
+<message>
+<![CDATA[INVITE <sip:user@company.com> SIP/2.0
+To: sip:user@company.com; tag=9
+From: sip:caller@university.edu
+Call-ID: 1@10.0.0.1
+CSeq: 1 INVITE
+Via: SIP/2.0/UDP 135.180.130.133
+Content-Type: application/sdp
+
+v=0
+o=mhandley 29739 7272939 IN IP4 126.5.4.3
+s=SIP Call
+t=3149328700 0
+c=IN IP4 135.180.130.88
+m=audio 492170 RTP/AVP 0 12
+m=video 3227 RTP/AVP 31
+a=rtpmap:31 LPC
+ 
+
+]]>
+</message>
+
+<!-- The following is the class of the exception that this should generate -->
+<expect-exception-callback
+  exception-class = "gov.nist.sip.msgparser.SIPIllegalRequestLineException"
+>
+
+<!-- The exception-text (should be exact) is passed back to the exception handler -->
+<exception-text>
+<![CDATA[INVITE <sip:user@company.com> SIP/2.0]]>
+</exception-text>
+</expect-exception-callback>
+
+</testcase>
+
+<!--  		test2 		 -->
+
+<testcase>
+
+<description>
+<![CDATA[
+2) Illegal LWS in elements of Request-URI Server should respond with 400 + Appropriate Reason Phrase.
+]]>
+</description>
+
+<message>
+<![CDATA[INVITE sip:user@company.com; transport=udp SIP/2.0
+To: sip:user@company.com
+From: sip:caller@university.edu
+Call-ID: 2@10.0.0.1
+CSeq: 1 INVITE
+Via: SIP/2.0/UDP 135.180.130.133
+Content-Type: application/sdp
+
+v=0
+o=mhandley 29739 7272939 IN IP4 126.5.4.3
+s=SIP Call
+t=3149328700 0
+c=IN IP4 135.180.130.88
+m=audio 492170 RTP/AVP 0 12
+m=video 3227 RTP/AVP 31
+a=rtpmap:31 LPC
+
+
+]]>
+</message>
+
+<expect-exception-callback
+  exception-class = "gov.nist.sip.msgparser.SIPIllegalRequestLineException"
+>
+
+<exception-text>
+<![CDATA[INVITE sip:user@company.com; transport=udp SIP/2.0]]>
+</exception-text>
+</expect-exception-callback>
+
+</testcase>
+
+<!-- test3 				-->
+<testcase>
+
+<description>
+<![CDATA[
+3) Illegal >1 SP between elements of Request URI
+Server should respond with 400 + Appropriate Reason Phrase.
+]]>
+</description>
+
+<message>
+<![CDATA[INVITE sip:user@company.com  SIP/2.0
+To: sip:user@company.com
+From: sip:caller@university.edu
+Call-ID: 3@10.0.0.1
+CSeq: 1 INVITE
+Via: SIP/2.0/UDP 135.180.130.133
+Content-Type: application/sdp
+
+v=0
+o=mhandley 29739 7272939 IN IP4 126.5.4.3
+s=SIP Call
+t=3149328700 0
+c=IN IP4 135.180.130.88
+m=audio 492170 RTP/AVP 0 12
+m=video 3227 RTP/AVP 31
+a=rtpmap:31 LPC
+
+
+
+]]>
+</message>
+
+<expect-exception-callback
+  exception-class = "gov.nist.sip.msgparser.SIPIllegalRequestLineException"
+>
+
+<exception-text>
+<![CDATA[INVITE sip:user@company.com  SIP/2.0]]>
+</exception-text>
+</expect-exception-callback>
+</testcase>
+
+
+<!-- test4 				-->
+<testcase>
+<description>
+<![CDATA[ 
+4) A Legal exception-text with escape sequences in the request URI.  
+]]>
+</description>
+
+<message>
+<![CDATA[INVITE sip:sip%3Auser%40example.com@company.com;other-param=summit SIP/2.0
+To: sip:user@company.com
+From: sip:caller@university.edu
+Call-ID: 4@10.0.0.1
+CSeq: 1 INVITE
+Via: SIP/2.0/UDP 135.180.130.133
+Content-Type: application/sdp
+
+v=0
+o=mhandley 29739 7272939 IN IP4 126.5.4.3
+s=SIP Call
+t=3149328700 0
+c=IN IP4 135.180.130.88
+m=audio 492170 RTP/AVP 0 12
+m=video 3227 RTP/AVP 31
+a=rtpmap:31 LPC
+
+]]>
+</message>
+</testcase>
+
+<!-- test5 				-->
+<testcase>
+<description>
+<![CDATA[
+5) Illegal use of exception-text in Request-URI
+Proxies should strip off the escaped exception-text before proxying on.     
+]]>
+</description>
+
+<message>
+<![CDATA[INVITE sip:user@company.com?Route=%3Csip:sip.example.com%3E SIP/2.0
+To: sip:user@company.com
+From: sip:caller@university.edu
+Call-ID: 5@10.0.0.1
+CSeq: 1 INVITE
+Via: SIP/2.0/UDP 135.180.130.133
+Content-Type: application/sdp
+
+v=0
+o=mhandley 29739 7272939 IN IP4 126.5.4.3
+s=SIP Call
+t=3149328700 0
+c=IN IP4 135.180.130.88
+m=audio 492170 RTP/AVP 0 12
+m=video 3227 RTP/AVP 31
+a=rtpmap:31 LPC
+
+
+]]>
+</message>
+
+<expect-exception-callback
+  exception-class = "gov.nist.sip.msgparser.SIPIllegalRequestLineException"
+>
+
+<exception-text>
+<![CDATA[INVITE sip:user@company.com?Route=%3Csip:sip.example.com%3E SIP/2.0]]>
+</exception-text>
+</expect-exception-callback>
+</testcase>
+<!-- test6 				-->
+<testcase>
+<description>
+<![CDATA[
+6) Not understood URI in Req-URI but a SIP URL in To.
+Server should respond 400 + Appropriate Reason Phrase  
+This does not generate an error in the parser.
+]]>
+</description>
+
+<message>
+<![CDATA[INVITE name:user SIP/2.0
+To: sip:user@company.com
+From: sip:caller@university.edu
+Call-ID: 6@10.0.0.1
+CSeq: 1 INVITE
+Via: SIP/2.0/UDP 135.180.130.133
+Content-Type: application/sdp
+
+v=0
+o=mhandley 29739 7272939 IN IP4 126.5.4.3
+s=SIP Call
+t=3149328700 0
+c=IN IP4 135.180.130.88
+m=audio 492170 RTP/AVP 0 12
+m=video 3227 RTP/AVP 31
+a=rtpmap:31 LPC
+]]>
+</message>
+</testcase>
+                                                 
+<!-- test7 	-->
+<testcase>
+<description>
+<![CDATA[ 
+7) Legal no LWS between display name and < 
+]]>
+</description>
+
+<message>
+<![CDATA[OPTIONS sip:user@company.com SIP/2.0
+To: sip:user@company.com
+From: "caller"<sip:caller@example.com>
+Call-ID: 1234abcd@10.0.0.1
+CSeq: 1 OPTIONS
+Via: SIP/2.0/UDP 135.180.130.133
+
+]]>
+</message>
+</testcase>
+<!-- test8 	-->
+<testcase>
+<description>
+<![CDATA[ 
+8) Legal extra LWS between display name and <   
+]]>
+</description>
+
+<message>
+<![CDATA[OPTIONS sip:user@company.com SIP/2.0
+To: sip:user@company.com
+From: "caller"    <sip:caller@example.com>
+Call-ID: 1234abcd@10.0.0.1
+CSeq: 2 OPTIONS
+Via: SIP/2.0/UDP 135.180.130.133
+
+
+]]>
+</message>
+</testcase>
+
+<!-- test9 	-->
+<testcase>
+<description>
+<![CDATA[
+9) Illegal Non GMT time zone in SIP Date
+A liberal server should correct this.
+]]>
+</description>
+
+<message>
+<![CDATA[INVITE sip:user@company.com SIP/2.0
+To: sip:user@company.com
+From: sip:caller@university.edu
+Call-ID: 7@10.0.0.1
+CSeq: 1 INVITE
+Via: SIP/2.0/UDP 135.180.130.133
+Expires: Fri, 01 Jan 2010 16:00:00 EST
+Content-Type: application/sdp
+
+v=0
+o=mhandley 29739 7272939 IN IP4 126.5.4.3
+s=SIP Call
+t=3149328700 0
+c=IN IP4 135.180.130.88
+m=audio 492170 RTP/AVP 0 12
+m=video 3227 RTP/AVP 31
+a=rtpmap:31 LPC
+
+]]>
+</message>
+
+<expect-exception-callback
+   exception-class = "gov.nist.sip.msgparser.SIPHeaderParseException"
+>
+<exception-text>
+<![CDATA[Expires: Fri, 01 Jan 2010 16:00:00 EST]]>
+</exception-text>
+</expect-exception-callback>
+</testcase>
+
+<!-- test10 	-->
+
+<testcase>
+<description>
+<![CDATA[ 
+10) Legal message with passed Exipres date.
+A Server should respond 408 Request Timeout.    
+]]>
+</description>
+
+<message>
+<![CDATA[INVITE sip:user@company.com SIP/2.0
+To: sip:user@company.com
+From: sip:caller@university.edu
+Call-ID: 8@10.0.0.1
+CSeq: 1 INVITE
+Via: SIP/2.0/UDP 135.180.130.133
+Expires: Thu, 01 Dec 1994 16:00:00 GMT
+Content-Type: application/sdp
+
+v=0
+o=mhandley 29739 7272939 IN IP4 126.5.4.3
+s=SIP Call
+t=3149328700 0
+c=IN IP4 135.180.130.88
+m=audio 492170 RTP/AVP 0 12
+m=video 3227 RTP/AVP 31
+a=rtpmap:31 LPC
+
+
+
+]]>
+</message>
+</testcase>
+
+<!-- test12 	-->
+
+<testcase>
+<description>
+<![CDATA[ 
+12) Legal message with zero max forwards
+Proxies should return 483 Too Many Hops, a UAS responds
+as for OPTIONS. 
+]]>
+</description>
+
+<message>
+<![CDATA[INVITE sip:user@company.com SIP/2.0
+To: sip:user@company.com
+From: sip:caller@university.edu
+Call-ID: k345asrl3fdbv@10.0.0.1
+CSeq: 1 INVITE
+Via: SIP/2.0/UDP 135.180.130.133
+Max-Forwards: 0
+Content-Type: application/sdp
+
+v=0
+o=mhandley 29739 7272939 IN IP4 126.5.4.3
+s=SIP Call
+t=3149328700 0
+c=IN IP4 135.180.130.88
+m=audio 492170 RTP/AVP 0 12
+m=video 3227 RTP/AVP 31
+a=rtpmap:31 LPC
+
+]]>
+</message>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[ 
+12a) Legal message with zero max forwards
+Proxies should return 483 Too Many Hops, a UAS responds
+as for OPTIONS. 
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:3660@166.35.231.140 SIP/2.0
+Via: SIP/2.0/UDP 166.34.120.100;branch=0000045d-00000001
+Via: SIP/2.0/UDP 166.35.224.216:5060
+Accept: application/sdp
+Expires: 90
+To: < sip:3660@166.35.231.140 >
+From: <sip:4855@166.34.120.100 >;tag=1024181795
+Call-ID: 1915901086@166.34.120.100
+CSeq: 1 INVITE
+Contact: sip:4855@166.35.224.216:5060
+Content-Type: application/sdp
+ 
+v=0
+o=4855 13760767542196120 13760767542196120 IN IP4 166.35.224.216
+s=nortelnetworks
+p=+1 972 684 1000
+c=IN IP4 166.35.224.216
+t=0 0
+m=audio 50012 RTP/AVP 0 8 4 18
+a=rtpmap:0 PCMU/8000
+a=rtpmap:8 PCMA/8000
+a=rtpmap:4 G723/8000
+a=rtpmap:18 G729A/8000
+a=ptime:30
+
+]]>
+</message>
+</testcase>
+
+<!--			-->
+
+<testcase>
+<description>
+<![CDATA[ 
+11) Legal REGISTER with SIP URL containing escaped Route exception-text
+in Contact
+]]>
+</description>
+
+<message>
+<![CDATA[REGISTER sip:company.com SIP/2.0
+From: sip:user@company.com
+To: sip:user@company.com
+Contact: sip:user@host.company.com
+Call-ID: k345asrl3fdbv@10.0.0.1
+CSeq: 1 REGISTER
+Via: SIP/2.0/UDP 135.180.130.133
+Contact: < sip:user@example.com?Route=%3Csip:sip.example.com%3E >
+
+
+]]>
+
+
+</message>
+
+</testcase>
+
+
+<!-- test13 	-->
+
+<testcase>
+<description>
+<![CDATA[ 
+13) Legal but long, includes Token for Call-ID.    
+]]>
+</description>
+
+<message>
+<![CDATA[INVITE sip:user@company.com SIP/2.0
+To: "I have a user name of extreme proportion"
+  <sip:user@company.com:6000;other-param=1234567890somethingelselong1234567890>
+From: sip:caller@university.edu
+Call-ID: kl24ahsd546folnyt2vbak9sad98u23naodiunzds09a3bqw0sdfbsk34poouymnae0043nsed09mfkvc74bd0cuwnms05dknw87hjpobd76f
+CSeq: 1 INVITE
+My-State: sldkjflzdsfaret0803adgaasd0afds0asdaasd
+Via: SIP/2.0/UDP sip33.example.com
+Via: SIP/2.0/UDP sip32.example.com
+Via: SIP/2.0/UDP sip31.example.com
+Via: SIP/2.0/UDP sip30.example.com
+Via: SIP/2.0/UDP sip29.example.com
+Via: SIP/2.0/UDP sip28.example.com
+Via: SIP/2.0/UDP sip27.example.com
+Via: SIP/2.0/UDP sip26.example.com
+Via: SIP/2.0/UDP sip25.example.com
+Via: SIP/2.0/UDP sip24.example.com
+Via: SIP/2.0/UDP sip23.example.com
+Via: SIP/2.0/UDP sip22.example.com
+Via: SIP/2.0/UDP sip21.example.com
+Via: SIP/2.0/UDP sip20.example.com
+Via: SIP/2.0/UDP sip19.example.com
+Via: SIP/2.0/UDP sip18.example.com
+Via: SIP/2.0/UDP sip17.example.com
+Via: SIP/2.0/UDP sip16.example.com
+Via: SIP/2.0/UDP sip15.example.com
+Via: SIP/2.0/UDP sip14.example.com
+Via: SIP/2.0/UDP sip13.example.com
+Via: SIP/2.0/UDP sip12.example.com
+Via: SIP/2.0/UDP sip11.example.com
+Via: SIP/2.0/UDP sip10.example.com
+Via: SIP/2.0/UDP sip9.example.com
+Via: SIP/2.0/UDP sip8.example.com
+Via: SIP/2.0/UDP sip7.example.com
+Via: SIP/2.0/UDP sip6.example.com
+Via: SIP/2.0/UDP sip5.example.com
+Via: SIP/2.0/UDP sip4.example.com
+Via: SIP/2.0/UDP sip3.example.com
+Via: SIP/2.0/UDP sip2.example.com
+Via: SIP/2.0/UDP sip1.example.com
+Via: SIP/2.0/UDP host.example.com;received=135.180.130.133;branch=C1C3344E2710000000E299E568E7potato10potato0potato0
+Content-Type: application/sdp
+
+v=0
+o=mhandley 29739 7272939 IN IP4 126.5.4.3
+s=SIP Call
+t=3149328700 0
+c=IN IP4 135.180.130.88
+m=audio 492170 RTP/AVP 0 12
+m=video 3227 RTP/AVP 31
+a=rtpmap:31 LPC
+
+
+]]>
+</message>
+<expect-exception-callback
+  exception-class = "gov.nist.sip.msgparser.SIPUnrecognizedExtensionException"
+>
+<exception-text>
+<![CDATA[My-State: sldkjflzdsfaret0803adgaasd0afds0asdaasd]]>
+</exception-text>
+</expect-exception-callback>
+</testcase>
+<!-- Test 14		-->
+<testcase>
+<description>
+<![CDATA[
+14) Illegal, badly mangled message with mutliple To, 
+From, Call-ID and CSeq exception-texts.
+Server should respond 400 + Appropriate Reason Phrase
+]]>
+</description>
+
+<message>
+<![CDATA[OPTIONS sip:135.180.130.133 SIP/2.0
+Via: SIP/2.0/UDP company.com:5604
+From: sip:iuser@company.com
+To: sip:user@135.180.130.133
+Call-ID: 1804928587@company.com
+CSeq: 1 OPTIONS
+Expires: 0 0l@company.com
+To: sip:user@135.180.130.133
+Call-ID: 1804928587@company.com
+CSeq: 1 OPTIONS
+Contact: sip:host.company.com
+Expires: 0xpires: 0sip:host.company.com
+Expires: 0
+Contact: sip:host.company.com
+
+]]>
+</message>
+
+<expect-exception-callback
+   exception-class = "gov.nist.sip.msgparser.SIPDuplicateHeaderException"
+>
+<exception-text>
+<![CDATA[CSeq: 1 OPTIONS]]>
+</exception-text>
+</expect-exception-callback>
+
+<expect-exception-callback
+   exception-class = "gov.nist.sip.msgparser.SIPDuplicateHeaderException"
+>
+<exception-text>
+<![CDATA[Call-ID: 1804928587@company.com]]>
+</exception-text>
+</expect-exception-callback>
+
+<expect-exception-callback
+   exception-class = "gov.nist.sip.msgparser.SIPDuplicateHeaderException"
+>
+<exception-text>
+<![CDATA[To: sip:user@135.180.130.133]]>
+</exception-text>
+</expect-exception-callback>
+
+
+<expect-exception-callback
+   exception-class = "gov.nist.sip.msgparser.SIPHeaderParseException"
+>
+<exception-text>
+<![CDATA[Expires: 0xpires: 0sip:host.company.com]]>
+</exception-text>
+</expect-exception-callback>
+
+
+<expect-exception-callback
+   exception-class = "gov.nist.sip.msgparser.SIPHeaderParseException"
+>
+<exception-text>
+<![CDATA[Expires: 0 0l@company.com]]>
+</exception-text>
+</expect-exception-callback>
+
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[ 
+15) Legal message with confusing line breaks. Note -- the orginal torture
+message had an error - the contact field in an invite must only have SIP 
+urls (per section 2.2 of the BIS RFC. If this is wrong, fix the checking
+code in SIPRequest and SIPReply.java).
+Source for tests 15 on down:
+http://www.cs.columbia.edu/%7Ehgs/sip/bakeoff/
+]]>
+</description>
+
+<message>
+<![CDATA[INVITE sip:vivekg@chair.dnrc.bell-labs.com SIP/2.0
+TO :
+ sip:vivekg@chair.dnrc.bell-labs.com ;   tag    = 1a1b1f1H33n
+From   : "J Rosenberg \\\"" <sip:jdrosen@lucent.com>
+  ;
+  tag = 98asjd8
+CaLl-Id
+ : 0ha0isndaksdj@10.1.1.1
+cseq: 8
+  INVITE
+Via  : SIP  /   2.0 
+ /UDP 
+    135.180.130.133
+Subject :
+NewFangledHeader:   newfangled value
+  more newfangled value
+Content-Type: application/sdp
+v:  SIP  / 2.0  / TCP     12.3.4.5   ;
+  branch  =   9ikj8  ,
+ SIP  /    2.0   / UDP  1.2.3.4   ; hidden   
+m:"Quoted string \"\"" <sip:jdrosen@bell-labs.com> ; newparam = newvalue ;
+  secondparam = secondvalue  ; q = 0.33
+  ,
+ tel:4443322
+
+v=0
+o=mhandley 29739 7272939 IN IP4 126.5.4.3
+c=IN IP4 135.180.130.88
+m=audio 492170 RTP/AVP 0 12
+m=video 3227 RTP/AVP 31
+a=rtpmap:31 LPC
+
+]]>
+</message>
+<expect-exception-callback
+   exception-class = "gov.nist.sip.msgparser.SIPUnrecognizedExtensionException"
+>
+<exception-text>
+<![CDATA[NewFangledHeader:   newfangled value more newfangled value]]>
+</exception-text>
+</expect-exception-callback>
+
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[ 
+16) Legal message with non-sip to address
+]]>
+</description>
+
+<message>
+<![CDATA[INVITE name:John_Smith SIP/2.0
+To: isbn:2983792873
+From: http://www.cs.columbia.edu
+Call-ID: 0ha0isndaksdj@10.1.2.3
+CSeq: 8 INVITE
+Via: SIP/2.0/UDP 135.180.130.133
+Content-Type: application/sdp
+Contact: Joe Bob Briggs <urn:ipaddr:122.1.2.3>
+
+v=0
+o=mhandley 29739 7272939 IN IP4 126.5.4.3
+c=IN IP4 135.180.130.88
+m=audio 492170 RTP/AVP 0 12
+m=video 3227 RTP/AVP 31
+a=rtpmap:31 LPC
+
+
+        
+]]>
+</message>
+</testcase>
+
+<!--					-->
+
+<testcase>
+<description>
+<![CDATA[ 
+17) This message tests support for Proxy-Require and Require. 
+It is a request that contains both exception-texts, listing new features. 
+Proxies and clients should respond with a 420 Bad Extension, and an 
+Unsupported exception-text listing these features. 
+]]>
+</description>
+
+<message>
+<![CDATA[INVITE sip:user@company.com SIP/2.0
+To: sip:j_user@company.com
+From: sip:caller@university.edu
+Call-ID: 0ha0isndaksdj@10.1.1.1
+Require: newfeature1, newfeature2
+Proxy-Require: newfeature3, newfeature4
+CSeq: 8 INVITE
+Via: SIP/2.0/UDP 135.180.130.133
+
+
+]]>
+</message>
+</testcase>
+
+<!--					-->
+
+
+<testcase>
+<description>
+<![CDATA[ 
+18) This message contains unknown schemes in the Request URI, 
+To, From and Contact exception-texts of a request. 
+A server should probably return a not found error; but
+other behaviors are acceptable. 
+]]>
+</description>
+
+<message>
+<![CDATA[INVITE name:John_Smith SIP/2.0
+To: isbn:2983792873
+From: http://www.cs.columbia.edu
+Call-ID: 0ha0isndaksdj@10.1.2.3
+CSeq: 8 INVITE
+Via: SIP/2.0/UDP 135.180.130.133
+Content-Type: application/sdp
+Contact: Joe Bob Briggs <urn:ipaddr:122.1.2.3>
+
+v=0
+o=mhandley 29739 7272939 IN IP4 126.5.4.3
+c=IN IP4 135.180.130.88
+m=audio 492170 RTP/AVP 0 12
+m=video 3227 RTP/AVP 31
+a=rtpmap:31 LPC
+
+
+
+]]>
+</message>
+</testcase>
+
+<!--					-->
+
+
+<testcase>
+<description>
+<![CDATA[ 
+19) This message contains unknown schemes in the Request URI, 
+To, From and Contact exception-texts of a request. 
+A server should probably return a not found error; but
+other behaviors are acceptable. 
+]]>
+</description>
+
+<message>
+<![CDATA[INVITE name:John_Smith SIP/2.0
+To: isbn:2983792873
+From: http://www.cs.columbia.edu
+Call-ID: 0ha0isndaksdj@10.1.2.3
+CSeq: 8 INVITE
+Via: SIP/2.0/UDP 135.180.130.133
+Content-Type: application/sdp
+Contact: Joe Bob Briggs <urn:ipaddr:122.1.2.3>
+
+v=0
+o=mhandley 29739 7272939 IN IP4 126.5.4.3
+c=IN IP4 135.180.130.88
+m=audio 492170 RTP/AVP 0 12
+m=video 3227 RTP/AVP 31
+a=rtpmap:31 LPC
+
+
+
+]]>
+</message>
+</testcase>
+
+
+<testcase>
+<description>
+<![CDATA[
+20) This message is a registration request with an expiration year 
+of 2040. This makes sure that a server doesn't crash on seeing a date past 
+Y2038. The correct behavior is probably to limit the lifetime to some 
+configured maximum. 
+]]>
+</description>
+
+<message>
+<![CDATA[REGISTER sip:company.com SIP/2.0
+To: sip:user@company.com
+From: sip:user@company.com
+Contact: sip:user@host.company.com
+Call-ID: 0ha0isndaksdj@10.0.0.1
+CSeq: 8 REGISTER
+Via: SIP/2.0/UDP 135.180.130.133
+Expires: Thu, 01 Dec 2040 16:00:00 GMT
+
+
+
+]]>
+</message>
+
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[
+21)This request message contains a new method, NEWMETHOD. A proxy should
+forward this using the same retransmission rules as OPTIONS or BYE. A
+UAS should reject it with an error, and list the available methods in
+the response.
+]]>
+</description>
+
+<message>
+<![CDATA[NEWMETHOD sip:user@comapny.com SIP/2.0
+To: sip:j.user@company.com
+From: sip:caller@university.edu
+Call-ID: 0ha0isndaksdj@10.0.0.1
+CSeq: 8 NEWMETHOD
+Via: SIP/2.0/UDP 135.180.130.133
+Content-Type: application/sdp
+
+v=0
+o=mhandley 29739 7272939 IN IP4 126.5.4.3
+c=IN IP4 135.180.130.88
+m=audio 492170 RTP/AVP 0 12
+m=video 3227 RTP/AVP 31
+a=rtpmap:31 LPC
+
+
+]]>
+</message>
+<expect-exception-callback
+  exception-class="gov.nist.sip.msgparser.SIPIllegalMessageException" 
+>
+<exception-text>
+<![CDATA[CSeq: 8 NEWMETHOD]]>
+</exception-text>
+</expect-exception-callback>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[
+22) Unexpected header in reply message (Subject:) 
+]]>
+</description>
+
+<message>
+<![CDATA[SIP/2.0 180 Ringing
+CSeq: 1 INVITE
+Contact: mailto:mranga@129.6.55.8
+Subject: foobar
+Via: SIP/2.0/UDP stinkbug.antd.nist.gov:5060
+Via: SIP/2.0/UDP 129.6.55.9:7060;received=stinkbug.antd.nist.gov
+
+
+]]>
+</message>
+<expect-exception-callback
+  exception-class="gov.nist.sip.msgparser.SIPUnexpectedHeaderException" 
+>
+<exception-text>
+<![CDATA[Subject: foobar]]>
+</exception-text>
+</expect-exception-callback>
+<expect-exception-callback
+  exception-class="gov.nist.sip.msgparser.SIPMissingHeaderException" 
+>
+<exception-text>
+<![CDATA[*]]>
+</exception-text>
+</expect-exception-callback>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[23) Legal Contact Header
+]]>
+</description>
+<sip-header>
+<![CDATA[Contact: "Mr. Watson" <sip:watson@worcester.bell-telephone.com>
+  ;q=0.7; expires=3600,
+  "Mr. Watson" <mailto:watson@bell-telephone.com> ;q=0.1 
+]]>
+</sip-header>
+</testcase>
+
+
+<testcase>
+<description>
+<![CDATA[24) Legal Call Info Header
+]]>
+</description>
+<sip-header>
+<![CDATA[Call-Info: <http://wwww.example.com/alice/photo.jpg> ;purpose=icon,
+     <http://www.example.com/alice/> ;purpose=info
+]]>
+</sip-header>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[25) Legal Alert Info Header
+]]>
+</description>
+<sip-header>
+<![CDATA[Alert-Info: <http://wwww.example.com/sounds/moo.wav>
+]]>
+</sip-header>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[26)Legal From Header
+]]>
+</description>
+<sip-header>
+<![CDATA[From: "A. G. Bell" <sip:agb@bell-telephone.com> ;tag=a48s
+]]>
+</sip-header>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[26.1) Legal To Header
+]]>
+</description>
+<sip-header>
+<![CDATA[To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+]]>
+</sip-header>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[27)Legal From Header
+]]>
+</description>
+<sip-header>
+<![CDATA[From: sip:+12125551212@server.phone2net.com
+]]>
+</sip-header>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[28)Legal From Header
+]]>
+</description>
+<sip-header>
+<![CDATA[From: Anonymous <sip:c8oqz84zk7z@privacy.org>
+]]>
+</sip-header>
+</testcase>
+
+
+<testcase>
+<description>
+<![CDATA[29)Legal Expires Header
+]]>
+</description>
+<sip-header>
+<![CDATA[Expires: Thu, 01 Dec 1994 16:00:00 GMT
+]]>
+</sip-header>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[30)Legal Content Type
+]]>
+</description>
+<sip-header>
+<![CDATA[Content-Type: application/sdp
+]]>
+</sip-header>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[31)Legal Content Type
+]]>
+</description>
+<sip-header>
+<![CDATA[Content-Type: text/html; charset=ISO-8859-4
+]]>
+</sip-header>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[31.1)Legal Retry-after
+]]>
+</description>
+<sip-header>
+<![CDATA[Retry-After: Mon, 21 Jul 1997 18:48:34 GMT (I'm in a meeting)
+]]>
+</sip-header>
+</testcase>
+<testcase>
+<description>
+<![CDATA[31.2)Legal retry-after
+]]>
+</description>
+<sip-header>
+<![CDATA[Retry-After: Mon, 01 Jan 9999 00:00:00 GMT (Dear John: Don't call me back, ever)
+]]>
+</sip-header>
+</testcase>
+<testcase>
+<description>
+<![CDATA[31.3)Legal retry-after
+]]>
+</description>
+<sip-header>
+<![CDATA[Retry-After: Fri, 26 Sep 1997 21:00:00 GMT;duration=3600
+]]>
+</sip-header>
+</testcase>
+<testcase>
+
+<description>
+<![CDATA[31.4)Legal retry-after
+]]>
+</description>
+<sip-header>
+<![CDATA[Retry-After: 120
+]]>
+</sip-header>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[32)Legal Accept 
+]]>
+</description>
+<sip-header>
+<![CDATA[Accept: application/sdp;level=1, application/x-private, text/html
+]]>
+</sip-header>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[33)Legal Accept-Language
+]]>
+</description>
+<sip-header>
+<![CDATA[Accept-Language: da, en-gb;q=0.8, en;q=0.7
+]]>
+</sip-header>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[34) Legal SIP URL
+]]>
+</description>
+<sip-url>
+<![CDATA[sip:j.doe@big.com]]>
+</sip-url>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[35) Legal SIP URL
+]]>
+</description>
+<sip-url>
+<![CDATA[sip:j.SIP:secret@big.com;transport=tcp]]>
+</sip-url>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[36) Legal SIP URL
+]]>
+</description>
+<sip-url>
+<![CDATA[sip:j.doe@big.com?subject=project]]>
+</sip-url>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[37) Legal SIP URL
+]]>
+</description>
+<sip-url>
+<![CDATA[sip:+1-212-555-1212:1234@gateway.com;user=phone]]>
+</sip-url>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[37) Legal SIP URL
+]]>
+</description>
+<sip-url>
+<![CDATA[sip:1-212-555-1212:1234@gateway.com;user=phone]]>
+</sip-url>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[38) Legal SIP URL
+]]>
+</description>
+<sip-url>
+<![CDATA[sip:1212@gateway.com]]>
+</sip-url>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[39) Legal SIP URL
+]]>
+</description>
+<sip-url>
+<![CDATA[sip:alice@10.1.2.3]]>
+</sip-url>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[40) Legal SIP URL
+]]>
+</description>
+<sip-url>
+<![CDATA[sip:alice@example.com]]>
+</sip-url>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[41) Legal SIP URL
+]]>
+</description>
+<sip-url>
+<![CDATA[sip:SIP]]>
+</sip-url>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[42) Legal SIP URL
+]]>
+</description>
+<sip-url>
+<![CDATA[sip:alice@registrar.com;method=REGISTER]]>
+</sip-url>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[43) Legal message with ASCII encoded and encrypted  payload.
+]]>
+</description>
+<message>
+<![CDATA[
+INVITE sip:watson@boston.bell-telephone.com SIP/2.0
+Via: SIP/2.0/UDP 169.130.12.5
+From: <sip:a.g.bell@bell-telephone.com>
+To: T. A. Watson <sip:watson@bell-telephone.com>
+Call-ID: 187602141351@worcester.bell-telephone.com
+Cseq: 1 INVITE
+Encryption: PGP version=2.6.2,encoding=ascii
+
+hQEMAxkp5GPd+j5xAQf/ZDIfGD/PDOM1wayvwdQAKgGgjmZWe+MTy9NEX8O25Red
+h0/pyrd/+DV5C2BYs7yzSOSXaj1C/tTK/4do6rtjhP8QA3vbDdVdaFciwEVAcuXs
+ODxlNAVqyDi1RqFC28BJIvQ5KfEkPuACKTK7WlRSBc7vNPEA3nyqZGBTwhxRSbIR
+RuFEsHSVojdCam4htcqxGnFwD9sksqs6LIyCFaiTAhWtwcCaN437G7mUYzy2KLcA
+zPVGq1VQg83b99zPzIxRdlZ+K7+bAnu8Rtu+ohOCMLV3TPXbyp+err1YiThCZHIu
+X9dOVj3CMjCP66RSHa/ea0wYTRRNYA/G+kdP8DSUcqYAAAE/hZPX6nFIqk7AVnf6
+IpWHUPTelNUJpzUp5Ou+q/5P7ZAsn+cSAuF2YWtVjCf+SQmBR13p2EYYWHoxlA2/
+GgKADYe4M3JSwOtqwU8zUJF3FIfk7vsxmSqtUQrRQaiIhqNyG7KxJt4YjWnEjF5E
+WUIPhvyGFMJaeQXIyGRYZAYvKKklyAJcm29zLACxU5alX4M25lHQd9FR9Zmq6Jed
+wbWvia6cAIfsvlZ9JGocmQYF7pcuz5pnczqP+/yvRqFJtDGD/v3s++G2R+ViVYJO
+z/lxGUZaM4IWBCf+4DUjNanZM0oxAE28NjaIZ0rrldDQmO8V9FtPKdHxkqA5iJP+
+6vGOFti1Ak4kmEz0vM/Nsv7kkubTFhRl05OiJIGr9S1UhenlZv9l6RuXsOY/EwH2
+z8X9N4MhMyXEVuC9rt8/AUhmVQ==
+=bOW+
+
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[44)Legal reply
+]]>
+</description>
+
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345601@here.com
+CSeq: 1 INVITE
+Contact: LittleGuy <sip:UserB@there.com>
+Content-Type: application/sdp
+
+v=0
+o=UserB 2890844527 2890844527 IN IP4 there.com
+s=Session SDP
+c=IN IP4 110.111.112.113
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[45)Legal ACK
+]]>
+</description>
+
+<message>
+<![CDATA[ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345601@here.com
+CSeq: 1 ACK
+
+
+
+]]>
+</message>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[45)Legal Invite
+]]>
+</description>
+
+<message>
+<![CDATA[INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:UserB@there.com;maddr=ss2.wcom.com>,
+    <sip:UserB@there.com;maddr=ss1.wcom.com>
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345601@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[46) An invite with a badly formatted header (two errors)
+Missing <> around the CallInfo uri and Contact address is not a valid uri
+]]>
+</description>
+
+<message>
+<![CDATA[INVITE sip:mranga@120.6.55.9 SIP/2.0
+Via: SIP/2.0/UDP 129.6.55.9:7060
+CSeq: 1 INVITE
+Contact: vikram@localhost
+Expires: 3600
+From: sip:vikram@jitterbug.antd.nist.gov
+Call-Info: http://www.nist.gov
+Call-ID: 814145882@129.6.55.9
+Content-Type: application/sdp
+Priority: normal
+Date: Sun, 07 Jan 2001 19:05:06 GMT
+To: sip:mranga@120.6.55.9
+
+
+
+]]>
+</message>
+<expect-exception-callback
+  exception-class="gov.nist.sip.msgparser.SIPHeaderParseException" 
+>
+<exception-text>
+<![CDATA[Contact: vikram@localhost]]>
+</exception-text>
+</expect-exception-callback>
+<expect-exception-callback
+  exception-class="gov.nist.sip.msgparser.SIPHeaderParseException" 
+>
+<exception-text>
+<![CDATA[Call-Info: http://www.nist.gov]]>
+</exception-text>
+</expect-exception-callback>
+</testcase>
+<testcase>
+<description>
+<![CDATA[47)valid INVITE with record route headers
+Johnston, et al.  Informational       [Page 25]
+Internet Draft     SIP Telephony Call Flow Examples      November 2000
+]]>
+</description>
+
+<message>
+<![CDATA[INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:UserB@there.com;maddr=ss1.wcom.com>
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345601@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+
+
+]]>
+</message>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[48) And now, from the mangled section of the little shop of horrors -- 
+unexpected header sandwiched between two truncated headers.
+Missing a legal from and to header (generates SIPMissingHeaderException).
+Contains a Subject header (generates invalid unexpected header exception).
+]]>
+</description>
+
+<message>
+<![CDATA[SIP/2.0 180 Ringing
+CSeq: 1 INVITE
+Contact: sip:mranga@129.6.55.8
+Via: SIP/2.0/udp stinkbug.antd.nist.gov:5060
+Via: SIP/2.0/UDP 129.6.55.8:7060;received=jitterbug.antd.nist.gov
+From "abcdedf"   
+Contact: sip:mranga@129.6.55.8
+"abcdefg"
+Subject: foobar
+Content-Length: 12345
+
+]]>
+</message>
+<expect-exception-callback
+  exception-class="gov.nist.sip.msgparser.SIPMissingHeaderException" 
+>
+<exception-text>
+<![CDATA[*]]>
+</exception-text>
+</expect-exception-callback>
+<expect-exception-callback
+  exception-class="gov.nist.sip.msgparser.SIPUnexpectedHeaderException" 
+>
+<exception-text>
+<![CDATA[Subject: foobar]]>
+</exception-text>
+</expect-exception-callback>
+
+<expect-exception-callback
+  exception-class="gov.nist.sip.msgparser.SIPInvalidHeaderException" 
+>
+<exception-text>
+<![CDATA[From "abcdedf"   ]]>
+</exception-text>
+</expect-exception-callback>
+
+<expect-exception-callback
+  exception-class="gov.nist.sip.msgparser.SIPInvalidHeaderException" 
+>
+<exception-text>
+<![CDATA["abcdefg"]]>
+</exception-text>
+</expect-exception-callback>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[49) Legal header with a tag in the To and two via headers
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 180 Ringing
+CSeq: 1 INVITE
+Contact: sip:mranga@localhost
+Via: SIP/2.0/udp stinkbug.antd.nist.gov:5060
+Via: SIP/2.0/UDP 129.6.55.9:7060;received=stinkbug
+From: sip:vikram@jitterbug.antd.nist.gov
+Call-ID: 469087875@129.6.55.9
+Record-Route: <sip:mranga@129.6.55.9;maddr=129.6.55.9>
+To: sip:mranga@129.6.55.9 ;tag=696928473514.129.6.55.9
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+
+<description>
+<![CDATA[50) Legal header with address in via
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+CSeq: 1 INVITE
+Contact: sip:mranga@localhost:6060
+Via: SIP/2.0/udp 127.0.0.1:5060;branch=411ab34aab6be4c0a82649076d3b239f.127.0.0.1
+Via: SIP/2.0/UDP 192.168.1.2:7060;received=stinkbug
+From: sip:vikram@localhost
+Content-Type: application/sdp
+Call-ID: 618548932@192.168.1.2
+Record-Route: <sip:mranga@localhost;maddr=127.0.0.1>
+To: sip:mranga@localhost; tag=33          
+
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[51)Legal Error Info
+]]>
+</description>
+<sip-header>
+<![CDATA[Error-Info:  <http://foo.bar.com/info.html> ; severity="terrible"
+]]>
+</sip-header>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[50) Legal invite
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:foo@129.6.50.27 SIP/2.0
+v:SIP/2.0/UDP 129.6.50.10
+i:75a4d2e6@129.6.50.10
+CSeq:46728 INVITE
+m:<sip:13019768226@129.6.50.10>
+User-Agent:3Com ICD 1.0.1.2.7
+f:3 Com SIP Phone <sip:13019768226@sipcso.3com.com>;tag=828f3abc
+t:<sip:foo@129.6.50.27>
+c: application/sdp
+L: 101
+
+v=0
+o=username 0 46727 IN IP4 129.6.50.10
+s=
+c=IN IP4 129.6.50.10
+t=0 0
+m=audio 9000 RTP/AVP 0
+
+]]>
+</message>
+</testcase>
+
+<testcase>
+
+<description>
+<![CDATA[51) This should be rejected with 400. Section 4.1 
+lists SIP version as a literal and doesn't say anything about 
+ignoring leading zeros. As an example of why rejecting it is a good idea, 
+consider version numbers like 2.1 and 2.01 - they are unlikely to 
+refer to the same version. 
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:t.watson@ieee.org SIP/02.00
+Via:     SIP/2.0/UDP c.bell-tel.com
+From:    A. Bell <sip:a.g.bell@bell-tel.com>
+To:      T. Watson <sip:t.watson@ieee.org>
+Call-ID: 31416@c.bell-tel.com
+CSeq:    1 INVITE
+
+]]>
+</message>
+<expect-exception-callback
+    exception-class="gov.nist.sip.msgparser.SIPIllegalRequestLineException"
+>
+<exception-text>
+<![CDATA[INVITE sip:t.watson@ieee.org SIP/02.00]]>
+</exception-text>
+</expect-exception-callback>
+
+</testcase>
+<testcase>
+<description>
+<![CDATA[52) Legal bye
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP 129.6.55.81:5060;branch=d1c2fcd388753caa0c797a9b54c2fb49.1
+Record-Route: <sip:4@192.168.2.3;maddr=129.6.55.81>
+Via: SIP/2.0/UDP 192.168.3.3;received=3comI
+i:ca8e221e@192.168.3.3
+CSeq:32820 INVITE
+t:<sip:4@192.168.2.3>;tag=62e168e3
+f:3ComI <sip:13019768224@192.168.3.1>;tag=c06fd3f2
+Server:3Com ICD 1.0.1.2.7
+
+]]>
+</message>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[53) Legal invite
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:+13019768227@129.6.55.81;user=phone SIP/2.0
+Via: SIP/2.0/UDP  192.168.3.2:54096
+From: sip:+13019768221@192.168.3.2
+To: <sip:+13019768227@129.6.55.81;user=phone>
+Date: Wed, 24 Mar 1993 01:02:47 GMT
+Call-ID: FC2D8CD7-B1F10268-0-76ABC300@192.168.3.2
+User-Agent: Cisco VoIP Gateway/ IOS 12.x/ SIP enabled
+CSeq: 100 INVITE
+Content-Type: application/sdp
+
+v=0
+o=CiscoSystemsSIPUserAgent 9177 8728 IN IP4 192.168.3.2
+s=SIP Call
+c=IN IP4 192.168.3.2
+m=audio 20622 RTP/AVP 0
+
+
+]]>
+</message>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[54) Legal response
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+From: sip:rharris@172.20.12.113
+To: sip:jxia@172.20.12.102;tag=901
+Call-Id: 281794
+Cseq: 1 INVITE
+Content-Type: application/sdp
+Via: SIP/2.0/UDP 172.20.12.113
+Contact: sip:jxia@172.20.12.102
+Allow: INVITE, ACK, CANCEL, BYE, REFER, OPTIONS, NOTIFY
+User-Agent: Pingtel/0.9.1 (VxWorks)
+
+v=0
+o=Pingtel 5 5 IN IP4 172.20.12.102
+s=phone-call
+c=IN IP4 172.20.12.102
+t=0 0
+m=audio 8766 RTP/AVP 0
+a=rtpmap: 0 pcmu/8000/1
+
+]]>
+</message>
+</testcase>
+
+
+<testcase>
+<description>
+<![CDATA[55) SIP Client New Registration
+]]>
+</description>
+<message>
+<![CDATA[REGISTER sip:ss2.wcom.com SIP/2.0
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 123456789@there.com
+CSeq: 1 REGISTER
+Contact: LittleGuy <sip:UserB@there.com>
+Contact: <sip:+1-972-555-2222@gw1.wcom.com;user=phone>
+Contact: tel:+1-972-555-2222
+Content-Length: 0
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[56) SIP Client New Registration
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 401 Unauthorized
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 123456789@there.com
+CSeq: 1 REGISTER
+WWW-Authenticate: Digest realm="MCI WorldCom SIP",
+ domain="sip:ss2.wcom.com", nonce="ea9c8e88df84f1cec4341ae6cbe5a359",
+ opaque="", stale=FALSE, algorithm=MD5
+Content-Length: 0
+
+]]>
+</message>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[57) SIP Client New Registration
+]]>
+</description>
+<message>
+<![CDATA[REGISTER sip:ss2.wcom.com SIP/2.0
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 123456789@there.com
+CSeq: 2 REGISTER
+Contact: LittleGuy <sip:UserB@there.com>
+Contact: <sip:+1-972-555-2222@gw1.wcom.com;user=phone>
+Contact: tel:+1-972-555-2222
+Authorization:Digest username="UserB", realm="MCI WorldCom SIP",
+ nonce="ea9c8e88df84f1cec4341ae6cbe5a359", opaque="",
+ uri="sip:ss2.wcom.com", response="dfe56131d1958046689cd83306477ecc"
+Content-Length: 0
+
+]]>
+</message>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[58) SIP Client New Registration
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 123456789@there.com
+CSeq: 2 REGISTER
+Contact: LittleGuy <sip:UserB@there.com>
+Contact: <sip:+1-972-555-2222@gw1.wcom.com;user=phone>
+Contact: tel:+1-972-555-2222
+Content-Length: 0
+
+]]>
+</message>
+</testcase>
+
+<testcase>
+<description>
+<![CDATA[
+59) Call-flow 1: F1 REGISTER B -> SIP Server
+]]>
+</description>
+<message>
+<![CDATA[
+
+REGISTER sip:ss2.wcom.com SIP/2.0
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 123456789@there.com
+CSeq: 1 REGISTER
+Contact: LittleGuy <sip:UserB@there.com>
+Contact: <sip:+1-972-555-2222@gw1.wcom.com;user=phone>
+Contact: tel:+1-972-555-2222
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+60) Call-flow 1: F2 401 Unauthorized SIP Server -> User B
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 401 Unauthorized
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 123456789@there.com
+CSeq: 1 REGISTER
+WWW-Authenticate: Digest realm="MCI WorldCom SIP",
+ domain="sip:ss2.wcom.com", nonce="ea9c8e88df84f1cec4341ae6cbe5a359",
+ opaque="", stale=FALSE, algorithm=MD5
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+61) Call-flow 1: F3 REGISTER B -> SIP Server
+]]>
+</description>
+<message>
+<![CDATA[REGISTER sip:ss2.wcom.com SIP/2.0
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 123456789@there.com
+CSeq: 2 REGISTER
+Contact: LittleGuy <sip:UserB@there.com>
+Contact: <sip:+1-972-555-2222@gw1.wcom.com;user=phone>
+Contact: tel:+1-972-555-2222
+Authorization:Digest username="UserB", realm="MCI WorldCom SIP",
+ nonce="ea9c8e88df84f1cec4341ae6cbe5a359", opaque="",
+ uri="sip:ss2.wcom.com", response="dfe56131d1958046689cd83306477ecc"
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+62) Call-flow 1: F4 200 OK SIP Server -> B
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 123456789@there.com
+CSeq: 2 REGISTER
+Contact: LittleGuy <sip:UserB@there.com>
+Contact: <sip:+1-972-555-2222@gw1.wcom.com;user=phone>
+Contact: tel:+1-972-555-2222
+Content-Length: 0
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+63) Call-flow 2: F1 REGISTER B -> SIP Server
+]]>
+</description>
+<message>
+<![CDATA[REGISTER sip:ss2.wcom.com SIP/2.0
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 123456789@there.com
+CSeq: 1 REGISTER
+Contact: mailto:UserB@there.com
+Authorization:Digest username="UserB", realm="MCI WorldCom SIP",
+ nonce="1cec4341ae6cbe5a359ea9c8e88df84f", opaque="",
+ uri="sip:ss2.wcom.com", response="71ba27c64bd01de719686aa4590d5824"
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+64) Call-flow 2: F2 200 OK SIP Server -> B
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 123456789@there.com
+CSeq: 1 REGISTER
+Contact: LittleGuy <sip:UserB@there.com>
+Contact: <sip:+1-972-555-2222@gw1.wcom.com;user=phone>
+Contact: tel:+1-972-555-2222
+Contact: mailto:UserB@there.com
+Content-Length: 0
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+65) Call-flow 3: F1 REGISTER B -> SIP Server
+]]>
+</description>
+<message>
+<![CDATA[REGISTER sip:ss2.wcom.com SIP/2.0
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 123456789@there.com
+CSeq: 1 REGISTER
+Authorization:Digest username="UserB", realm="MCI WorldCom SIP",
+ nonce="df84f1cec4341ae6cbe5ap359a9c8e88", opaque="",
+ uri="sip:ss2.wcom.com", response="aa7ab4678258377c6f7d4be6087e2f60"
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[66) Call-flow 3: F2 200 OK SIP Server -> B
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 123456789@there.com
+CSeq: 1 REGISTER
+Contact: LittleGuy <sip:UserB@there.com>
+Contact: <sip:+1-972-555-2222@gw1.wcom.com;user=phone>
+Contact: tel:+1-972-555-2222
+Contact: mailto:UserB@there.com
+Content-Length: 0
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+67) Call-flow 4: F1 REGISTER B -> SIP Server
+]]>
+</description>
+<message>
+<![CDATA[REGISTER sip:ss2.wcom.com SIP/2.0
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 123456789@there.com
+CSeq: 1 REGISTER
+Expires: 0
+Contact:*
+Authorization:Digest username="UserB", realm="MCI WorldCom SIP",
+ nonce="88df84f1cac4341aea9c8ee6cbe5a359", opaque="",
+ uri="sip:ss2.wcom.com", response="ff0437c51696f9a76244f0cf1dbabbea"
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+68) Call-flow 4: F2 200 OK SIP Server -> B
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 123456789@there.com
+CSeq: 1 REGISTER
+Content-Length: 0
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+69) Call-flow 5: F1 REGISTER B -> SIP Server
+]]>
+</description>
+<message>
+<![CDATA[REGISTER sip:ss2.wcom.com SIP/2.0
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 123456789@there.com
+CSeq: 1 REGISTER
+Contact: LittleGuy <sip:UserB@there.com>
+Contact: <sip:+1-972-555-2222@gw1.wcom.com;user=phone>
+Contact: tel:+1-972-555-2222
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+70) Call-flow 5: F2 Unauthorized SIP Server -> User B
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 401 Unauthorized
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 123456789@there.com
+CSeq: 1 REGISTER
+WWW-Authenticate: Digest realm="MCI WorldCom SIP",
+ domain="sip:ss2.wcom.com", nonce="f1cec4341ae6ca9c8e88df84be55a359",
+ opaque="", stale=FALSE, algorithm=MD5
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+71) Call-flow 5: F3 REGISTER B -> SIP Server
+]]>
+</description>
+<message>
+<![CDATA[REGISTER sip:ss2.wcom.com SIP/2.0
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 123456789@there.com
+CSeq: 2 REGISTER
+Contact: LittleGuy <sip:UserB@there.com>
+Contact: <sip:+1-972-555-2222@gw1.wcom.com;user=phone>
+Contact: tel:+1-972-555-2222
+Authorization:Digest username="UserB", realm="MCI WorldCom SIP",
+ nonce="f1cec4341ae6ca9c8e88df84be55a359", opaque="",
+ uri="sip:ss2.wcom.com", response="61f8470ceb87d7ebf508220214ed438b"
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+72 Call-flow 5: F4 401 Unauthorized SIP Server -> User B
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 401 Unauthorized
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 123456789@there.com
+CSeq: 2 REGISTER
+WWW-Authenticate: Digest realm="MCI WorldCom SIP",
+ domain="sip:ss2.wcom.com", nonce="84f1c1ae6cbe5ua9c8e88dfa3ecm3459",
+ opaque="", stale=FALSE, algorithm=MD5
+Content-Length: 0
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+73 Call-flow 6: F1 INVITE User A -> User B
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345601@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+Content-Length: 147
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+74 Call-flow 6: F2 (100 Trying) User B -> User A
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 100 Trying
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345601@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+75 Call-flow 6: F3 180 Ringing User B -> User A
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=8321234356
+Call-ID: 12345601@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+76 Call-flow 6: F4 200 OK User B -> User A
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=8321234356
+Call-ID: 12345601@here.com
+CSeq: 1 INVITE
+Contact: LittleGuy <sip:UserB@there.com>
+Content-Type: application/sdp
+
+v=0
+o=UserB 2890844527 2890844527 IN IP4 there.com
+s=Session SDP
+c=IN IP4 110.111.112.113
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+77 Call-flow 6: F5 ACK User A -> User B
+]]>
+</description>
+<message>
+<![CDATA[ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=8321234356
+Call-ID: 12345601@here.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 6: F6 BYE User B -> User A
+]]>
+</description>
+<message>
+<![CDATA[BYE sip:UserA@here.com SIP/2.0
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>;tag=8321234356
+To: BigGuy <sip:UserA@here.com>
+Call-ID: 12345601@here.com
+CSeq: 1 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+78 Call-flow 6: F7 200 OK User A -> User B
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>;tag=8321234356
+To: BigGuy <sip:UserA@here.com>
+Call-ID: 12345601@here.com
+CSeq: 1 BYE
+Content-Length: 0
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+79 Call-flow 7: F1 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+80 Call-flow 7: F2 407 Proxy Authorization Required Proxy 1 -> User A
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 407 Proxy Authorization Required
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Proxy-Authenticate: Digest realm="MCI WorldCom SIP",
+ domain="sip:ss1.wcom.com", nonce="f84f1cec41e6cbe5aea9c8e88d359",
+ opaque="", stale=FALSE, algorithm=MD5
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+81 Call-flow 7: F3 ACK A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+82 Call-flow 7: F4 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345601@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Authorization:Digest username="UserA", realm="MCI WorldCom SIP",
+ nonce="wf84f1ceczx41ae6cbe5aea9c8e88d359", opaque="",
+ uri="sip:ss1.wcom.com", response="42ce3cef44b22f50c6a6071bc8"
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 8: F1 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 8: F2 407 Proxy Authorization Required Proxy 1 -> User A
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 407 Proxy Authorization Required
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Proxy-Authenticate: Digest realm="WorldCom SIP",
+ domain="sip:ss1.wcom.com", nonce="wf84f1cczx41ae6cbeaea9ce88d359",
+ opaque="", stale=FALSE, algorithm=MD5
+Content-Length: 0
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 8: F3 ACK A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 8: F4 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 2 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Authorization:Digest username="UserA", realm="WorldCom SIP",
+ nonce="wf84f1ceczx41ae6cbe5aea9c8e88d359", opaque="",
+ uri="sip:ss1.wcom.com", response="42ce3cef44b22f50c6a6071bc8"
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 9: F1 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 9: F8 CANCEL A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+CANCEL sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 CANCEL
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 9: F9 INVITE A -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345601@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 9: F10 407 Proxy Authorization Required Proxy 2 -> User A
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 407 Proxy Authorization Required
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345601@here.com
+CSeq: 1 INVITE
+Proxy-Authenticate: Digest realm="MCI SIP",
+ domain="sip:ss2.wcom.com", nonce="1ae6cbe5ea9c8e8df84fqnlec434a359",
+ opaque="", stale=FALSE, algorithm=MD5
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 9: F11 ACK A -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345601@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 9: F12 INVITE A -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345602@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Authorization:Digest username="UserA", realm="MCI SIP",
+ nonce="1ae6cbe5ea9c8e8df84fqnlec434a359", opaque="",
+ uri="sip:ss2.wcom.com", response="8a880c919d1a52f20a1593e228adf599"
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 9: F13 INVITE Proxy 2 -> B
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:UserB@there.com;maddr=ss2.wcom.com>
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345602@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 9: F14 (100 Trying) Proxy 2 -> User A
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345602@here.com
+CSeq: 1 INVITE
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 9: F15 180 Ringing B -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345602@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 9: F16 180 Ringing Proxy 2 -> A
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345602@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 9: F17 200 OK B -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:UserB@there.com;maddr=ss2.wcom.com>
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345602@here.com
+CSeq: 1 INVITE
+Contact: LittleGuy <sip:UserB@there.com>
+Content-Type: application/sdp
+
+v=0
+o=UserB 2890844527 2890844527 IN IP4 there.com
+s=Session SDP
+c=IN IP4 110.111.112.113
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 9: F18 200 OK Proxy 2 -> A
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:UserB@there.com;maddr=ss2.wcom.com>
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345602@here.com
+CSeq: 1 INVITE
+Contact: LittleGuy <sip:UserB@there.com>
+Content-Type: application/sdp
+
+v=0
+o=UserB 2890844527 2890844527 IN IP4 there.com
+s=Session SDP
+c=IN IP4 110.111.112.113
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 9: F19 ACK A -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+Route: <sip:UserB@there.com>
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345602@here.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 9: F20 ACK Proxy 2 -> B
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345602@here.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 9: F21 BYE User B -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+BYE sip:UserA@here.com SIP/2.0
+Via: SIP/2.0/UDP there.com:5060
+Route: <sip:UserA@here.com>
+From: LittleGuy <sip:UserB@there.com>;tag=314159
+To: BigGuy <sip:UserA@here.com>
+Call-ID: 12345602@here.com
+CSeq: 1 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 9: F22 BYE Proxy 2 -> User A
+]]>
+</description>
+<message>
+<![CDATA[
+
+BYE sip:UserA@here.com SIP/2.0
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>;tag=314159
+To: BigGuy <sip:UserA@here.com>
+Call-ID: 12345602@here.com
+CSeq: 1 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 9: F23 200 OK User A -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>;tag=314159
+To: BigGuy <sip:UserA@here.com>
+Call-ID: 12345602@here.com
+CSeq: 1 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 9: F24 200 OK Proxy 2 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP there.com:5060
+From: LittleGuy <sip:UserB@there.com>;tag=314159
+To: BigGuy <sip:UserA@here.com>
+Call-ID: 12345602@here.com
+CSeq: 1 BYE
+Content-Length: 0
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 10: F1 INVITE A -> SIP FW
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:UserB@fwp1.wcom.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Authorization:Digest username="UserA", realm="MCI WorldCom SIP",
+ nonce="85b4f1cen4341ae6cbe5a3a9c8e88df9", opaque="",
+ uri="sip:ss1.wcom.com", response="b3f392f9218a328b9294076d708e6815"
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 10: F2 INVITE SIP FW -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP fwp1.wcom.com:5060;branch=9471385739578.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:UserB@there.com;maddr=fwp1.wcom.com>
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Authorization:Digest username="UserA", realm="MCI WorldCom SIP",
+ nonce="85b4f1cen4341ae6cbe5a3a9c8e88df9", opaque="",
+ uri="sip:ss1.wcom.com", response="b3f392f9218a328b9294076d708e6815"
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 200.201.202.203
+t=0 0
+m=audio 1000 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 10: F3 (100 Trying) SIP FW -> A
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 100 Trying
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 11: F1 INVITE A -> Redirect Proxy
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 11: F2 302 Moved Temporarily Redirect Proxy -> A
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 302 Moved Temporarily
+Contact: sip:UserB@everywhere.com
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[Call-flow 11: F3 ACK A -> Redirect Proxy
+]]>
+</description>
+<message>
+<![CDATA[ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[Call-flow 11: F4 INVITE A -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:UserB@everywhere.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 2 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 11: F5 INVITE Proxy 2 -> B
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:UserB@everywhere.com SIP/2.0
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:UserB@everywhere.com;maddr=ss2.wcom.com>
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 2 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 11: F6 (100 Trying) Proxy 2 -> A
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 100 Trying
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 2 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 11: F7 (100 Trying) B -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 100 Trying
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 2 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 11: F8 180 Ringing B -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 2 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 11: F9 180 Ringing Proxy 2 -> A
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 2 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 11: F10 200 OK B -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:UserB@everywhere.com;maddr=ss2.wcom.com>
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 2 INVITE
+Contact: LittleGuy <sip:UserB@everywhere.com>
+Content-Type: application/sdp
+
+v=0
+o=UserB 2890844527 2890844527 IN IP4 everywhere.com
+s=Session SDP
+c=IN IP4 111.112.113.114
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 11: F11 200 OK Proxy -> A
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:UserB@there.com;maddr=ss2.wcom.com>
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 2 INVITE
+Contact: LittleGuy <sip:UserB@everywhere.com>
+Content-Type: application/sdp
+
+v=0
+o=UserB 2890844527 2890844527 IN IP4 everywhere.com
+s=Session SDP
+c=IN IP4 111.112.113.114
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 11: F12 ACK A -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[ACK sip:UserB@everyhere.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+Route: <sip:UserB@there.com>
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 2 ACK
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 11: F13 ACK Proxy 2 -> B
+]]>
+</description>
+<message>
+<![CDATA[ACK sip:UserB@everywhere.com SIP/2.0
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 2 ACK
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 11: F14 BYE B -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[BYE sip:UserA@here.com SIP/2.0
+Via: SIP/2.0/UDP everywhere.com:5060
+Route: <sip:UserA@here.com>
+From: LittleGuy <sip:UserB@there.com>;tag=314159
+To: BigGuy <sip:UserA@here.com>
+Call-ID: 12345600@here.com
+CSeq: 1 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 11: F15 BYE Proxy 2 -> A
+]]>
+</description>
+<message>
+<![CDATA[BYE sip:UserA@here.com SIP/2.0
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP everywhere.com:5060
+From: LittleGuy <sip:UserB@there.com>;tag=314159
+To: BigGuy <sip:UserA@here.com>
+Call-ID: 12345600@here.com
+CSeq: 1 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 11: F16 200 OK A -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP everywhere.com:5060
+From: LittleGuy <sip:UserB@there.com>;tag=314159
+To: BigGuy <sip:UserA@here.com>
+Call-ID: 12345600@here.com
+CSeq: 1 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 11: F17 200 OK Proxy 2 -> B
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP everywhere.com:5060
+From: LittleGuy <sip:UserB@there.com>;tag=314159
+To: BigGuy <sip:UserA@here.com>
+Call-ID: 12345600@here.com
+CSeq: 1 BYE
+Content-Length: 0
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F1 INVITE  IFT UA -> PROXY
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:+1-650-555-2222@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ift.here.com:5060
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 1717@ift.here.com
+CSeq: 17 INVITE
+Contact: <sip:+1-303-555-1111@ift.here.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=IFAXTERMINAL01 2890844527 2890844527 IN IP4 ift.here.com
+s=Session SDP
+c=IN IP4 iftmg.here.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F2 INVITE  PROXY -> IFTGW UA
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:+1-650-555-2222@iftgw.there.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060; branch=2d007.1
+Via: SIP/2.0/UDP ift.here.com:5060
+Record-Route: <sip:+1-650-555-2222@iftgw.there.com;
+ maddr=ss1.wcom.com>
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 1717@ift.here.com
+CSeq: 17 INVITE
+Contact: <sip:+1-303-555-1111@ift.here.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=IFAXTERMINAL01 2890844527 2890844527 IN IP4 ift.here.com
+s=Session SDP
+c=IN IP4 iftmg.here.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F3 (100 Trying) PROXY -> IFT UA
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP ift.here.com:5060
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 1717@ift.here.com
+CSeq: 17 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F4 100 Trying IFTGW UA -> PROXY
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP ss1.wcom.com:5060; branch=2d007.1
+Via: SIP/2.0/UDP ift.here.com:5060
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: sip:+1-650-555-2222@ss1.wcom.com;user=phone
+Call-ID: 1717@ift.here.com
+CSeq: 17 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F5 180 Ringing IFTGW UA -> PROXY
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP ss1.wcom.com:5060; branch=2d007.1
+Via: SIP/2.0/UDP ift.here.com:5060
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 17 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F6 180 Ringing PROXY -> IFT UA
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP ift.here.com:5060
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 17 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F7 200 OK   IFTGW UA -> PROXY
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss1.wcom.com:5060; branch=2d007.1
+Via: SIP/2.0/UDP ift.here.com:5060
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 17 INVITE
+Contact: <sip:+1-650-555-2222@iftgw.there.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=IFAXTERMINAL01 2890844527 2890844527 IN IP4 iftgw.there.com
+s=Session SDP
+c=IN IP4 iftmg.there.com
+t=0 0
+m=audio 12323 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F8 200 OK   PROXY -> IFT UA
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP ift.here.com:5060
+Record-Route: <sip:+1-650-555-2222@iftgw.there.com;
+ maddr=ss1.wcom.com>
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 17 INVITE
+Contact: <sip:+1-650-555-2222@iftgw.there.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=IFAXTERMINAL01 2890844527 2890844527 IN IP4 iftgw.there.com
+s=Session SDP
+c=IN IP4 iftmg.there.com
+t=0 0
+m=audio 12323 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F9 ACK IFT UA -> PROXY
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:+1-650-555-2222@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ift.here.com:5060
+Route: <sip:+1-650-555-2222@iftgw.there.com;maddr=ss1.wcom.com>
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 17 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F10 ACK PROXY -> IFTGW UA
+]]>
+</description>
+<message>
+<![CDATA[ACK sip:+1-650-555-2222@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060; branch=2d007.1
+Via: SIP/2.0/UDP ift.here.com:5060
+Record-Route: <sip:+1-650-555-2222@iftgw.there.com;
+ maddr=ss1.wcom.com>
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 17 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F11 INVITE  IFTGW UA -> PROXY
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:+1-650-555-2222@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP iftgw.there.com:5060
+Route: <sip:+1-650-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 1 INVITE
+Contact: <sip:+1-650-555-2222@iftgw.there.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=faxgw1 2890844527 2890844527 IN IP4 iftgw.there.com
+s=Session SDP
+c=IN IP4 iftmg.there.com
+t=0 0
+m=image 49172 udptl t38
+a=T38FaxVersion:0
+a=T38maxBitRate:14400
+a=T38FaxFillBitRemoval:0
+a=T38FaxTranscodingMMR:0
+a=T38FaxTranscodingJBIG:0
+a=T38FaxRateManagement:transferredTCF
+a=T38FaxMaxBuffer:72
+a=T38FaxMaxDatagram:316
+a=T38FaxUdpEC:t38UDPRedundancy
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F12 INVITE  PROXY -> IFT UA
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:+1-650-555-2222@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060; branch=2d008.1
+Via: SIP/2.0/UDP iftgw.there.com:5060
+Record-Route: <sip:+1-650-555-2222@ss1.wcom.com;
+ maddr=ss1.wcom.com>
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 1 INVITE
+Contact: <sip:+1-650-555-2222@iftgw.there.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=faxgw1 2890844527 2890844527 IN IP4 iftgw.there.com
+s=Session SDP
+c=IN IP4 iftmg.there.com
+t=0 0
+m=image 49172 udptl t38
+a=T38FaxVersion:0
+a=T38maxBitRate:14400
+a=T38FaxFillBitRemoval:0
+a=T38FaxTranscodingMMR:0
+a=T38FaxTranscodingJBIG:0
+a=T38FaxRateManagement:transferredTCF
+a=T38FaxMaxBuffer:72
+a=T38FaxMaxDatagram:316
+a=T38FaxUdpEC:t38UDPRedundancy
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F13 200 OK IFT UA -> PROXY
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss1.wcom.com:5060; branch=2d008.1
+Via: SIP/2.0/UDP iftgw.there.com:5060
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 1 INVITE
+Contact: <sip:+1-303-555-1111@ift.here.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=faxgw1 2890846527 2890846527 IN IP4 ift.here.com
+s=Session SDP
+c=IN IP4 iftmg.here.com
+t=0 0
+m=image 15002 udptl t38
+a=T38FaxVersion:0
+a=T38maxBitRate:14400
+a=T38FaxFillBitRemoval:0
+a=T38FaxTranscodingMMR:0
+a=T38FaxTranscodingJBIG:0
+a=T38FaxRateManagement:transferredTCF
+a=T38FaxMaxBuffer:72
+a=T38FaxMaxDatagram:316
+a=T38FaxUdpEC:t38UDPRedundancy
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F14 200 OK  PROXY -> IFT UA
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP iftgw.there.com:5060
+Record-Route: <sip:+1-650-555-2222@ss1.wcom.com;
+ maddr=ss1.wcom.com>
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 1 INVITE
+Contact: <sip:+1-303-555-1111@ift.here.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=faxgw1 2890846527 2890846527 IN IP4 ift.here.com
+s=Session SDP
+c=IN IP4 iftmg.here.com
+t=0 0
+m=image 15002 udptl t38
+a=T38FaxVersion:0
+a=T38maxBitRate:14400
+a=T38FaxFillBitRemoval:0
+a=T38FaxTranscodingMMR:0
+a=T38FaxTranscodingJBIG:0
+a=T38FaxRateManagement:transferredTCF
+a=T38FaxMaxBuffer:72
+a=T38FaxMaxDatagram:316
+a=T38FaxUdpEC:t38UDPRedundancy
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F15 ACK IFTGW UA -> PROXY
+]]>
+</description>
+<message>
+<![CDATA[ACK sip:+1-650-555-2222@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP iftgw.there.com:5060
+Route: <sip:+1-650-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F16 ACK  PROXY -> IFT UA
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:+1-650-555-2222@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060; branch=2d008.1
+Via: SIP/2.0/UDP iftgw.there.com:5060
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F17 INVITE  IFTGW UA -> PROXY
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:+1-650-555-2222@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP iftgw.there.com:5060
+Route: <sip:+1-650-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 2 INVITE
+Contact: <sip:+1-650-555-2222@iftgw.there.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=faxgw1 2890844527 2890844527 IN IP4 iftgw.there.com
+s=Session SDP
+c=IN IP4 iftmg.there.com
+t=0 0
+m=audio 12323 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F18 INVITE  PROXY -> IFT UA
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:+1-650-555-2222@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060; branch=2d009.1
+Via: SIP/2.0/UDP iftgw.there.com:5060
+Record-Route: <sip:+1-650-555-2222@ss1.wcom.com;
+ maddr=ss1.wcom.com>
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 2 INVITE
+Contact: <sip:+1-650-555-2222@iftgw.there.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=faxgw1 2890844527 2890844527 IN IP4 iftgw.there.com
+s=Session SDP
+c=IN IP4 iftmg.there.com
+t=0 0
+m=audio 12323 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F19 200 OK IFT UA -> PROXY
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss1.wcom.com:5060; branch=2d008.1
+Via: SIP/2.0/UDP iftgw.there.com:5060
+Record-Route: <sip:+1-650-555-2222@ss1.wcom.com;
+ maddr=ss1.wcom.com>
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 2 INVITE
+Contact: <sip:+1-303-555-1111@ift.here.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=faxgw1 2890844527 2890844527 IN IP4 ift.here.com
+s=Session SDP
+c=IN IP4 iftmg.here.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F20 200 OK  PROXY -> IFTGW UA
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP iftgw.there.com:5060
+Record-Route: <sip:+1-650-555-2222@ss1.wcom.com;
+ maddr=ss1.wcom.com>
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 2 INVITE
+Contact: <sip:+1-303-555-1111@ift.here.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=faxgw1 2890844527 2890844527 IN IP4 ift.here.com
+s=Session SDP
+c=IN IP4 iftmg.here.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F21 ACK IFTGW UA -> PROXY
+]]>
+</description>
+<message>
+<![CDATA[ACK sip:+1-650-555-2222@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP iftgw.there.com:5060
+Route: <sip:+1-650-555-2222@ss1.wcom.com;
+ maddr=ss1.wcom.com>
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 2 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F22 ACK  PROXY -> IFT UA
+]]>
+</description>
+<message>
+<![CDATA[ACK sip:+1-650-555-2222@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060; branch=2d009.1
+Via: SIP/2.0/UDP iftgw.there.com:5060
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 2 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F23 BYE IFT UA -> PROXY
+]]>
+</description>
+<message>
+<![CDATA[BYE sip:+1-650-555-2222@ss1.wcom.com SIP/2.0
+Via: SIP/2.0/UDP ift.here.com:5060
+Route: <sip:+1-650-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 18 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F24 BYE PROXY -> IFTGW UA
+]]>
+</description>
+<message>
+<![CDATA[BYE sip:+1-650-555-2222@ss1.wcom.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060; branch=2d009.1
+Via: SIP/2.0/UDP ift.here.com:5060
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 18 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F25 200 OK IFTGW UA -> PROXY
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss1.wcom.com:5060; branch=2d007.1
+Via: SIP/2.0/UDP ift.here.com:5060
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 18 BYE
+Content-Type: application/sdp
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 12: F26 200 OK  PROXY -> IFT UA
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP ift.here.com:5060
+From: sip:+1-303-555-1111@ift.here.com;user=phone
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=5617
+Call-ID: 1717@ift.here.com
+CSeq: 18 BYE
+Content-Type: application/sdp
+Content-Length: 0
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F1 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Authorization:Digest username="UserA", realm="MCI WorldCom SIP",
+ nonce="ze7k1ee88df84f1cec431ae6cbe5a359", opaque="",
+ uri="sip:ss1.wcom.com", response="b00b416324679d7e243f55708d44be7b"
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F2 INVITE Proxy 1 -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:UserB@there.com;maddr=ss1.wcom.com>
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F3 (100 Trying) Proxy 1 -> A
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F4 INVITE Proxy 2 -> B
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:UserB@there.com;maddr=ss2.wcom.com>,
+ <sip:UserB@there.com;maddr=ss1.wcom.com>
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F5 (100 Trying) Proxy 2 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 100 Trying
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F6 180 Ringing B -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F7 180 Ringing Proxy 2 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F8 180 Ringing Proxy 1 -> A
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F9 CANCEL A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+CANCEL sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 CANCEL
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F10 200 OK Proxy 1 -> A
+]]>
+</description>
+<message>
+<![CDATA[
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 CANCEL
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F11 CANCEL Proxy 1 -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[CANCEL sip:UserA@here.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 CANCEL
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F12 200 OK Proxy 2 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 CANCEL
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F13 CANCEL Proxy 2 -> B
+]]>
+</description>
+<message>
+<![CDATA[
+
+CANCEL sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 CANCEL
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F14 200 OK B -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 CANCEL
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F15 487 Request Cancelled B -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 487 Request Cancelled
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F16 ACK Proxy 2 -> B
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F17 487 Request Cancelled Proxy 2 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 487 Request Cancelled
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=9876
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F18 ACK Proxy 1 -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=9876
+Call-ID: 12345600@here.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F19 487 Request Cancelled Proxy 1 -> A
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 487 Request Cancelled
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=4321
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 13: F20 ACK A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=4321
+Call-ID: 12345600@here.com
+CSeq: 1 ACK
+Content-Length: 0
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 14: F1 INVITE User A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Authorization:Digest username="UserA", realm="MCI WorldCom SIP",
+ nonce="dc3a5ab2530aa93112cf5904ba7d88fa", opaque="",
+ uri="sip:ss1.wcom.com", response="702138b27d869ac8741e10ec643d55be"
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 14: F2 INVITE Proxy 1 -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:UserB@there.com;maddr=ss1.wcom.com>
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 14: F3 (100 Trying) Proxy 1 -> User A
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 100 Trying
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 14: F4 INVITE Proxy 2 -> User B
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:UserB@there.com;maddr=ss2.wcom.com>,
+ <sip:UserB@there.com;maddr=ss1.wcom.com>
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 14: F5 (100 Trying) Proxy 2 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 14: F6 486 Busy Here User B -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 486 Busy Here
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 14: F7 ACK Proxy 2 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 14: F8 486 Busy Here Proxy 2 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 486 Busy Here
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=1293
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 14: F9 ACK Proxy 1 -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=1293
+Call-ID: 12345600@here.com
+CSeq: 1 ACK
+Content-Length: 0
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 14: F10 486 Busy Here Proxy 1 -> User A
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 486 Busy Here
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=a6b4
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 14: F11 ACK User A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=a6b4
+Call-ID: 12345600@here.com
+CSeq: 1 ACK
+Content-Length: 0
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 15: F1 INVITE User A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Authorization:Digest username="UserA", realm="MCI WorldCom SIP",
+ nonce="cf5904ba7d8dc3a5ab2530aa931128fa", opaque="",
+ uri="sip:ss1.wcom.com", response="7afc04be7961f053c24f80e7dbaf888f"
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 15: F2 INVITE Proxy 1 -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:UserB@there.com;maddr=ss1.wcom.com>
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 15: F3 (100 Trying) Proxy 1 -> User A
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 100 Trying
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 15: F4 INVITE Proxy 2 -> User B
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:UserB@there.com;maddr=ss2.wcom.com>,
+ <sip:UserB@there.com;maddr=ss1.wcom.com>
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 15: F5 (100 Trying) Proxy 2 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 15: F12 CANCEL Proxy 2 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+CANCEL sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 CANCEL
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 15: F13 480 No Response Proxy 2 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 480 No Response
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 15: F14 ACK Proxy 1 -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 15: F15 480 No Response Proxy 1 -> User A
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 480 No Response
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=159
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 15: F16 ACK User A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=159
+Call-ID: 12345600@here.com
+CSeq: 1 ACK
+Content-Length: 0
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 16: F1 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Authorization:Digest username="UserA", realm="MCI WorldCom SIP",
+ nonce="aa9311cf5904ba7d8dc3a5ab253028fa", opaque="",
+ uri="sip:ss1.wcom.com", response="59a46a91bf1646562a4d486c84b399db"
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 16: F2 INVITE Proxy 1 -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:UserB@there.com;maddr=ss1.wcom.com>
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 16: F3 INVITE Proxy 2 -> B
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:UserB@there.com;maddr=ss2.wcom.com>,
+ <sip:UserB@there.com;maddr=ss1.wcom.com>
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+Content-Length: 147
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 16: F4 (100 Trying) Proxy 1 -> A
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 16: F5 (100 Trying) Proxy 2 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 16: F6 (100 Trying) User B -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 16: F7 180 Ringing B -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 16: F8 180 Ringing Proxy 2 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 16: F9 180 Ringing Proxy 1 -> A
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 16: F10 480 Temporarily Unavailable B -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 480 Temporarily Unavailable
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 16: F11 ACK Proxy 2 -> B
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss2.wcom.com:5060;branch=721e418c4.1
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 16: F12 480 Temporarily Unavailable Proxy 2 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 480 Temporarily Unavailable
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=9
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 16: F13 ACK Proxy 1 -> Proxy 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=9
+Call-ID: 12345600@here.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 16: F14 480 Temporarily Unavailable Proxy 1 -> A
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 480 Temporarily Unavailable
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=489292845645245422
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 16: F15 ACK A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:UserA@here.com>
+To: LittleGuy <sip:UserB@there.com>;tag=489292845645245422
+Call-ID: 12345600@here.com
+CSeq: 1 ACK
+Content-Length: 0
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 17: F1 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:+1-972-555-2222@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Authorization:Digest username="UserA", realm="MCI WorldCom SIP",
+ nonce="dc3a5ab25302aa931904ba7d88fa1cf5", opaque="",
+ uri="sip:ss1.wcom.com", response="ccdca50cb091d587421457305d097458c"
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 here.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 17: F2 (100 Trying) Proxy 1 -> User A
+]]>
+</description>
+<message>
+<![CDATA[
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 18: F1 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:+1-918-555-3333@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: OtherGuy <sip:+1-918-555-3333@ss1.wcom.com;user=phone>
+Call-ID: 12345600@here.com
+CSeq: 2 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Authorization:Digest username="UserA", realm="MCI WorldCom SIP",
+ nonce="qo0dc3a5ab22aa931904badfa1cf5j9h", opaque="",
+ uri="sip:ss1.wcom.com", response="6c792f5c9fa360358b93c7fb826bf550"
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 here.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 18: F2 (100 Trying) Proxy 1 -> User A
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 100 Trying
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: OtherGuy <sip:+1-918-555-3333@ss1.wcom.com;user=phone>
+Call-ID: 12345600@here.com
+CSeq: 2 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 18: F3 INVITE Proxy 1 -> GW 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:444-3333@gw1.wcom.com;phone-context=p1234 SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:+1-918-555-3333@ss1.wcom.com;maddr=ss1.wcom.com>
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: OtherGuy <sip:+1-918-555-3333@ss1.wcom.com;user=phone>
+Call-ID: 12345600@here.com
+CSeq: 2 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 here.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 18: F4 (100 Trying) GW -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: OtherGuy <sip:+1-918-555-3333@ss1.wcom.com;user=phone>
+Call-ID: 12345600@here.com
+CSeq: 2 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 18: F8 183 Session Progress GW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 183 Session Progress
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: OtherGuy <sip:+1-918-555-3333@ss1.wcom.com;user=phone>
+ ;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 2 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 18: F9 183 Session Progress Proxy 1 -> User A
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 183 Session Progress
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: OtherGuy <sip:+1-918-555-3333@ss1.wcom.com;user=phone>
+ ;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 2 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 18: F12 200 OK GW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:+1-918-555-3333@ss1.wcom.com;maddr=ss1.wcom.com>
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: OtherGuy <sip:+1-918-555-3333@ss1.wcom.com;user=phone>
+ ;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 2 INVITE
+Contact: <sip:444-3333@gw1.wcom.com;phone-context=p1234>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 18: F13 200 OK Proxy 1 -> User A
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:+1-918-555-3333@ss1.wcom.com;maddr=ss1.wcom.com>
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: OtherGuy <sip:+1-918-555-3333@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 2 INVITE
+Contact: <sip:444-3333@gw1.wcom.com;phone-context=p1234>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 18: F14 ACK A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[ACK sip:444-3333@ss1.wcom.com;phone-context=p1234 SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+Route: <sip:444-3333@gw1.wcom.com;phone-context=p1234>
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: OtherGuy <sip:+1-918-555-3333@ss1.wcom.com;user=phone>
+ ;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 2 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 18: F15 ACK Proxy 1 -> GW 1
+]]>
+</description>
+<message>
+<![CDATA[ACK sip:444-3333@gw1.wcom.com;phone-context=p1234 SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: OtherGuy <sip:+1-918-555-3333@ss1.wcom.com;user=phone>
+ ;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 2 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 18: F16 BYE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[BYE sip:444-3333@ss1.wcom.com;phone-context=p1234 SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+Route: <sip:444-3333@gw1.wcom.com
+ ;phone-context=p1234>
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: OtherGuy <sip:+1-918-555-3333@ss1.wcom.com;user=phone>
+ ;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 3 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 18: F17 BYE Proxy 1 -> GW 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+BYE sip:444-3333@gw1.wcom.com;phone-context=p1234 SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: OtherGuy <sip:+1-918-555-3333@ss1.wcom.com;user=phone>
+ ;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 3 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 18: F18 200 OK GW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: OtherGuy <sip:+1-918-555-3333@ss1.wcom.com;user=phone>
+ ;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 3 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 18: F19 200 OK Proxy 1 -> A
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: OtherGuy <sip:+1-918-555-3333@ss1.wcom.com;user=phone>
+ ;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 3 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 19: F1 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:+1-972-555-2222@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Authorization:Digest username="UserA", realm="MCI WorldCom SIP",
+ nonce="b59311c3ba05b401cf80b2a2c5ac51b0", opaque="",
+ uri="sip:ss1.wcom.com", response="ba6ab44923fa2614b28e3e3957789ab0"
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 here.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 19: F2 INVITE Proxy 1 -> NGW 1
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:+1-972-555-2222@ngw1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:+1-972-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 here.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 19: F3 (100 Trying) Proxy 1 -> User A
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 19: F4 503 Service Unavailable NGW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 503 Service Unavailable
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:+1-972-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+ ;tag=123456789
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 19: F5 ACK Proxy 1 -> NGW 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:+1-972-555-2222@ngw1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+ ;tag=123456789
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 19: F6 INVITE Proxy 1 -> NGW 2
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:+1-972-555-2222@ngw2.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:+1-972-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 here.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 19: F9 183 Session Progress NGW 2 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 183 Session Progress
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+ ;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 19: F10 183 Session Progress Proxy 1 -> User A
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 183 Session Progress
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+ ;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 19: F12 200 OK NGW 2 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:+1-972-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+ ;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: <sip:+1-972-555-2222@ngw2.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 19: F13 200 OK Proxy 1 -> User A
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:+1-972-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+ ;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: <sip:+1-972-555-2222@ngw2.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 19: F14 ACK A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:+1-972-555-2222@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+Route: <sip:+1-972-555-2222@ngw2.wcom.com;user=phone>
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+ ;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 19: F15 ACK Proxy 1 -> NGW 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:+1-972-555-2222@ngw2.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+ ;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 19: F16 BYE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+BYE sip:+1-972-555-2222@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+Route: <sip:+1-972-555-2222@ngw2.wcom.com;user=phone>
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+ ;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 2 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 19: F17 BYE Proxy 1 -> NGW 2
+]]>
+</description>
+<message>
+<![CDATA[
+
+BYE sip:+1-972-555-2222@ngw2.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+ ;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 2 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 19: F18 200 OK NGW 2 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+ ;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 2 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 19: F19 200 OK Proxy 1 -> User A
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+ ;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 2 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 20: F1 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:+1-972-555-2222@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Authorization:Digest username="UserA", realm="MCI WorldCom SIP",
+ nonce="01cf8311c3b0b2a2c5ac51bb59a05b40", opaque="",
+ uri="sip:ss1.wcom.com", response="e178fbe430e6680a1690261af8831f40"
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 here.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 20: F2 (100 Trying) Proxy 1 -> A
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 100 Trying
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 21: F1 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:+44-1234@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+44-1234@ss1.wcom.com;user=phone>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Authorization:Digest username="UserA", realm="MCI WorldCom SIP",
+ nonce="j1c3b0b01cf832da2c5ac51bb59a05b40", opaque="",
+ uri="sip:ss1.wcom.com", response="a451358d46b55512863efe1dccaa2f42"
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 here.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 21: F2 (100 Trying) Proxy 1 -> A
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+44-1234@ss1.wcom.com;user=phone>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 21: F3 INVITE Proxy 1 -> NGW 1
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:+44-1234@ngw1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+Record-Route: <sip:+44-1234@ss1.wcom.com;maddr=ss1.wcom.com>
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+44-1234@ss1.wcom.com;user=phone>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 here.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 21: F4 (100 Trying) NGW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+44-1234@ss1.wcom.com;user=phone>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 21: F8 484 Address Incomplete NGW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 484 Address Incomplete
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+44-1234@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 21: F9 ACK Proxy 1 -> NGW 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:+44-1234@ngw1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+44-1234@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345600@here.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 21: F10 484 Address Incomplete Proxy 1 -> User A
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 484 Address Incomplete
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+44-1234@ss1.wcom.com;user=phone>;tag=141593
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 21: F11 ACK User A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:+44-1234@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+44-1234@ss1.wcom.com;user=phone>;tag=141593
+Call-ID: 12345600@here.com
+CSeq: 1 ACK
+Content-Length: 0
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 22: F1 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:+1-972-555-2222@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP here.com:5060
+From: BigGuy <sip:+1-314-555-1111@ss1.wcom.com;user=phone>
+To: LittleGuy <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345600@here.com
+CSeq: 1 INVITE
+Contact: BigGuy <sip:UserA@here.com>
+Authorization:Digest username="UserA", realm="MCI WorldCom SIP",
+ nonce="da2c5ac51bb59a05j1c3b0b01cf832b40", opaque="",
+ uri="sip:ss1.wcom.com", response="579cb9db184cdc25bf816f37cbc03c7d"
+Content-Type: application/sdp
+
+v=0
+o=UserA 2890844526 2890844526 IN IP4 here.com
+s=Session SDP
+c=IN IP4 here.com
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 23: F2 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:+1-972-555-2222@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 24: F2 INVITE NGW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:+1-972-555-2222@ngw1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 24: F3 INVITE Proxy 1 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+Record-Route: <sip:+1-972-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 24: F4 (100 Trying) Proxy 1 -> NGW 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 24: F5 200 OK User B -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+Record-Route: <sip:+1-972-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Contact: LittleGuy <sip:UserB@there.com>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 110.111.112.113
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 24: F6 200 OK Proxy 1 -> NGW 1
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+Record-Route: <sip:+1-972-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Contact: LittleGuy <sip:UserB@there.com>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 110.111.112.113
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 24: F7 ACK NGW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+Route: <sip:UserB@there.com>
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 24: F8 ACK Proxy 1 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 24: F12 BYE NGW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+BYE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+Route: <sip:UserB@there.com>
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 2 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 24: F13 BYE Proxy 1 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+BYE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 2 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 24: F14 200 OK User B -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 2 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 24: F15 200 OK Proxy 1 -> NGW 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 2 BYE
+Content-Length: 0
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 25: F2 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:+1-972-555-2222@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+From: PBX_A <sip:IdentifierString@gw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@gw1.wcom.com
+CSeq: 1 INVITE
+Contact: PBX_A <sip:IdentifierString@gw1.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 25: F3 INVITE Proxy 1 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+Record-Route: <sip:+1-972-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: PBX_A <sip:IdentifierString@gw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@gw1.wcom.com
+CSeq: 1 INVITE
+Contact: PBX_A <sip:IdentifierString@gw1.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 25: F4 (100 Trying) Proxy 1 -> GW 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: PBX_A <sip:IdentifierString@gw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@gw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 25: F5 180 Ringing User B -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: PBX_A <sip:IdentifierString@gw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@gw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 25: F6 180 Ringing Proxy 1 -> GW 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+From: PBX_A <sip:IdentifierString@gw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@gw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 25: F7 200 OK User B -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+Record-Route: <sip:+1-972-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: PBX_A <sip:IdentifierString@gw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@gw1.wcom.com
+Contact: LittleGuy <sip:UserB@there.com>
+CSeq: 1 INVITE
+Content-Type: application/sdp
+
+v=0
+o=UserB 2890844527 2890844527 IN IP4 there.com
+s=Session SDP
+c=IN IP4 110.111.112.113
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 25: F8 200 OK Proxy 1 -> GW 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+Record-Route: <sip:+1-972-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: PBX_A <sip:IdentifierString@gw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@gw1.wcom.com
+CSeq: 1 INVITE
+Contact: LittleGuy <sip:UserB@there.com>
+Content-Type: application/sdp
+
+v=0
+o=UserB 2890844527 2890844527 IN IP4 there.com
+s=Session SDP
+c=IN IP4 110.111.112.113
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 25: F9 ACK GW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+Route: <sip:UserB@there.com>
+From: PBX_A <sip:IdentifierString@gw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@gw1.wcom.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 25: F10 ACK Proxy 1 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+From: PBX_A <sip:IdentifierString@gw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 25: F11 BYE GW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+BYE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+Route: <sip:UserB@there.com>
+From: PBX_A <sip:IdentifierString@gw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@gw1.wcom.com
+CSeq: 2 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 25: F12 BYE Proxy 1 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+BYE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+From: PBX_A <sip:IdentifierString@gw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@gw1.wcom.com
+CSeq: 2 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 25: F13 200 OK User B -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+From: PBX_A <sip:IdentifierString@gw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 2 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 25: F14 200 OK Proxy 1 -> GW 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+From: PBX_A <sip:IdentifierString@gw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@gw1.wcom.com
+CSeq: 2 BYE
+Content-Length: 0
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 26: F2 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:+1-972-555-9999@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@gw1.wcom.com;user=phone>
+To: <sip:+1-972-555-9999@ss1.wcom.com;user=phone>
+Call-ID: 12345602@gw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:+1-314-555-1111@gw1.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 27: F2 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:+1-972-555-2222@ngw1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 27: F3 INVITE F3 Proxy 1 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+Record-Route: <sip:+1-972-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 27: F4 (100 Trying) Proxy 1 -> NGW 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 27: F5 600 Busy Everywhere User B -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 600 Busy Everywhere
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 27: F6 ACK Proxy 1 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 27: F7 600 Busy Everywhere Proxy 1 -> NGW 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 600 Busy Everywhere
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=59
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 27: F8 ACK NGW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=59
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 28: F2 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:+1-972-555-2222@ngw1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 28: F3 INVITE Proxy 1 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+Record-Route: <sip:+1-972-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 28: F4 (100 Trying) User B -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 28: F5 600 Busy Everywhere User B -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 600 Busy Everywhere
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 28: F6 ACK Proxy 1 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 28: F7 600 Busy Everywhere Proxy 1 -> NGW 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 600 Busy Everywhere
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=66536336
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 28: F8 ACK NGW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:+1-972-555-2222@ngw1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=66536336
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 29: F2 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:+1-972-555-2222@ngw1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 29: F3 INVITE Proxy 1 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+Record-Route: <sip:+1-972-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+c c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 29: F4 100 Trying Proxy 1 -> NGW 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 29: F12 CANCEL NGW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+CANCEL sip:+1-972-555-2222@ngw1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 CANCEL
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 29: F13 200 OK Proxy 1 -> NGW 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 CANCEL
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 29: F14 CANCEL Proxy 1 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+CANCEL sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 CANCEL
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 30: F2 INVITE NGW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:+1-972-555-2222@ngw1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 30: F3 INVITE Proxy 1 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+Record-Route: <sip:+1-972-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 30: F16 CANCEL NGW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+CANCEL sip:+1-972-555-2222@ngw1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 CANCEL
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 30: F17 CANCEL Proxy 1 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+CANCEL sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 CANCEL
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 31: F2 INVITE A -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:+1-972-555-2222@ngw1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 31: F3 INVITE Proxy 1 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+INVITE sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+Record-Route: <sip:+1-972-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GATEWAY1 2890844527 2890844527 IN IP4 gatewayone.wcom.com
+s=Session SDP
+c=IN IP4 gatewayone.wcom.com
+t=0 0
+m=audio 3456 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 31: F4 (100 Trying) User B -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 100 Trying
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 31: F5 180 Ringing User B -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 31: F6 180 Ringing Proxy 1 -> NGW 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 31: F10 CANCEL NGW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+CANCEL sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 CANCEL
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 31: F11 200 OK Proxy 1 -> NGW 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 CANCEL
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 31: F12 CANCEL Proxy 1 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+CANCEL sip:UserB@there.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 CANCEL
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 31: F13 200 OK User B -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 CANCEL
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 31: F14 487 Request Cancelled User B -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[
+
+SIP/2.0 487 Request Cancelled
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+Record-Route: <sip:+1-972-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 31: F15 ACK Proxy 1 -> User B
+]]>
+</description>
+<message>
+<![CDATA[
+
+ACK sip:+1-972-555-2222@ngw1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 31: F16 487 Request Cancelled Proxy 1 -> NGW 1
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 487 Request Cancelled
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+Record-Route: <sip:+1-972-555-2222@ss1.wcom.com;maddr=ss1.wcom.com>
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=14159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 31: F17 ACK NGW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[ACK sip:+1-972-555-2222@ngw1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-972-555-2222@ss1.wcom.com;user=phone>;tag=14159
+Call-ID: 12345602@ngw1.wcom.com
+CSeq: 1 ACK
+Content-Length: 0
+
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 32: F2 INVITE NGW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:+1-918-555-3333@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-918-555-3333@ss1.wcom.com;user=phone>
+Call-ID: 12345600@ngw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GW1 2890844526 2890844526 IN IP4 gw1.wcom.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 32: F3 INVITE Proxy 1 -> GW 2
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:444-3333@gw2.wcom.com;phone-context=p1234 SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+Record-Route: <sip:+1-918-555-3333@ss1.wcom.com;maddr=ss1.wcom.com>
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-918-555-3333@ss1.wcom.com;user=phone>
+Call-ID: 12345600@ngw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=GW1 2890844526 2890844526 IN IP4 gw1.wcom.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 32: F6 183 Session Progress GW 2 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 183 Session Progress
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-918-555-3333@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345600@ngw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 32: F7 183 Session Progress Proxy 1 -> GW 1
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 183 Session Progress
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-918-555-3333@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345600@ngw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 32: F10 200 OK GW 2 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+Record-Route: <sip:+1-918-555-3333@ss1.wcom.com;maddr=ss1.wcom.com>
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-918-555-3333@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345600@ngw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:444-3333@gw2.wcom.com;phone-context=p1234>
+Content-Type: application/sdp
+
+v=0
+o=PBX_B 987654321 987654321 IN IP4 gw3.wcom.com
+s=Session SDP
+c=IN IP4 100.101.102.104
+t=0 0
+m=audio 14918 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 32: F11 200 OK Proxy 1 -> NGW 1
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+Record-Route: <sip:+1-918-555-3333@ss1.wcom.com;maddr=ss1.wcom.com>
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-918-555-3333@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345600@ngw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:444-3333@gw2.wcom.com;phone-context=p1234>
+Content-Type: application/sdp
+
+v=0
+o=PBX_B 987654321 987654321 IN IP4 gw3.wcom.com
+s=Session SDP
+c=IN IP4 100.101.102.104
+t=0 0
+m=audio 14918 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 32: F13 ACK NGW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[ACK sip:444-3333@ss1.wcom.com;phone-context=p1234 SIP/2.0
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+Route: <sip:444-3333@gw2.wcom.com;phone-context=p1234>
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-918-555-3333@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345600@gw1.wcom.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 32: F14 ACK Proxy 1 -> GW 2
+]]>
+</description>
+<message>
+<![CDATA[ACK sip:444-3333@gw2.wcom.com;phone-context=p1234 SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP ngw1.wcom.com:5060
+From: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+To: <sip:+1-918-555-3333@ss1.wcom.com;user=phone>;tag=314159
+Call-ID: 12345600@ngw1.wcom.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 32: F16 BYE GW 2 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[BYE sip:+1-314-555-1111@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP gw2.wcom.com:5060
+Route: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+From: <sip:+1-918-555-3333@ss1.wcom.com;user=phone>;tag=314159
+To: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+Call-ID: 12345600@ngw1.wcom.com
+CSeq: 4 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 32: F18 BYE Proxy 1 -> NGW 1
+]]>
+</description>
+<message>
+<![CDATA[BYE sip:+1-314-555-1111@gw1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP gw2.wcom.com:5060
+From: <sip:+1-918-555-3333@ss1.wcom.com;user=phone>;tag=314159
+To: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+Call-ID: 12345600@ngw1.wcom.com
+CSeq: 4 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 32: F19 200 OK NGW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP gw2.wcom.com:5060
+From: <sip:+1-918-555-3333@ss1.wcom.com;user=phone>;tag=314159
+To: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+Call-ID: 12345600@ngw1.wcom.com
+CSeq: 4 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 32: F20 200 OK Proxy 1 -> GW 2
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP gw2.wcom.com:5060
+From: <sip:+1-918-555-3333@ss1.wcom.com;user=phone>;tag=314159
+To: <sip:+1-314-555-1111@ngw1.wcom.com;user=phone>
+Call-ID: 12345600@ngw1.wcom.com
+CSeq: 4 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 33: F2 INVITE GW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:444-3333@ss1.wcom.com;phone-context=p1234 SIP/2.0
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+From: PBX_A <sip:IdentifierString@gw1.wcom.com>
+To: <sip:444-3333@ss1.wcom.com;phone-context=p1234>
+Call-ID: 12345600@gw1.wcom.com
+CSeq: 1 INVITE
+Contact: PBX_A <sip:IdentifierString@gw1.wcom.com>
+Content-Type: application/sdp
+
+v=0
+o=PBX_A 2890844526 2890844526 IN IP4 gw1.wcom.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 33: F3 INVITE Proxy 1 -> GW 2
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:444-3333@gw2.wcom.com;phone-context=p1234 SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+Record-Route: <sip:444-3333@ss1.wcom.com;maddr=ss1.wcom.com
+ ;phone-context=p1234>
+From: PBX_A <sip:IdentifierString@gw1.wcom.com>
+To: <sip:444-3333@ss1.wcom.com;phone-context=p1234>
+Call-ID: 12345600@gw1.wcom.com
+CSeq: 1 INVITE
+Contact: PBX_A <sip:IdentifierString@gw1.wcom.com>
+Content-Type: application/sdp
+
+v=0
+o=PBX_A 2890844526 2890844526 IN IP4 gw1.wcom.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 33: F4 503 Service Unavailable GW 2 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 503 Service Unavailable
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+From: PBX_A <sip:IdentifierString@gw1.wcom.com>
+To: <sip:444-3333@ss1.wcom.com;phone-context=p1234>;tag=314159
+Call-ID: 12345600@gw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 33: F5 ACK Proxy 1 -> GW 2
+]]>
+</description>
+<message>
+<![CDATA[ACK sip:444-3333@gw2.wcom.com;phone-context=p1234 SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.1
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+From: PBX_A <sip:IdentifierString@gw1.wcom.com>
+To: <sip:444-3333@ss1.wcom.com;phone-context=p1234>;tag=314159
+Call-ID: 12345600@gw1.wcom.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 33: F6 INVITE Proxy 1 -> GW 3
+]]>
+</description>
+<message>
+<![CDATA[INVITE sip:+1-918-555-3333@gw3.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.2
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+Record-Route: <sip:444-3333@ss1.wcom.com;maddr=ss1.wcom.com
+ ;phone-context=p1234>
+From: PBX_A <sip:IdentifierString@gw1.wcom.com>
+To: <sip:444-3333@ss1.wcom.com;phone-context=p1234>
+Call-ID: 12345600@gw1.wcom.com
+CSeq: 1 INVITE
+Contact: PBX_A <sip:IdentifierString@gw1.wcom.com>
+Content-Type: application/sdp
+
+v=0
+o=PBX_A 2890844526 2890844526 IN IP4 gw1.wcom.com
+s=Session SDP
+c=IN IP4 100.101.102.103
+t=0 0
+m=audio 49172 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 33: F8 (100 Trying) GW 3 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 100 Trying
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+From: PBX_A <sip:IdentifierString@gw1.wcom.com>
+To: <sip:444-3333@ss1.wcom.com;phone-context=p1234>
+Call-ID: 12345600@gw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 33: F11 183 Session Progress GW 3 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 183 Session Progress
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.2
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+From: PBX_A <sip:IdentifierString@gw1.wcom.com>
+To: <sip:444-3333@ss1.wcom.com;phone-context=p1234>;tag=123456789
+Call-ID: 12345600@gw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 33: F12 183 Session Progress Proxy 1 -> GW 1
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 183 Session Progress
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+From: PBX_A <sip:IdentifierString@gw1.wcom.com>
+To: <sip:444-3333@ss1.wcom.com;phone-context=p1234>;tag=123456789
+Call-ID: 12345600@gw1.wcom.com
+CSeq: 1 INVITE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 33: F14 200 OK GW 3 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.2
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+Record-Route: <sip:444-3333@ss1.wcom.com;maddr=ss1.wcom.com
+ ;phone-context=p1234>
+From: PBX_A <sip:IdentifierString@gw1.wcom.com>
+To: <sip:444-3333@ss1.wcom.com;phone-context=p1234>;tag=123456789
+Call-ID: 12345600@gw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:+1-918-555-3333@gw3.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=PBX_B 987654321 987654321 IN IP4 gw3.wcom.com
+s=Session SDP
+c=IN IP4 100.101.102.104
+t=0 0
+m=audio 14918 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 33: F15 200 OK Proxy 1 -> GW 1
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+Record-Route: <sip:444-3333@ss1.wcom.com;maddr=ss1.wcom.com
+ ;phone-context=p1234>
+From: PBX_A <sip:IdentifierString@gw1.wcom.com>
+To: <sip:444-3333@ss1.wcom.com;phone-context=p1234>;tag=123456789
+Call-ID: 12345600@gw1.wcom.com
+CSeq: 1 INVITE
+Contact: <sip:+1-918-555-3333@gw3.wcom.com;user=phone>
+Content-Type: application/sdp
+
+v=0
+o=PBX_B 987654321 987654321 IN IP4 gw3.wcom.com
+s=Session SDP
+c=IN IP4 100.101.102.104
+t=0 0
+m=audio 14918 RTP/AVP 0
+a=rtpmap:0 PCMU/8000
+
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 33: F16 ACK GW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[ACK sip:+1-918-555-3333@ss1.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+Route: <sip:+1-918-555-3333@gw3.wcom.com;user=phone>
+From: PBX_A <sip:IdentifierString@gw1.wcom.com>
+To: <sip:444-3333@ss1.wcom.com;phone-context=p1234>;tag=123456789
+Call-ID: 12345600@gw1.wcom.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 33: F17 ACK Proxy 1 -> GW 3
+]]>
+</description>
+<message>
+<![CDATA[ACK sip:+1-918-555-3333@gw3.wcom.com;user=phone SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.2
+Via: SIP/2.0/UDP gw1.wcom.com:5060
+From: PBX_A <sip:IdentifierString@gw1.wcom.com>
+To: <sip:444-3333@ss1.wcom.com;phone-context=p1234>;tag=123456789
+Call-ID: 12345600@gw1.wcom.com
+CSeq: 1 ACK
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 33: F20 BYE GW 3 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[BYE sip:IdentifierString@ss1.wcom.com SIP/2.0
+Via: SIP/2.0/UDP gw3.wcom.com:5060
+Route: <sip:IdentifierString@gw1.wcom.com>
+From: <sip:444-3333@ss1.wcom.com;phone-context=p1234>;tag=123456789
+To: PBX_A <sip:IdentifierString@gw1.wcom.com>
+Call-ID: 12345600@gw1.wcom.com
+CSeq: 1 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 33: F21 BYE Proxy 1 -> GW 1
+]]>
+</description>
+<message>
+<![CDATA[BYE sip:IdentifierString@gw1.wcom.com SIP/2.0
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.2
+Via: SIP/2.0/UDP gw3.wcom.com:5060
+From: <sip:444-3333@ss1.wcom.com;phone-context=p1234>;tag=123456789
+To: PBX_A <sip:IdentifierString@gw1.wcom.com>
+Call-ID: 12345600@gw1.wcom.com
+CSeq: 1 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 33: F23 200 OK GW 1 -> Proxy 1
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP ss1.wcom.com:5060;branch=2d4790.2
+Via: SIP/2.0/UDP gw3.wcom.com:5060
+From: <sip:444-3333@ss1.wcom.com;phone-context=p1234>;tag=123456789
+To: PBX_A <sip:IdentifierString@gw1.wcom.com>
+Call-ID: 12345600@gw1.wcom.com
+CSeq: 1 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+<testcase>
+<description>
+<![CDATA[
+Call-flow 33: F24 200 OK Proxy 1 -> GW 3
+]]>
+</description>
+<message>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP gw3.wcom.com:5060
+From: <sip:444-3333@ss1.wcom.com;phone-context=p1234>;tag=123456789
+To: PBX_A <sip:IdentifierString@gw1.wcom.com>
+Call-ID: 12345600@gw1.wcom.com
+CSeq: 1 BYE
+Content-Length: 0
+]]>
+</message>
+</testcase>
+</torture>

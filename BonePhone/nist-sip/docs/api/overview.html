@@ -1,0 +1,231 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="M. Ranganathan">
+   <meta name="GENERATOR" content="Mozilla/4.75 [en] (X11; U; Linux 2.2.14-5.0 i686) [Netscape]">
+</head>
+<body text="#000000" bgcolor="#FFFFFF" link="#0000FF" vlink="#FF0000" alink="#000088">
+
+<center>
+<h1>
+<i>NIST SIP/SDP&nbsp; Parser and Stack V 1.0</i></h1></center>
+
+<blockquote>
+<h2>
+<u>What's in this Distribution?</u></h2>
+This distribution contains :
+
+<ul>
+<li> A public domain extensible, modular&nbsp; JAVA based message
+parser for the <a href="http://www.cs.columbia.edu/~hgs/sip/papers.html">Session
+Initiation Protocol (SIP/SDP).&nbsp; </a>SIP is an IETF&nbsp; text based
+signaling protocol for IP Telephony and&nbsp; internet conferencing.&nbsp;
+The distinguishing features of this parser are (1) It uses&nbsp; a parser
+generator&nbsp; to build the parser rather than ad-hoc techniques.&nbsp;
+This makes the syntax clear, extensible and easy to debug.&nbsp; (2) It&nbsp;
+incorporates flexible exception handling for bad headers, giving an application
+fine grained control over how to deal with mal-formed headers and (3) It
+incorporates an extension mechanism to deal with new header types.&nbsp;&nbsp;
+The core parser&nbsp; handles headers that are part of <a href="http://www.ietf.org/rfc/rfc2543.txt">SIP
+RFC 2543</a>&nbsp; and the 2543-bis02 draft revision standard and there
+are header classes defined for these.&nbsp; The grammars that are parsed
+by this package are represented in BNF like form by generating HTML from
+the parsers. To get an approximate idea what they look like,&nbsp; you
+can click on
+<a href="sip_messageParser.html">SIP grammar</a> and <a href="sdp_announceParser.html">SDP
+grammar</a>&nbsp; .
+<br>&nbsp;
+
+<li> A simple <a href = "gov/nist/sip/stack/package-summary.html"> stack </a> 
+with <a href = "gov/nist/sip/stack/security/package-summary.html">security support</a>.
+
+<li> An implementation of the <a href = "gov/nist/jain/protocol/ip/sip">
+JAIN-SIP 1.0 interfaces </a> on the basis of the NIST-SIP parser and stack.
+
+<li> Examples that illustrate the use of this library including 
+a simple <a href="../../examples/proxy/README.html"> proxy server </a> 
+with firewall support.
+
+</ul>
+
+<h2>
+<u>Installation</u></h2>
+You can untar the distribution anywhere in your file system.
+<p>1. Install the latest version of java JDK  
+   <a href="http://www.javasoft.com/j2se/1.3">JRE 1.2
+or higher </a>.
+<br>2. Include the following two files in your&nbsp; CLASSPATH :&nbsp;
+nist-sip.jar and&nbsp; lib/antlr/antlrall.jar&nbsp;&nbsp; 
+(file names are relative to the root of the distribution tree).
+<br>&nbsp;
+<h2>
+<u>How do I use it?</u></h2>
+The parser is intended to be embedded in a SIP protocol stack or test tool
+and for building sip extensions.&nbsp;&nbsp; The parser takes as input
+either a buffer or an input stream and produces as output a parsed message
+structure. The stream based parser is intended to be used when TCP is used
+as the transport and the buffer based parser is intended to be used when
+UDP is used as the transport mechanism (SIP can be used over both TCP and
+UDP).
+<p>Here is an&nbsp; <a href="../../examples/msgparser/PipelinedParserTest.java">example</a>&nbsp;
+that uses the stream based parser&nbsp; (<a href="gov/nist/sip/msgparser/PipelinedMsgParser.html">PipelinedMsgParser</a>)&nbsp;
+that reads from stdin, parses input and outputs the result to stdout (typically,
+that input would come from a TCP connection). A class that implements the<i><a href="gov/nist/sip/msgparser/SIPMessageListener.html">SIPMessageListener</a></i>
+interface is specified when the parser is created. This interface specifies
+two methods <i><font color="#000099">processMessage</font> </i>and <i><font color="#000099">handeException</font></i>
+that are invoked by the parser on successful message processing and when
+a parse exception is encountered respectively. The exception handler gets
+passed a <a href="gov/nist/sip/msgparser/SIPParseException.html">SIPParseException&nbsp;</a>
+object that indicates the type of error that occured. The handleException
+method can do whatever is appropriate for the application such as&nbsp;
+rejecting the header silently, propagating the exception or&nbsp; repairing
+the error by&nbsp; "hand-parsing" the header.&nbsp; When a message has
+been successfully parsed,&nbsp; the <i><font color="#000099">processMessage</font></i>
+method is called from the parser and it is passed a <a href="gov/nist/sip/msgparser/SIPMessage.html">SIPMessage</a>
+object corresponding to the input that has been read from the input stream.
+<p>Here is an <a href="../../examples/msgparser/StringParserTest.java">example</a>
+that uses the&nbsp;&nbsp; buffer&nbsp; based parser (<a href="gov/nist/sip/msgparser/StringMsgParser.html">StringMsgParser
+</a>).&nbsp;
+This example reads a file consisting of multiple messages&nbsp; into&nbsp;
+a buffer (typically, that input would be from a UDP packet) and parses
+the input by handing that input to the parser.&nbsp;&nbsp; The parser can
+take multiple SIP Messages in a single buffer and&nbsp; returns the parsed
+result as an array of&nbsp; <a href="gov/nist/sip/msgparser/SIPMessage.html">SIPMessage</a>&nbsp;
+objects.&nbsp; Errors are handled&nbsp; via a class that implements the
+<i><a href="gov/nist/sip/msgparser/SIPParseExceptionListener.html">SIPParseExceptionListener</a></i>.
+that can be registered at the time of creation of the parser with the <i>set<font color="#000099">ExceptionListener</font></i>&nbsp;
+method of the <a href="gov/nist/sip/msgparser/StringMsgParser.html">StringMsgParser</a>.
+This class must implement the <i><font color="#000099">handleException</font></i>
+method that functions as described above. As&nbsp; above, the&nbsp; exception
+listener can be set up to customize error handling by introsepcting on
+the Exception class that it is passed when an exception occurs.
+<p>In both cases above, the input was&nbsp; based on parsing entire SIP
+Messages&nbsp; (request or response) and the&nbsp; output of the parse
+is a 
+<a href="gov/nist/sip/msgparser/SIPMessage.html">SIPMessage</a>
+object.  This structure may be accessed using the provided
+assessor methods to retrieve individual headers or lists of headers. 
+The header classes, SIPMessage class and SDPAnnounce class also provide API 
+for editing and encodinginto canonical form. 
+(This facility is useful for proxies.). Headers may be retrieved
+in an array or list corresponding to the order in which they were added
+to the SIPMessage using 
+the <i><font color="#000099">getHeaders</font>&nbsp;</i>
+method exported by the 
+<a href="gov/nist/sip/msgparser/SIPMessage.html">SIPMessage</a>
+class. The parser may&nbsp; also be used to parse portions of&nbsp; SIP
+Headers, and&nbsp; URLs.&nbsp; Here is an
+<a href="../../examples/msgparser/SIPURLParserTest.java">example</a>
+that illustrates parsing of individual URL's and here is <a href="../../examples/msgparser/SIPHeaderParserTest.java">another
+</a>that
+illustrates parsing of individual headers.&nbsp; More callouts to the&nbsp;
+parser to parse individual pieces of input may be added as needed by adding
+methods to or extending <a href="gov/nist/sip/msgparser/StringMsgParser.html">StringMsgParser.</a>
+<p>The parser incorporates an extension mechanism to support&nbsp; header
+types that are not part of the RFC 2543. Here is an <a href="../../examples/msgparser/NewHeaderTest.java">example</a>&nbsp;
+that&nbsp; handles extension headers that are not part of the&nbsp; SIP
+RFC. Extensions are stored in a hash table in the SIPMessage and can be
+retrieved by type by using the <i><font color="#000099">getExtensionHeader</font></i>
+method of the <a href="gov/nist/sip/msgparser/SIPMessage.html">SIPMessage</a>
+class&nbsp; by specifying the class of the extension header.
+
+<p>The parser may also be used to parse SDP headers. This is not particularly
+relevant for building servers but may be of use in building UAC clients.&nbsp;
+You can turn on parsing SDP headers by setting the parseMessageContent
+flag in the SIPMessage structure or by invoking the sdp parser separately.
+If this flag is not enabled, the message content&nbsp; is just returned
+to the caller as un interpreted text.&nbsp; Here is an <a href="../../gov/nist/sip/examples/msgparser/SDPParserTest.java">example</a>
+of how to do it by separate invocation of the parser.
+
+<p>
+A minimal <A href="../../examples/proxy/README.html"> proxy </A> with firewall 
+support illustrates the use of the nist-sip stack and message parser to 
+construct a proxy. 
+(This proxy is missing some important functionality but it can handle 
+the simple case of point-to-point calls through a firewall and its purpose 
+is to be illustrative rather than full functional.)
+
+<br>&nbsp;
+<h2>
+<u>Build&nbsp; Instructions</u></h2>
+The distribution comes with a jar file containing the parser. However,
+if you wish to modify it,&nbsp; you will need the following software installed
+to be able to build the parser:
+<p>1. <a href="http://www.javasoft.com/j2se/1.3">Sun&nbsp; Java Development
+Kit JDK 1.3</a>
+<br>2. Optinally&nbsp; install the full&nbsp; <a href="http://www.antlr.org">antlr
+parser distribution</a>.
+<br>3. Install Gnu make ( ships standard with linux. for windows, install
+the <a href="http://www.sourceware.cygnus.com/cygwin">cygnus toolkit )</a>
+<br>4. Edit the configuration file 
+<a href="../../build-config"> build-config </a> at the root of the 
+distribution tree &nbsp; and set the appropriate paths&nbsp;
+to the installed JDK (mine lives at /usr/local/jdk1.3.1 under linux).
+<p>To build everything, from the root of the distribution, make all (this
+will generate nist-sip.jar).&nbsp; To build&nbsp; just the the parser,
+go over to gov/nist/sip/msgparser and&nbsp; gmake all . The detailed operation
+of the parser and lexical analyzer can be turned on enabling the -trace
+flag to antlr (uncomment the ANTLR_FLAGS line in the <a href="../../gov/nist/sip/msgparser/makefile">makefile
+)</a>
+<br>&nbsp;
+<h2>
+<u>Release Status</u></h2>
+This is (and will remain) beta code.
+&nbsp; More extensive testing is needed.
+Do not use this code it to signal your neighborhood nuclear reactor!
+&nbsp;
+The XML file 
+&nbsp; <a href="../../examples/torture/torture.xml">examples/torture/torture.xml</a>&nbsp;
+has&nbsp; xml based&nbsp; torture tests.
+Currently, these tests include the messages from the call flows document 
+<a href="http://www.ietf.org/internet-drafts/draft-ietf-sip-call-flows-04.txt" >
+http://www.ietf.org/internet-drafts/draft-ietf-sip-call-flows-04.txt
+</a>,
+<a href=http://www.cs.columbia.edu/%7Ehgs/sip/bakeoff/testmsg.html   >
+Henning Schulzerinne's SIP Bakeoff test messages 
+</a> and messages that came out of various user agents. 
+To build  and run these tests you need to have the java 
+<a href="http://xml.apache.org/xerces/index.html">xml&nbsp; parser</a>&nbsp; 
+(a version of which has been included in &nbsp; <a href="../../lib/xerces/">lib/xerces/</a>&nbsp;).  
+The tests are
+also illustrative of the behavior of the parser under various conditions
+and the syntax of the xml file is self-explanatory. We request you, the
+people, to add more test cases and report bugs as they arise. 
+<h2>
+<u>Implementation Notes</u></h2>
+In general, parsing SIP headers using parser tools is tricky because keywords
+are context sensitive.&nbsp; Here are a few&nbsp; brief <a href="design-notes.html">implementation
+notes&nbsp;&nbsp;</a> that explain how the parser was put together. It
+may be of use in extending it.
+<h2>
+<u>Acknowledgments</u></h2>
+This parser was constructed using the <a href="http://www.antlr.org">antlr</a>
+parser generator.&nbsp;&nbsp; The <a href="http://www.egroups.com/group/antlr-interest">antlr
+interest</a> and&nbsp;&nbsp; <a href="http://www.bell-labs.com/mailing-lists/sip/">SIP
+Mailing list</a>&nbsp;&nbsp; members helped greatly with&nbsp; clarifications
+and guidance in resolving several issues. This project was funded in part&nbsp;
+by the NIST <a href="http://www.atp.nist.gov/">Advanced Technology Program</a>.&nbsp;&nbsp;
+The free (for linux) <a href="http://www.netcomputing.de">anyj </a>java
+development&nbsp; environment and the Forte 4J community edition were used 
+in the development of this software.
+<h2>
+<u>Copyrights (or lack thereof) and Other Disclaimers</u></h2>
+<font color="#000099">This software was developed at the Information Technology
+Laboratory at the National Institute of Standards and Technology, Gaithersburg,
+Maryland. Pursuant to title 17 Section 105 of the United States Code this
+software is not subject to copyright protection and is in the public domain.
+That means you can incorporate it into any product you wish or use it as-is
+free of any royalty payments or license agreements. If you should do so,
+we request that you acknowledge NIST.</font>
+<p><font color="#000099">NIST makes no guarantees about the correctness,
+stability or applicability of this work nor is there any guarantee of continuing
+support. This work is not an endorsement of any product or protocol.</font>
+<p>The parser uses the ANTLR parser generator which is bundled with the
+distribution (antlrall.jar)&nbsp; is also in the public domain.&nbsp; (See&nbsp;
+the <a href="http://www.antlr.org/rights.html">antlr&nbsp; software&nbsp;
+rights page )</a>
+<br>&nbsp;</blockquote>
+
+</body>
+</html>

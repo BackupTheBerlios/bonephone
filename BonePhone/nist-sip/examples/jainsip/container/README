@@ -1,0 +1,30 @@
+This is a simple container for JAIN services. The container engine is
+configured using the configfile in this directory. Services are built by
+extending the JAINService class. You can register (potentially several)
+services for tcp and udp. These services are specified in the services
+file that is given to the engine on startup. Each service is a JAIN
+listener. The engine loads the service on startup. 
+
+1. build the default target:
+	make
+
+2. Open up two windows.
+
+3. From the first window:
+ 	make tests
+
+4. From the second window
+
+	cd ../shootist/
+	make shootme
+
+This sends a number of messages to the Service.
+
+If you dont like the ports I have assigned, please edit configfile.
+
+Make sure the defaultRoute in shootist matches accordingly.
+
+The passwords file is for authentication (The configfile specifies
+Digest authentication. Currently, the Digest authentication scheme just
+stores plain text passwords. This will be changed in future. )
+

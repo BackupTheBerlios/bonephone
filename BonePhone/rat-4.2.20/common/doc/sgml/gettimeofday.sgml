@@ -1,0 +1,60 @@
+<refentry id="uclmmbase-gettimeofday" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>gettimeofday</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gettimeofday</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+int         <link linkend="gettimeofday">gettimeofday</link>                    (struct <link linkend="timeval">timeval</link> *tp,
+                                             void*);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="gettimeofday">gettimeofday ()</title>
+<programlisting>int         gettimeofday                    (struct <link linkend="timeval">timeval</link> *tp,
+                                             void*);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>tp</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>Param2</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

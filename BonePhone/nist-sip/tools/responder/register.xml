@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE eventscript SYSTEM "eventscript.dtd">
+
+<!-- This defines the event-driven behavior of a proxy -->
+
+<CALLFLOW
+	description =  "Successful registration"
+>
+
+	
+<MESSAGE_TEMPLATES>
+<SIP_REQUEST
+	templateId = "REGISTER"
+>
+<REQUEST_LINE
+	method = "REGISTER"
+/>
+</SIP_REQUEST>
+
+</MESSAGE_TEMPLATES>
+
+<!-- Event Definitions -->
+
+<EVENTS>
+
+<EVENT
+	eventId = "REGISTERReceived"
+>
+<RECEIVE
+	templateId = "REGISTER"
+/>
+</EVENT>
+
+</EVENTS>
+
+<!-- Define the state machine -->
+<STATE_MACHINE>
+<EXPECT
+	eventId = "REGISTERReceived"
+>
+<GENERATE
+	messageId = "REGISTER_OK"
+>
+<SIP_RESPONSE>
+<STATUS_LINE
+	statusCode = "200"
+/>
+</SIP_REQUEST>
+</GENERATE>
+</EXPECT>
+</STATE_MACHINE>
+</CALLFLOW>
+
+

@@ -1,0 +1,73 @@
+List of things I'd like to have :
+
+	* update API.txt
+	  currently written in german, needs to be translated.
+	  Wrong in many points.
+
+	* improved method to obtain local addresses.
+	  currently the local address is determined by the getLocalHost()
+	  member function from InetAddress everytime it is requested. 
+	  This needs to be cached and to be configurable for multihomed hosts.
+
+	* Find a way to configure the NIST-SIP stack at runtime.
+	  Currently the file "configfile" is needed to configure the stack.
+	  Because the host address is stated there, this files needs to be
+	  edited whenever starting on a different host. 
+
+	* better makefiles
+	  currently the top-level makefile makes the application and the 
+	  sip user agent. It should also cover the mbus package and the 
+	  nistsip package.
+	  Ther nist-sip Makefile(s) should be improved too because they do 
+	  not use dependencies but simply compile everything regardless of
+	  need.
+
+	* improved MBUS package
+	  when moving to jdk-1.4 the following problem occured:
+	  mbus uses the cryptix package to do message en/decryption and
+	  authentication. The cryptix package does not work with jdk-1.4.
+	  We tried to use the jdk-1.4 built in JCE to replace it but
+	  failed due to MD5 incompatibility with the UCL common lib.
+	  So we ripped all auth and crypto stuff from the mbus package 
+	  and from the rat media engine. 
+	  But this is a dirty hack and we want to have it back, but working. 
+
+	* RAT multiple session support.
+	  RAT does not seem to be able to handle more than one RTP session
+	  at once. It is surely ok to have only one session associated with
+	  the audio device, but it would be nice to be able to de-activate
+	  a session in order to activate another one. Currently when changing
+	  sessions, RAT has to be stopped and restarted. This sucks.
+
+	* RAT audio device lockup detection.
+	  RAT lockup when something else is using the audio device. This can
+	  an mp3 player but also the artsd or esd daemons. 
+
+	* better interface application <-> SIP-UA
+	  Ther current interface between those two components is very
+	  limiting. It needs some redesign.
+
+	* more flexible SIP-UA
+	  the current SIP-UA (and its interface) is fine for doing simple
+	  phone calls, but need to be extended for doing conferencing and
+	  multimedia (adding/removal of media streams)
+
+	* GUI fixes
+	  When the GUI pops up, the size is too small when switching
+	  between its modes. Buttons are hiding, need to resize ...
+
+	* rip down rat.
+	  All we use from rat is the media engine. No tcl/tk related parts.
+	  So removing the tcl and tk stuff from the source tree is welcome.
+
+	* simple Stand-alone audio engine. (ethereal)
+	  RAT is fine for a stand-alone audio engine but lacks some points (s.a.)
+	  To develop an own one would have these advantages:
+	  	- less codecs, causing smaller code (only PCMU maybe 2-4 more)
+	  	- thinner interface, hopefully not MBUS
+	  	- better session behaviour.
+	  	- better audio device handling.
+	  	- modular (thus extendible) architecture.
+	  	- better documented.
+	 
+	* probably more to come ...

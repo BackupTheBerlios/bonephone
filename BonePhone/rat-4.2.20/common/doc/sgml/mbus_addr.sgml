@@ -1,0 +1,106 @@
+<refentry id="uclmmbase-mbus-addr" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>mbus_addr</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>mbus_addr</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+int         <link linkend="mbus-addr-match">mbus_addr_match</link>                 (const char *a,
+                                             const char *b);
+int         <link linkend="mbus-addr-identical">mbus_addr_identical</link>             (const char *a,
+                                             const char *b);
+int         <link linkend="strfind">strfind</link>                         (const char *haystack,
+                                             const char *needle_start,
+                                             const char *needle_end);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="mbus-addr-match">mbus_addr_match ()</title>
+<programlisting>int         mbus_addr_match                 (const char *a,
+                                             const char *b);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>a</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>b</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="mbus-addr-identical">mbus_addr_identical ()</title>
+<programlisting>int         mbus_addr_identical             (const char *a,
+                                             const char *b);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>a</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>b</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="strfind">strfind ()</title>
+<programlisting>int         strfind                         (const char *haystack,
+                                             const char *needle_start,
+                                             const char *needle_end);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>haystack</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>needle_start</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>needle_end</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,64 @@
+<refentry id="uclmmbase-inet-pton" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>inet_pton</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>inet_pton</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+int         <link linkend="inet-pton">inet_pton</link>                       (int af,
+                                             const char *src,
+                                             void *dst);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="inet-pton">inet_pton ()</title>
+<programlisting>int         inet_pton                       (int af,
+                                             const char *src,
+                                             void *dst);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>af</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>src</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>dst</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,3 @@
+#/bin/sh
+# Generated automatically from RAT Makefile.  Edit there.
+exec rat-4.2.20 $*

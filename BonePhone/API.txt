@@ -1,0 +1,80 @@
+von SIP angebotenes Interface:
+Alle Funktionen sind nicht blockierend:
+
+void SIP_Init(CallListener,MyID) // Call Listener, der zu benachritigen ist,
+				 // vom SIP-Stack Nachrichten kommen.
+CC   CCFactory()    // erzeugt einen leeren CallContext.
+void Call(CC)       // wird benutzt, um einen Anruf zu taetigen.
+		    // der CC muss die lokalen SDP-Daten enthalten.
+void HangUp(CC)     // bestehenden Call abbrechen bzw. im Aufbau befindlichen
+		    // Call abbrechen (wrong codec, etc.)
+void CallOK(CC)     // Nach eingehendem Call wird damit ein "OK" signalisiert, 
+                    // dass man die Verbindung annehmen will.
+void Mute(CC)       // Gegenueber stumm schalten (remote mute) 
+void Unmute(CC)     // Gegenueber wieder einblenden.
+
+
+
+
+von der Applikation angebotenes Interface (CallListener):
+Alle Funktionen sind nicht blockierend
+
+void Invite(CC)   // Signalisiert einen eingehenden Anruf (Es soll klingeln)
+void Response(CC) // Antowrt auf einen getaetigten Call (remote RCP vollstaendig)
+void Cancel(CC)   // Verbindungsaufbau abbrechen.
+void HangUp(CC)   // bestehenden Call abbauen.
+void Ack(CC)      // Verbindungsaufbaubestaetigung bei eingehenden Calls
+void Mute(CC)     // Lokale Seite Muten
+void Unmute(CC)   // Lokale Seite unmuten
+void Failure(CC)  // Es ist ein Fehler bei der letzten Aktion aufgetreten.
+void OK(CC)       // Letzte Aktion war erfolgreich.
+
+
+
+Der CallContext:
+Stefan: die Infos zum CallContext hast du wahrscheinlich vollstaendiger.
+
+
+Szenarien: 
+----------
+
+was tut SIP			was tut die Applikation
+
+		Rausgehender Call
+
+
+				c=CCFactory();
+				Call(c);
+Response(c);			  
+				// Jetzt sind die RTP-Infos vollstaendig,
+				// Es kann gesprochen werden.
+
+
+		Eingehender Call
+
+CC erzeugen
+Invite(c);
+				evtl. HangUp(c) wenn codec unknown, oder user 
+ 				lehnt explizit ab.
+				CallOK(c);   // User hat abgenommen
+Ack(c);
+				// erst jetzt sind die RTP-Daten vollstaendig
+				evtl HangUp(c); wenn mit dem Ack der codec unkown
+				ist.
+
+
+		Mute (von lokal)
+
+				Mute(c);
+OK(c); oder 
+failure(c);
+	
+		Mute (von remote)
+Mute(c)
+				// nix			
+
+
+		Call abbauen (lokales Auflegen)
+
+				HangUp(c);
+//nix

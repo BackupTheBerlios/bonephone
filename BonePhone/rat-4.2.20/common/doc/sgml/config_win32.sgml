@@ -1,0 +1,688 @@
+<refentry id="uclmmbase-config-win32" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>config_win32</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>config_win32</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+typedef     <link linkend="ttl-t">ttl_t</link>;
+typedef     <link linkend="fd-t">fd_t</link>;
+typedef     <link linkend="uint8-t">uint8_t</link>;
+typedef     <link linkend="uint16-t">uint16_t</link>;
+typedef     <link linkend="uint32-t">uint32_t</link>;
+typedef     <link linkend="int8-t">int8_t</link>;
+typedef     <link linkend="int16-t">int16_t</link>;
+typedef     <link linkend="int32-t">int32_t</link>;
+typedef     <link linkend="int64-t">int64_t</link>;
+typedef     <link linkend="in-addr-t">in_addr_t</link>;
+#define     <link linkend="USERNAMELEN-CAPS">USERNAMELEN</link>
+#define     <link linkend="WORDS-SMALLENDIAN-CAPS">WORDS_SMALLENDIAN</link>
+#define     <link linkend="NEED-INET-ATON-CAPS">NEED_INET_ATON</link>
+#define     <link linkend="NEED-DRAND48-CAPS">NEED_DRAND48</link>
+#define     <link linkend="NEED-GETTIMEOFDAY-CAPS">NEED_GETTIMEOFDAY</link>
+#define     <link linkend="assert">assert</link>                          (x)
+#define     <link linkend="inline">inline</link>
+#define     <link linkend="AUDIO-MICROPHONE-CAPS">AUDIO_MICROPHONE</link>
+#define     <link linkend="AUDIO-LINE-IN-CAPS">AUDIO_LINE_IN</link>
+#define     <link linkend="AUDIO-CD-CAPS">AUDIO_CD</link>
+#define     <link linkend="AUDIO-SPEAKER-CAPS">AUDIO_SPEAKER</link>
+#define     <link linkend="AUDIO-HEADPHONE-CAPS">AUDIO_HEADPHONE</link>
+#define     <link linkend="AUDIO-LINE-OUT-CAPS">AUDIO_LINE_OUT</link>
+#define     <link linkend="srand48">srand48</link>
+#define     <link linkend="lrand48">lrand48</link>
+#define     <link linkend="snprintf">snprintf</link>
+#define     <link linkend="IN-CLASSD-CAPS">IN_CLASSD</link>                       (i)
+#define     <link linkend="IN-MULTICAST-CAPS">IN_MULTICAST</link>                    (i)
+typedef     <link linkend="caddr-t">caddr_t</link>;
+typedef     <link linkend="ssize-t">ssize_t</link>;
+#define     <link linkend="MAXHOSTNAMELEN-CAPS">MAXHOSTNAMELEN</link>
+typedef     <link linkend="pid-t">pid_t</link>;
+typedef     <link linkend="uid-t">uid_t</link>;
+typedef     <link linkend="gid-t">gid_t</link>;
+int         <link linkend="uname">uname</link>                           (struct <link linkend="utsname">utsname</link>*);
+int         <link linkend="getopt">getopt</link>                          (...,
+                                             char*const *,
+                                             const char*);
+int         <link linkend="strncasecmp">strncasecmp</link>                     (const char*,
+                                             const char*,
+                                             int len);
+int         <link linkend="srandom">srandom</link>                         (...);
+int         <link linkend="random">random</link>                          (void);
+int         <link linkend="gethostid">gethostid</link>                       (void);
+int         <link linkend="getuid">getuid</link>                          (void);
+int         <link linkend="getgid">getgid</link>                          (void);
+int         <link linkend="getpid">getpid</link>                          (void);
+int         <link linkend="nice">nice</link>                            (...);
+int         <link linkend="usleep">usleep</link>                          (unsigned int);
+<link linkend="time-t">time_t</link>      <link linkend="time">time</link>                            (<link linkend="time-t">time_t</link>*);
+const char* <link linkend="w32-make-version-info">w32_make_version_info</link>           (char *rat_verion);
+#define     <link linkend="strcasecmp">strcasecmp</link>
+int         <link linkend="RegGetValue">RegGetValue</link>                     (<link linkend="HKEY-CAPS">HKEY</link>*,
+                                             char*,
+                                             char*,
+                                             char*,
+                                             ...);
+void        <link linkend="ShowMessage">ShowMessage</link>                     (int level,
+                                             char *msg);
+#define     <link linkend="bcopy">bcopy</link>                           (from,to,len)
+#define     <link linkend="ECONNREFUSED-CAPS">ECONNREFUSED</link>
+#define     <link linkend="ENETUNREACH-CAPS">ENETUNREACH</link>
+#define     <link linkend="EHOSTUNREACH-CAPS">EHOSTUNREACH</link>
+#define     <link linkend="EWOULDBLOCK-CAPS">EWOULDBLOCK</link>
+#define     <link linkend="EAFNOSUPPORT-CAPS">EAFNOSUPPORT</link>
+#define     <link linkend="M-PI-CAPS">M_PI</link>
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="ttl-t">ttl_t</title>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="fd-t">fd_t</title>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="uint8-t">uint8_t</title>
+<programlisting>typedef u_char		uint8_t;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="uint16-t">uint16_t</title>
+<programlisting>typedef u_short		uint16_t;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="uint32-t">uint32_t</title>
+<programlisting>typedef u_long		uint32_t;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="int8-t">int8_t</title>
+<programlisting>typedef char		int8_t;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="int16-t">int16_t</title>
+<programlisting>typedef short		int16_t;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="int32-t">int32_t</title>
+<programlisting>typedef long		int32_t;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="int64-t">int64_t</title>
+<programlisting>typedef __int64		int64_t;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="in-addr-t">in_addr_t</title>
+<programlisting>typedef unsigned long	in_addr_t;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="USERNAMELEN-CAPS">USERNAMELEN</title>
+<programlisting>#define     USERNAMELEN</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="WORDS-SMALLENDIAN-CAPS">WORDS_SMALLENDIAN</title>
+<programlisting>#define     WORDS_SMALLENDIAN</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="NEED-INET-ATON-CAPS">NEED_INET_ATON</title>
+<programlisting>#define NEED_INET_ATON
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="NEED-DRAND48-CAPS">NEED_DRAND48</title>
+<programlisting>#define NEED_DRAND48
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="NEED-GETTIMEOFDAY-CAPS">NEED_GETTIMEOFDAY</title>
+<programlisting>#define NEED_GETTIMEOFDAY
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="assert">assert()</title>
+<programlisting>#define     assert(x)</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="inline">inline</title>
+<programlisting>#define inline
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="AUDIO-MICROPHONE-CAPS">AUDIO_MICROPHONE</title>
+<programlisting>#define AUDIO_MICROPHONE	1
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="AUDIO-LINE-IN-CAPS">AUDIO_LINE_IN</title>
+<programlisting>#define AUDIO_LINE_IN		2
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="AUDIO-CD-CAPS">AUDIO_CD</title>
+<programlisting>#define AUDIO_CD            4
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="AUDIO-SPEAKER-CAPS">AUDIO_SPEAKER</title>
+<programlisting>#define AUDIO_SPEAKER		0
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="AUDIO-HEADPHONE-CAPS">AUDIO_HEADPHONE</title>
+<programlisting>#define AUDIO_HEADPHONE		1
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="AUDIO-LINE-OUT-CAPS">AUDIO_LINE_OUT</title>
+<programlisting>#define AUDIO_LINE_OUT		4
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="srand48">srand48</title>
+<programlisting>#define srand48	srand
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="lrand48">lrand48</title>
+<programlisting>#define lrand48 rand() * rand
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="snprintf">snprintf</title>
+<programlisting>#define snprintf _snprintf
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="IN-CLASSD-CAPS">IN_CLASSD()</title>
+<programlisting>#define IN_CLASSD(i)	(((long)(i) &amp; 0xf0000000) == 0xe0000000)
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>i</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="IN-MULTICAST-CAPS">IN_MULTICAST()</title>
+<programlisting>#define IN_MULTICAST(i)	IN_CLASSD(i)
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>i</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="caddr-t">caddr_t</title>
+<programlisting>typedef char	*caddr_t;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ssize-t">ssize_t</title>
+<programlisting>typedef int	ssize_t;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="MAXHOSTNAMELEN-CAPS">MAXHOSTNAMELEN</title>
+<programlisting>#define MAXHOSTNAMELEN	256
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="pid-t">pid_t</title>
+<programlisting>typedef int pid_t;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="uid-t">uid_t</title>
+<programlisting>typedef int uid_t;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gid-t">gid_t</title>
+<programlisting>typedef int gid_t;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="uname">uname ()</title>
+<programlisting>int         uname                           (struct <link linkend="utsname">utsname</link>*);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>Param1</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="getopt">getopt ()</title>
+<programlisting>int         getopt                          (...,
+                                             char*const *,
+                                             const char*);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>...</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>Param2</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>Param3</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="strncasecmp">strncasecmp ()</title>
+<programlisting>int         strncasecmp                     (const char*,
+                                             const char*,
+                                             int len);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>Param1</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>Param2</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>len</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="srandom">srandom ()</title>
+<programlisting>int         srandom                         (...);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>...</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="random">random ()</title>
+<programlisting>int         random                          (void);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="gethostid">gethostid ()</title>
+<programlisting>int         gethostid                       (void);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="getuid">getuid ()</title>
+<programlisting>int         getuid                          (void);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="getgid">getgid ()</title>
+<programlisting>int         getgid                          (void);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="getpid">getpid ()</title>
+<programlisting>int         getpid                          (void);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="nice">nice ()</title>
+<programlisting>int         nice                            (...);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>...</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="usleep">usleep ()</title>
+<programlisting>int         usleep                          (unsigned int);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>Param1</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="time">time ()</title>
+<programlisting><link linkend="time-t">time_t</link>      time                            (<link linkend="time-t">time_t</link>*);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>Param1</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="w32-make-version-info">w32_make_version_info ()</title>
+<programlisting>const char* w32_make_version_info           (char *rat_verion);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>rat_verion</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="strcasecmp">strcasecmp</title>
+<programlisting>#define strcasecmp  _stricmp
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="RegGetValue">RegGetValue ()</title>
+<programlisting>int         RegGetValue                     (<link linkend="HKEY-CAPS">HKEY</link>*,
+                                             char*,
+                                             char*,
+                                             char*,
+                                             ...);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>Param1</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>Param2</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>Param3</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>Param4</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>...</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="ShowMessage">ShowMessage ()</title>
+<programlisting>void        ShowMessage                     (int level,
+                                             char *msg);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>level</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>msg</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="bcopy">bcopy()</title>
+<programlisting>#define bcopy(from,to,len) memcpy(to,from,len)
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>from</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>to</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>len</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="ECONNREFUSED-CAPS">ECONNREFUSED</title>
+<programlisting>#define ECONNREFUSED	WSAECONNREFUSED
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="ENETUNREACH-CAPS">ENETUNREACH</title>
+<programlisting>#define ENETUNREACH		WSAENETUNREACH
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EHOSTUNREACH-CAPS">EHOSTUNREACH</title>
+<programlisting>#define EHOSTUNREACH	WSAEHOSTUNREACH
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EWOULDBLOCK-CAPS">EWOULDBLOCK</title>
+<programlisting>#define EWOULDBLOCK		WSAEWOULDBLOCK
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="EAFNOSUPPORT-CAPS">EAFNOSUPPORT</title>
+<programlisting>#define EAFNOSUPPORT	WSAEAFNOSUPPORT
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="M-PI-CAPS">M_PI</title>
+<programlisting>#define M_PI		3.14159265358979323846
+</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

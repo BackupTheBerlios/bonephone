@@ -1,0 +1,85 @@
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
+
+configure:545: checking for ranlib
+configure:577: checking for gcc
+configure:654: checking whether the C compiler (gcc  ) works
+configure:668: gcc -o conftest    conftest.c  1>&5
+configure:688: checking whether the C compiler (gcc  ) is a cross-compiler
+configure:693: checking whether we are using GNU C
+configure:702: gcc -E conftest.c
+configure:717: checking whether gcc accepts -g
+configure:750: checking how to run the C preprocessor
+configure:771: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:814: checking for unistd.h
+configure:824: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:814: checking for limits.h
+configure:824: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:923: checking stdlib.h
+configure:986: checking fd_set and sys/select
+configure:995: gcc -c -g -O2  conftest.c 1>&5
+configure:1039: checking for ANSI C header files
+configure:1052: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1119: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1143: checking for mode_t
+configure:1176: checking for pid_t
+configure:1209: checking for size_t
+configure:1242: checking for uid_t in sys/types.h
+configure:1284: checking for sys/time.h
+configure:1294: gcc -E  conftest.c >/dev/null 2>conftest.out
+configure:1321: checking whether time.h and sys/time.h may both be included
+configure:1335: gcc -c -g -O2  conftest.c 1>&5
+configure:1370: checking for X
+configure:1784: checking for main in -lXbsd
+configure:1799: gcc -o conftest -g -O2   conftest.c -lXbsd   1>&5
+/usr/i486-suse-linux/bin/ld: cannot find -lXbsd
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 1792 "configure"
+#include "confdefs.h"
+
+int main() {
+main()
+; return 0; }
+configure:1822: checking for connect
+configure:1850: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:1963: checking for gethostbyname
+configure:1991: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:2104: checking for sin
+configure:2132: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:2116: warning: conflicting types for built-in function `sin'
+/tmp/ccNyEctB.o: In function `main':
+/home/jfi/Studienarbeit/rat-4.2.20/tk-8.0/unix/configure:2126: undefined reference to `sin'
+collect2: ld returned 1 exit status
+configure: failed program was:
+#line 2109 "configure"
+#include "confdefs.h"
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char sin(); below.  */
+#include <assert.h>
+/* Override any gcc2 internal prototype to avoid an error.  */
+/* We use char because int might match the return type of a gcc2
+    builtin and then its argument prototype would still apply.  */
+char sin();
+
+int main() {
+
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub_sin) || defined (__stub___sin)
+choke me
+#else
+sin();
+#endif
+
+; return 0; }
+configure:2153: checking for main in -lieee
+configure:2168: gcc -o conftest -g -O2   conftest.c -lieee   1>&5
+configure:2195: checking for memmove
+configure:2223: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:2253: checking whether char is unsigned
+configure:2324: checking for strtod
+configure:2352: gcc -o conftest -g -O2   conftest.c  1>&5
+configure:2374: checking for Solaris 2.4 strtod bug
+configure:2394: gcc -o conftest -g -O2   conftest.c  1>&5

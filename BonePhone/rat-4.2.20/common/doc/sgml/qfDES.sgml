@@ -1,0 +1,439 @@
+<refentry id="uclmmbase-qfDES" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>qfDES</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>qfDES</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+enum        <link linkend="QFDES-what">QFDES_what</link>;
+enum        <link linkend="QFDES-mode">QFDES_mode</link>;
+enum        <link linkend="QFDES-parity">QFDES_parity</link>;
+enum        <link linkend="QFDES-generate">QFDES_generate</link>;
+int         <link linkend="qfDES">qfDES</link>                           (unsigned char *key,
+                                             unsigned char *data,
+                                             unsigned int size,
+                                             const <link linkend="QFDES-what">QFDES_what</link> what,
+                                             const <link linkend="QFDES-mode">QFDES_mode</link> mode,
+                                             unsigned char *initVec);
+#define     <link linkend="qfDES-ECB-e">qfDES_ECB_e</link>                     (_key, _data, _size)
+#define     <link linkend="qfDES-ECB-d">qfDES_ECB_d</link>                     (_key, _data, _size)
+#define     <link linkend="qfDES-CBC-e">qfDES_CBC_e</link>                     (_key, _data, _size, _initVec)
+#define     <link linkend="qfDES-CBC-d">qfDES_CBC_d</link>                     (_key, _data, _size, _initVec)
+#define     <link linkend="qfDES-CFB-e">qfDES_CFB_e</link>                     (_key, _data, _size, _initVec)
+#define     <link linkend="qfDES-CFB-d">qfDES_CFB_d</link>                     (_key, _data, _size, _initVec)
+#define     <link linkend="qfDES-OFB-e">qfDES_OFB_e</link>                     (_key, _data, _size, _initVec)
+#define     <link linkend="qfDES-OFB-d">qfDES_OFB_d</link>                     (_key, _data, _size, _initVec)
+unsigned char <link linkend="qfDES-setPad">qfDES_setPad</link>                  (unsigned char pad);
+#define     <link linkend="qfDES-padSpace">qfDES_padSpace</link>                  ()
+#define     <link linkend="qfDES-padZero">qfDES_padZero</link>                   ()
+#define     <link linkend="qfDES-plainTextSize">qfDES_plainTextSize</link>             (_ptr, _size)
+void        <link linkend="qfDES-setParity">qfDES_setParity</link>                 (unsigned char *ptr,
+                                             unsigned int size,
+                                             const <link linkend="QFDES-parity">QFDES_parity</link> parity);
+unsigned int <link linkend="qfDES-checkParity">qfDES_checkParity</link>              (unsigned char *ptr,
+                                             unsigned int size,
+                                             const <link linkend="QFDES-parity">QFDES_parity</link> parity);
+unsigned char* <link linkend="qfDES-generate">qfDES_generate</link>               (const <link linkend="QFDES-generate">QFDES_generate</link> what);
+#define     <link linkend="qfDES-generateKey">qfDES_generateKey</link>               ()
+#define     <link linkend="qfDES-generateIV">qfDES_generateIV</link>                ()
+int         <link linkend="qfDES-checkWeakKeys">qfDES_checkWeakKeys</link>             (unsigned char *key);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="QFDES-what">enum QFDES_what</title>
+<programlisting>typedef enum {qfDES_encrypt, qfDES_decrypt} QFDES_what;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="QFDES-mode">enum QFDES_mode</title>
+<programlisting>typedef enum {qfDES_ecb, qfDES_cbc, qfDES_cfb, qfDES_ofb} QFDES_mode;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="QFDES-parity">enum QFDES_parity</title>
+<programlisting>typedef enum {qfDES_even, qfDES_odd} QFDES_parity;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="QFDES-generate">enum QFDES_generate</title>
+<programlisting>typedef enum {qfDES_key, qfDES_iv} QFDES_generate;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="qfDES">qfDES ()</title>
+<programlisting>int         qfDES                           (unsigned char *key,
+                                             unsigned char *data,
+                                             unsigned int size,
+                                             const <link linkend="QFDES-what">QFDES_what</link> what,
+                                             const <link linkend="QFDES-mode">QFDES_mode</link> mode,
+                                             unsigned char *initVec);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>data</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>size</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>what</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>mode</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>initVec</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="qfDES-ECB-e">qfDES_ECB_e()</title>
+<programlisting>#define qfDES_ECB_e(_key, _data, _size) qfDES(_key, _data, _size, qfDES_encrypt, qfDES_ecb, (unsigned char *) 0)
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>_key</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_data</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_size</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="qfDES-ECB-d">qfDES_ECB_d()</title>
+<programlisting>#define qfDES_ECB_d(_key, _data, _size) qfDES(_key, _data, _size, qfDES_decrypt, qfDES_ecb, (unsigned char *) 0)
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>_key</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_data</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_size</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="qfDES-CBC-e">qfDES_CBC_e()</title>
+<programlisting>#define qfDES_CBC_e(_key, _data, _size, _initVec) qfDES(_key, _data, _size, qfDES_encrypt, qfDES_cbc, _initVec)
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>_key</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_data</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_size</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_initVec</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="qfDES-CBC-d">qfDES_CBC_d()</title>
+<programlisting>#define qfDES_CBC_d(_key, _data, _size, _initVec) qfDES(_key, _data, _size, qfDES_decrypt, qfDES_cbc, _initVec)
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>_key</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_data</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_size</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_initVec</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="qfDES-CFB-e">qfDES_CFB_e()</title>
+<programlisting>#define qfDES_CFB_e(_key, _data, _size, _initVec) qfDES(_key, _data, _size, qfDES_encrypt, qfDES_cfb, _initVec)
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>_key</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_data</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_size</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_initVec</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="qfDES-CFB-d">qfDES_CFB_d()</title>
+<programlisting>#define qfDES_CFB_d(_key, _data, _size, _initVec) qfDES(_key, _data, _size, qfDES_decrypt, qfDES_cfb, _initVec)
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>_key</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_data</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_size</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_initVec</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="qfDES-OFB-e">qfDES_OFB_e()</title>
+<programlisting>#define qfDES_OFB_e(_key, _data, _size, _initVec) qfDES(_key, _data, _size, qfDES_encrypt, qfDES_ofb, _initVec)
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>_key</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_data</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_size</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_initVec</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="qfDES-OFB-d">qfDES_OFB_d()</title>
+<programlisting>#define qfDES_OFB_d(_key, _data, _size, _initVec) qfDES(_key, _data, _size, qfDES_decrypt, qfDES_ofb, _initVec)
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>_key</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_data</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_size</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_initVec</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="qfDES-setPad">qfDES_setPad ()</title>
+<programlisting>unsigned char qfDES_setPad                  (unsigned char pad);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>pad</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="qfDES-padSpace">qfDES_padSpace()</title>
+<programlisting>#define qfDES_padSpace() qfDES_setPad((unsigned char) ' ')
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="qfDES-padZero">qfDES_padZero()</title>
+<programlisting>#define qfDES_padZero() qfDES_setPad((unsigned char) '\0')
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="qfDES-plainTextSize">qfDES_plainTextSize()</title>
+<programlisting>#define qfDES_plainTextSize(_ptr, _size) (unsigned int) ((_size) - (unsigned int) (_ptr)[(_size) - 1])
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>_ptr</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>_size</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="qfDES-setParity">qfDES_setParity ()</title>
+<programlisting>void        qfDES_setParity                 (unsigned char *ptr,
+                                             unsigned int size,
+                                             const <link linkend="QFDES-parity">QFDES_parity</link> parity);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>ptr</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>size</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>parity</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="qfDES-checkParity">qfDES_checkParity ()</title>
+<programlisting>unsigned int qfDES_checkParity              (unsigned char *ptr,
+                                             unsigned int size,
+                                             const <link linkend="QFDES-parity">QFDES_parity</link> parity);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>ptr</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>size</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>parity</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="qfDES-generate">qfDES_generate ()</title>
+<programlisting>unsigned char* qfDES_generate               (const <link linkend="QFDES-generate">QFDES_generate</link> what);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>what</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="qfDES-generateKey">qfDES_generateKey()</title>
+<programlisting>#define qfDES_generateKey() qfDES_generate(qfDES_key)
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="qfDES-generateIV">qfDES_generateIV()</title>
+<programlisting>#define qfDES_generateIV() qfDES_generate(qfDES_iv)
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="qfDES-checkWeakKeys">qfDES_checkWeakKeys ()</title>
+<programlisting>int         qfDES_checkWeakKeys             (unsigned char *key);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>key</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

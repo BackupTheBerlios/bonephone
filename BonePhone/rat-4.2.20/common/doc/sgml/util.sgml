@@ -1,0 +1,150 @@
+<refentry id="uclmmbase-util" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>util</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>util</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="block-alloc">block_alloc</link>                     (x)
+#define     <link linkend="block-free">block_free</link>                      (x,y)
+void        <link linkend="block-release-all">block_release_all</link>               (void);
+void        <link linkend="block-trash-check">block_trash_check</link>               (void);
+void        <link linkend="block-check">block_check</link>                     (char *p);
+void        <link linkend="purge-chars">purge_chars</link>                     (char *src,
+                                             char *to_go);
+int         <link linkend="overlapping-words">overlapping_words</link>               (const char *s1,
+                                             const char *s2,
+                                             int max_words);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="block-alloc">block_alloc()</title>
+<programlisting>#define block_alloc(x)	_block_alloc(x,__FILE__,__LINE__)
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="block-free">block_free()</title>
+<programlisting>#define block_free(x,y) _block_free(x,y,__LINE__)
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="block-release-all">block_release_all ()</title>
+<programlisting>void        block_release_all               (void);</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="block-trash-check">block_trash_check ()</title>
+<programlisting>void        block_trash_check               (void);</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="block-check">block_check ()</title>
+<programlisting>void        block_check                     (char *p);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>p</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="purge-chars">purge_chars ()</title>
+<programlisting>void        purge_chars                     (char *src,
+                                             char *to_go);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>src</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>to_go</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="overlapping-words">overlapping_words ()</title>
+<programlisting>int         overlapping_words               (const char *s1,
+                                             const char *s2,
+                                             int max_words);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>s1</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>s2</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>max_words</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

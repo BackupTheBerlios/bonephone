@@ -1,0 +1,13 @@
+This directory contains some useful tools.
+
+The subdirectory traceviewerapp contains a graphical viewer for message
+traces that can be captured as they traverse the stack. Trace capture
+may be enabled by using the accessLogViaRMI flag so that the trace
+may be retrieved by the trace viewer.
+
+The subdirectory traceviewer contains a library that is used by
+traceviewerapp.
+
+The subdirectory responder contains a load-generator that is an xml based
+template matcher and responder. This allows you to set up a script that
+can respond to stack events on the basis of messages that match a template.

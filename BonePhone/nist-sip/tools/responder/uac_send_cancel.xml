@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='us-ascii'?>
+<!DOCTYPE eventscript SYSTEM "eventscript.dtd">
+
+<!-- This defines the event-driven behavior of a UAC in sending out
+  an invite and responding to it with an ACK etc. -->
+
+<CALLFLOW
+        title = "User Agent client engine"
+	description = " This defines the event-driven behavior of a UAC in sending out 
+an invite and responding to it with an ACK etc."
+>
+
+<JYTHON_CODE>
+<![CDATA[
+cancelSent = 0
+]]>
+</JYTHON_CODE>
+
+<MESSAGE_TEMPLATES>
+<SIP_RESPONSE
+	templateId = "OK"
+>
+<STATUS_LINE
+	statusCode = "200"
+/>
+</SIP_RESPONSE>
+
+<SIP_REQUEST
+	templateId = "BYE"
+>
+<REQUEST_LINE
+	method = "BYE"
+/>
+</SIP_REQUEST>
+
+</MESSAGE_TEMPLATES>
+
+
+
+<!-- Define the state machine -->
+<STATE_MACHINE>
+<EXPECT>
+<GENERATE
+	retransmitUntil = "OKReceivedCANCELSent"
+	generatedEvent = "INVITESent"
+>
+<SIP_REQUEST>
+<REQUEST_LINE
+	method = "INVITE"
+	agentId = "callee"
+/>
+
+<FROM
+	agentId = "caller"
+/>
+
+<TO
+	agentId = "callee"
+/>
+</SIP_REQUEST>
+</GENERATE>
+</EXPECT>
+
+<!-- Wait for the 200 OK and generate a CANCEL -->
+<EXPECT
+	enablingEvent 	    = "INVITESent"
+	triggerMessage      = "OK"
+	generatedEvent      = "OKReceivedCANCELSent"
+        executeOnTrigger    = "onOKReceivedCANCEL"
+	executeOnCompletion = "onCancelOK"
+>
+<GENERATE
+	retransmit="true"
+	messageType = "SipRequest"
+	messageId = "CANCEL"
+>
+<SIP_REQUEST>
+<REQUEST_LINE
+	method = "CANCEL"
+	agentId = "callee"
+/>
+</SIP_REQUEST>
+</GENERATE>
+<![CDATA[
+def onOKReceivedCANCEL(sipMessage):
+	print "onOKReceivedACK"
+	global cancelSent
+
+def onCancelOK():
+	print "onCancelOK"
+	System.exit(0)
+
+]]>
+
+</EXPECT>
+
+
+</STATE_MACHINE>
+</CALLFLOW>
+
+

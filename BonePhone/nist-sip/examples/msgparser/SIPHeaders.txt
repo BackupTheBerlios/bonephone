@@ -1,0 +1,30 @@
+From: <sip:127.0.0.1:5060>;transport=udp
+Via: SIP/2.0/TCP 129.6.55.8:5061
+Contact: "M. Ranganathan" <sip:mranga@nist.gov>;expires="Fri, 31 Aug 2001 07:52:32 GMT"
+Call-Id: a3744fa1ef2ceb899e87ce66e5720425@127.0.0.1
+Contact: "UAS Driver" <sip:uas@127.0.0.1:5070;transport=UDP>;expires=3600;action=proxy
+From: sip:+12125551212@server.phone2net.com;user=phone
+Record-Route: <sip:is2.antd.nist.gov;maddr=129.6.55.181>
+call-info: <http://www.redif.com>
+Accept: application/sdp;level=1, application/x-private, text/html
+Content-Type: text/html; charset=ISO-8859-4
+To: <sip:+1-650-555-2222@ss1.wcom.com;user=phone>;tag=1457
+Via: SIP/2.0/UDP here.com:5060
+CSeq: 1 REGISTER 
+Contact: sip:+1-972-555-2222@gw1.wcom.com;user=phone 
+Contact: tel:+1-972-555-2222 
+From: "A. G. Bell" <sip:agb@bell-telephone.com> ;tag=a48s
+From: sip:+12125551212@server.phone2net.com 
+From: Anonymous <sip:c8oqz84zk7z@privacy.org> 
+Accept: application/sdp;level=1, application/x-private, text/html
+Accept-Language: da, en-gb;q=0.8, en;q=0.7
+Accept: audio/*; q=0.2, audio/basic
+Accept: text/plain; q=0.5, text/html, text/x-dvi; q=0.8, text/x-c 
+Accept: text/*;q=0.3, text/html;q=0.7, text/html;level=1,text/html;level=2;q=0.4, */*;q=0.5
+Accept-Encoding: compress, gzip
+Accept-Encoding: *
+Accept-Encoding: compress;q=0.5, gzip;q=1.0
+Accept-Encoding: gzip;q=1.0, identity; q=0.5, *;q=0
+Alert-Info: <http://wwww.example.com/sounds/moo.wav>
+Call-ID: f81d4fae-7dec-11d0-a765-00a0c91e6bf6@foo.bar.com
+i:f81d4fae-7dec-11d0-a765-00a0c91e6bf6@foo.bar.com 

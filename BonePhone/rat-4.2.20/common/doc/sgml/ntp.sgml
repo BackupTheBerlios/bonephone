@@ -1,0 +1,96 @@
+<refentry id="uclmmbase-ntp" revision="15 Oct 2001">
+<refmeta>
+<refentrytitle>ntp</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>UCLMMBASE Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>ntp</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+<synopsis>
+
+
+
+#define     <link linkend="ntp64-to-ntp32">ntp64_to_ntp32</link>                  (ntp_sec, ntp_frac)
+#define     <link linkend="ntp32-sub">ntp32_sub</link>                       (now, then)
+void        <link linkend="ntp64-time">ntp64_time</link>                      (<link linkend="uint32-t">uint32_t</link> *ntp_sec,
+                                             <link linkend="uint32-t">uint32_t</link> *ntp_frac);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="ntp64-to-ntp32">ntp64_to_ntp32()</title>
+<programlisting>#define     ntp64_to_ntp32(ntp_sec, ntp_frac)</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>ntp_sec</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>ntp_frac</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="ntp32-sub">ntp32_sub()</title>
+<programlisting>#define  ntp32_sub(now, then) ((now) &gt; (then)) ? ((now) - (then)) : (((now) - (then)) + 0x7fffffff)
+</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>now</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>then</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+<refsect2>
+<title><anchor id="ntp64-time">ntp64_time ()</title>
+<programlisting>void        ntp64_time                      (<link linkend="uint32-t">uint32_t</link> *ntp_sec,
+                                             <link linkend="uint32-t">uint32_t</link> *ntp_frac);</programlisting>
+<para>
+
+</para><informaltable pgwide=1 frame="none" role="params">
+<tgroup cols="2">
+<colspec colwidth="2*">
+<colspec colwidth="8*">
+<tbody>
+<row><entry align="right"><parameter>ntp_sec</parameter>&nbsp;:</entry>
+<entry></entry></row>
+<row><entry align="right"><parameter>ntp_frac</parameter>&nbsp;:</entry>
+<entry>
+
+</entry></row>
+</tbody></tgroup></informaltable></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

@@ -1,0 +1,52 @@
+# >> Test configuration file for the SIP server
+# >> I can deal with Digest and basic authentication methods.
+authenticationMethod Digest gov.nist.sip.stack.security.DigestAuthenticationMethod passwords
+authenticationMethod Basic  gov.nist.sip.stack.security.BasicAuthenticationMethod passwords
+# >> Use this for WWW-Authenticate header (if it is set, then a WWW-Authenticate
+# >> is sent out on reciept of a register).
+defaultAuthenticationMethod Digest
+# >>To disable authentication.
+# disableAuthentication
+# >> Keep registrations alive for this many seconds.
+registrationTimeout 1200
+# >> Trace level for writing trace to the log file.
+# >> Please set to 32 when sendin us a bug report!
+traceLevel 32
+# >> Process TCP Messages arriving at this port.
+enableTCP 2000
+# >> Process UDP Messages from this port.
+enableUDP 2000
+# >> Our stack name
+stackName bushpig.antd.nist.gov
+# >> The IP address where we will be running.
+stackAddress 127.0.0.1
+# Please uncomment to capture your message trace into a file.
+# Please send in this file when reporting a bug.
+serverLog sipserverlog.txt
+# >> use it with rmiregistry to allow access to message logs via RMI
+accessLogViaRMI
+# >> use it to define the port used by the RMI registry (default 1099)
+#rmiRegistryPort 1099
+# >> use it to force the access via RMI on a certain port
+#rmiPort 1200
+# >> Add a RecordRoute header when forwarding requests.
+enableRecordRoute
+# >> Register a parser for a Session-Expires extension.
+extensionParser Session-Expires examples.proxy.SessionExpiresParser
+# >> For NAT control.
+#For NAT control.
+# innerNetworkPrefix 192.168.
+# >> Parse the SDP part of the message (Needed for firewall).
+# parseSDP 
+# >> The following flag tells the proxy to remove the contact header
+# >> from INVITE requests entering the firewall. 
+removeContactHeaders
+# >> Uncomment this line to enable NAT Transversal support
+# natTransversal
+# >> Use the following line when the proxy is not running on the NAT gateway
+# gatewayAddress 129.6.55.81
+# >> Uncomment  to enable firewall Transversal support with port opening method
+#firewallTransversal openPort.pl closePort.pl
+# >> Uncomment to enable firewall Transversal support with port translation 
+# >> method
+#firewallTransversal DNATBegin.pl DNATEnd.pl
